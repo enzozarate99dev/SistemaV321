@@ -1,10 +1,9 @@
-import axios from "axios";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { urlClientes, urlProductos } from "../Generales/endpoints";
-import { clienteCrear } from "../Models/clientes.model";
-import MostrarErrores from "../utils/MostrarErrores";
+import { clienteCrear } from "../../Models/clientes.model";
+import MostrarErrores from "../../utils/MostrarErrores";
 import FormularioClientes from "./FormularioClientes";
+import * as services from "../Services/clientes.services"
 
 export default function CargarCliente() {
 
@@ -12,9 +11,8 @@ export default function CargarCliente() {
     const [errores, setErrores] = useState<string[]>([]);
 
     async function crear(cliente: clienteCrear) {
-        console.log(cliente)
         try {
-            await axios.post(`${urlClientes}`, cliente)
+            services.crear(cliente)
             history.push(`/listadoClientes`)
         }
         catch (error) {
@@ -24,7 +22,7 @@ export default function CargarCliente() {
 
     return (
         <>
-            <h3>Cargar Cliente</h3>
+            <h3 style={{marginTop:'1rem'}}>Cargar Cliente</h3>
             <MostrarErrores errores={errores}/>
             <FormularioClientes modelo={{ nombreYApellido: '', telefono: '', domicilio: '', email: '' }} onSubmit={async valores => {
                 await crear(valores)

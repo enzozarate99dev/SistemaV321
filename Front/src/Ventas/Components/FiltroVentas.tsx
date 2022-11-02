@@ -1,14 +1,13 @@
-import axios, { AxiosResponse } from "axios";
-import { Formik, Form, Field } from "formik";
+import { AxiosResponse } from "axios";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { date } from "yup/lib/locale";
-import { productoModel } from "../Models/producto.model";
-import { listadoVentas, ventasModel, ventasPostGetModel } from "../Models/ventas.model";
-import Button from "../utils/Button";
-import { urlProductos, urlVentas } from "../Generales/endpoints";
-import FormGroupFecha from "../utils/FormGroupFecha";
-import Paginacion from "../utils/Paginacion";
+import { productoModel } from "../../Models/producto.model";
+import { ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
+import Button from "../../utils/Button";
+import FormGroupFecha from "../../utils/FormGroupFecha";
+import Paginacion from "../../utils/Paginacion";
+import * as services from '../Services/ventas.services';
 import ListadoVentas from "./ListadoVentas";
 
 export default function FiltroVentas() {
@@ -27,27 +26,9 @@ export default function FiltroVentas() {
         recordsPorPagina: 10
     }
 
-    function formatearFecha(date: Date | null) {
-        if (date != null) {
-            date = new Date(date)
-            const formato = new Intl.DateTimeFormat("en", {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-            const [
-                { value: month }, ,
-                { value: day }, ,
-                { value: year }
-            ] = formato.formatToParts(date);
-            return `${year}-${month}-${day}`;
-        }    
-    }
-
-
     useEffect(() => {
-        axios.get(`${urlVentas}/postget`)
-            .then((respuesta: AxiosResponse<ventasPostGetModel>) => {
+        const res = services.getProductos()
+            res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
                 setProductos(respuesta.data.productos);
             })
     }, [])
@@ -60,14 +41,9 @@ export default function FiltroVentas() {
         if (query.get('productoId')) {
             valorInicial.productoId = parseInt(query.get('productoId')!, 10)
         }
-        /* if (query.get('fechaDeVenta')) {
-            var fecha = new Date(query.get('fechaDeVenta')!).toISOString()
-        } */
-        console.log(query.get('fechaDeVenta'))
         if (query.get('pagina')) {
             valorInicial.pagina = parseInt(query.get('pagina')!, 10)
         }
-
         buscarVenta(valorInicial)
     }, [])
 
@@ -88,10 +64,9 @@ export default function FiltroVentas() {
     }
 
     function buscarVenta(valores: filtroVentasProps) {
-        console.log(valores)
         modificarURL(valores)
-        axios.get(`${urlVentas}/filtrar`, { params: valores })
-            .then((respuesta: AxiosResponse<ventasModel[]>) => {
+        const res = services.filtrar(valores)
+            res.then((respuesta: AxiosResponse<ventasModel[]>) => {
                 console.log(respuesta.data)
                 const totalDeRegistros = parseInt(
                     respuesta.headers["cantidadtotalregistros"],
@@ -106,7 +81,7 @@ export default function FiltroVentas() {
 
     return (
         <>
-            <h3>Filtrar Ventas</h3>
+            <h3 style={{marginTop:'1rem'}}>Filtrar Ventas</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarVenta(valores)
@@ -161,7 +136,7 @@ export default function FiltroVentas() {
     )
 }
 
-interface filtroVentasProps {
+export interface filtroVentasProps {
     nombreCliente: string;
     productoId: number;
     fechaDeVenta: Date;

@@ -18,7 +18,7 @@ export interface homePage{
 export interface productoCrear{
     nombre: string;
     precio: number;
-    cantidad?: number;
+    cantidad: number;
     codigo?:string;
     categoria?: string;
     descripcion?: string

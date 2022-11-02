@@ -1,11 +1,10 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { urlClientes, urlProductos } from "../Generales/endpoints";
-import { clienteCrear } from "../Models/clientes.model";
-import { productoCrear } from "../Models/producto.model";
-import Cargando from "../utils/Cargando";
-import MostrarErrores from "../utils/MostrarErrores";
+import { clienteCrear } from "../../Models/clientes.model";
+import Cargando from "../../utils/Cargando";
+import MostrarErrores from "../../utils/MostrarErrores";
+import * as services from "../Services/clientes.services";
 import FormularioClientes from "./FormularioClientes";
 
 
@@ -18,8 +17,8 @@ export default function EditarCliente() {
     const history = useHistory()
 
     useEffect(() => {
-        axios.get(`${urlClientes}/${id}`)
-            .then((respuesta: AxiosResponse<clienteCrear>) => {
+        const res = services.getCliente(id)
+            res.then((respuesta: AxiosResponse<clienteCrear>) => {
                 const modelo: clienteCrear = {
                     nombreYApellido: respuesta.data.nombreYApellido,
                     domicilio: respuesta.data.domicilio,
@@ -32,7 +31,7 @@ export default function EditarCliente() {
 
     async function editar(clienteEditar: clienteCrear) {
         try {
-            await axios.put(`${urlClientes}/${id}`, clienteEditar)
+            services.editar(clienteEditar,id)
             history.push('/listadoClientes')
         }
         catch (error) {
@@ -42,7 +41,7 @@ export default function EditarCliente() {
 
     return (
         <>
-            <h3>Editar Cliente</h3>
+            <h3 style={{marginTop:'1rem'}}>Editar Cliente</h3>
             <MostrarErrores errores={errores} />
             {cliente ? <FormularioClientes
                 modelo={cliente} onSubmit={async valores => await editar(valores)}

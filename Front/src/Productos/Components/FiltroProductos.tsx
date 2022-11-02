@@ -1,11 +1,12 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { urlProductos } from "../Generales/endpoints";
-import { productoModel } from "../Models/producto.model";
-import Button from "../utils/Button";
-import Paginacion from "../utils/Paginacion";
+import { productoModel } from "../../Models/producto.model";
+import Button from "../../utils/Button";
+import Paginacion from "../../utils/Paginacion";
+import * as services from '../Services/productos.services';
+import '../styles.css';
 import ListadoProductos from "./ListadoProductos";
 
 export default function FiltroProductos() {
@@ -17,7 +18,6 @@ export default function FiltroProductos() {
 
     const valorInicial: filtroVentasProps = {
         nombre: '',
-        precio: 0,
         stockDisponible: false,
         sinStock: false,
         pagina: 1,
@@ -33,10 +33,10 @@ export default function FiltroProductos() {
         if (query.get('precio')) {
             valorInicial.precio = parseInt(query.get('precio')!, 10)
         }
-        if (query.get('stockDisponible')){
+        if (query.get('stockDisponible')) {
             valorInicial.stockDisponible = true
         }
-        if (query.get('sinStock')){
+        if (query.get('sinStock')) {
             valorInicial.sinStock = true
         }
 
@@ -51,10 +51,10 @@ export default function FiltroProductos() {
         if (valores.precio) {
             queryStrings.push(`precio=${valores.precio}`)
         }
-        if(valores.stockDisponible){
+        if (valores.stockDisponible) {
             queryStrings.push(`stockDisponible=${valores.stockDisponible}`)
         }
-        if(valores.sinStock){
+        if (valores.sinStock) {
             queryStrings.push(`sinStock=${valores.sinStock}`)
         }
 
@@ -63,10 +63,9 @@ export default function FiltroProductos() {
     }
 
     function buscarProducto(valores: filtroVentasProps) {
-        console.log(valores)
         modificarURL(valores)
-        axios.get(`${urlProductos}/filtrar`, { params: valores })
-            .then((respuesta: AxiosResponse<productoModel[]>) => {
+        const response = services.filtrar(valores)
+            response.then((respuesta: AxiosResponse<productoModel[]>) => {
                 console.log(respuesta.data)
                 const totalDeRegistros = parseInt(
                     respuesta.headers["cantidadtotalregistros"],
@@ -81,7 +80,7 @@ export default function FiltroProductos() {
 
     return (
         <>
-            <h3>Filtrar Productos</h3>
+            <h3 style={{ marginTop: '1rem' }}>Filtrar Productos</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarProducto(valores)
@@ -99,7 +98,7 @@ export default function FiltroProductos() {
                                 </div>
                                 <div className="form-group mb-2">
                                     <label htmlFor="precio" className="sr-only">Precio maximo</label>
-                                    <input style={{marginLeft:'1rem'}} type="text" className="form-control"
+                                    <input style={{ marginLeft: '1rem' }} type="text" className="form-control"
                                         id="precio" placeholder="Precio maximo"
                                         {...formikProps.getFieldProps('precio')}
                                     />
@@ -124,7 +123,7 @@ export default function FiltroProductos() {
                             </div>
                         </Form>
 
-                        <ListadoProductos productos={productos}/>
+                        <ListadoProductos productos={productos} />
 
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
@@ -142,11 +141,11 @@ export default function FiltroProductos() {
     )
 }
 
-interface filtroVentasProps {
+export interface filtroVentasProps {
     nombre: string;
-    precio: number;
+    precio?: number;
     stockDisponible: boolean;
-    sinStock:boolean;
+    sinStock: boolean;
     pagina: number;
     recordsPorPagina: number;
 }

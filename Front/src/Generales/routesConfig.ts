@@ -1,15 +1,15 @@
-import CargarCliente from "../Clientes/CargarCliente";
-import EditarCliente from "../Clientes/EditarCliente";
-import FiltroClientes from "../Clientes/FiltroClientes";
-import InfoCliente from "../Clientes/InfoCliente";
-import CargarProducto from "../Productos/CargarProducto";
-import EditarProducto from "../Productos/EditarProducto";
-import FiltroProductos from "../Productos/FiltroProductos";
+import CargarCliente from "../Clientes/Components/CargarCliente";
+import EditarCliente from "../Clientes/Components/EditarCliente";
+import FiltroClientes from "../Clientes/Components/FiltroClientes";
+import InfoCliente from "../Clientes/Components/InfoCliente";
+import CargarProducto from "../Productos/Components/CargarProducto";
+import EditarProducto from "../Productos/Components/EditarProducto";
+import FiltroProductos from "../Productos/Components/FiltroProductos";
 import Redireccionar from "../utils/Redireccionar";
-import CargarVentas from "../Ventas/CargarVentas";
-import DetalleVentas from "../Ventas/DetalleVentas";
-import EditarVenta from "../Ventas/EditarVenta";
-import FiltroVentas from "../Ventas/FiltroVentas";
+import CargarVentas from "../Ventas/Components/CargarVentas";
+import DetalleVentas from "../Ventas/Components/DetalleVentas";
+import EditarVenta from "../Ventas/Components/EditarVenta";
+import FiltroVentas from "../Ventas/Components/FiltroVentas";
 
 
 const rutas = [

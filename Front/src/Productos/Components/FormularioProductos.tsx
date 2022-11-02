@@ -1,12 +1,11 @@
-import { productoCrear, productoModel } from "../Models/producto.model";
-import { Formik, Form, FormikHelpers } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
+import { Link } from "react-router-dom";
 import * as Yup from "yup";
-import FormGroupText from "../utils/FormGroupText";
-import Button from "../utils/Button";
-import { Link } from "react-router-dom"
-import FormGroupCheckbox from "../utils/FormGroupCheckbox";
-import FormGroupMarkdown from "../utils/FormGroupMarkdown";
-import FormGroupImagen from "../utils/FormGroupImagen";
+import { productoCrear } from "../../Models/producto.model";
+import Button from "../../utils/Button";
+import FormGroupImagen from "../../utils/FormGroupImagen";
+import FormGroupMarkdown from "../../utils/FormGroupMarkdown";
+import FormGroupText from "../../utils/FormGroupText";
 
 
 export default function FormularioProductos(props: formularioProductosProps) {

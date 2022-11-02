@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/6gDN9Bi9v26dx/agUoFDbWd7CpqCTMpam/G47K45Z4=",
+  "Hash": "862GBk3Nly4f50lbseDdcJAOd9E4QUoIXN7Ixmv9GfM=",
   "Source": "SistemaApi",
   "BasePath": "_content/SistemaApi",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "SistemaApi\\wwwroot",
       "Source": "SistemaApi",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\0078e2f3-8cc4-4165-ad1e-4614540eade5.jpeg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\0078e2f3-8cc4-4165-ad1e-4614540eade5.jpeg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/0078e2f3-8cc4-4165-ad1e-4614540eade5.jpeg",
       "AssetKind": "All",
@@ -34,10 +34,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\0078e2f3-8cc4-4165-ad1e-4614540eade5.jpeg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\0850af85-60f7-4d8f-9e29-d2bfd5c74569.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\0850af85-60f7-4d8f-9e29-d2bfd5c74569.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/0850af85-60f7-4d8f-9e29-d2bfd5c74569.jpg",
       "AssetKind": "All",
@@ -51,10 +51,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\0850af85-60f7-4d8f-9e29-d2bfd5c74569.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\291f1dc6-e5a8-4822-8610-96d77f8a448a.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\291f1dc6-e5a8-4822-8610-96d77f8a448a.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/291f1dc6-e5a8-4822-8610-96d77f8a448a.jpg",
       "AssetKind": "All",
@@ -68,10 +68,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\291f1dc6-e5a8-4822-8610-96d77f8a448a.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\5584d16f-371c-4f1c-a70d-465f7e74405c.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\5584d16f-371c-4f1c-a70d-465f7e74405c.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/5584d16f-371c-4f1c-a70d-465f7e74405c.jpg",
       "AssetKind": "All",
@@ -85,10 +85,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\5584d16f-371c-4f1c-a70d-465f7e74405c.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\5a251ff2-7364-4426-87f9-ee8921b03bd9.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\5a251ff2-7364-4426-87f9-ee8921b03bd9.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/5a251ff2-7364-4426-87f9-ee8921b03bd9.jpg",
       "AssetKind": "All",
@@ -102,10 +102,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\5a251ff2-7364-4426-87f9-ee8921b03bd9.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\6e895140-bfcd-4b1e-9c25-0b1d71bd0709.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\6e895140-bfcd-4b1e-9c25-0b1d71bd0709.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/6e895140-bfcd-4b1e-9c25-0b1d71bd0709.jpg",
       "AssetKind": "All",
@@ -119,10 +119,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\6e895140-bfcd-4b1e-9c25-0b1d71bd0709.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\909bc1f2-c876-422f-a131-d6f02d50a80f.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\909bc1f2-c876-422f-a131-d6f02d50a80f.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/909bc1f2-c876-422f-a131-d6f02d50a80f.jpg",
       "AssetKind": "All",
@@ -136,10 +136,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\909bc1f2-c876-422f-a131-d6f02d50a80f.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\943e120c-947b-46bc-8a5b-23925a5460cf.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\943e120c-947b-46bc-8a5b-23925a5460cf.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/943e120c-947b-46bc-8a5b-23925a5460cf.jpg",
       "AssetKind": "All",
@@ -153,10 +153,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\943e120c-947b-46bc-8a5b-23925a5460cf.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\d1b6f91b-b8e5-4b48-9fc1-86cbdfa0421c.jpg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\d1b6f91b-b8e5-4b48-9fc1-86cbdfa0421c.jpg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/d1b6f91b-b8e5-4b48-9fc1-86cbdfa0421c.jpg",
       "AssetKind": "All",
@@ -170,10 +170,10 @@
       "OriginalItemSpec": "wwwroot\\actores\\d1b6f91b-b8e5-4b48-9fc1-86cbdfa0421c.jpg"
     },
     {
-      "Identity": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\actores\\f6b57899-6422-450e-a10e-4a6d7810d158.jpeg",
+      "Identity": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\actores\\f6b57899-6422-450e-a10e-4a6d7810d158.jpeg",
       "SourceId": "SistemaApi",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Lahoz\\Desktop\\Sistema\\Back\\BackVentas\\BackCsharp\\SistemaApi\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\wwwroot\\",
       "BasePath": "_content/SistemaApi",
       "RelativePath": "actores/f6b57899-6422-450e-a10e-4a6d7810d158.jpeg",
       "AssetKind": "All",

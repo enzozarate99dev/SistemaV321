@@ -1,16 +1,16 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ventasModel } from "../Models/ventas.model";
-import { urlVentas } from "../Generales/endpoints";
+import { ventasModel } from "../../Models/ventas.model";
+import * as services from "../Services/ventas.services";
 
 export default function DetalleVentas() {
     const { id }: any = useParams();
     const [venta, setVenta] = useState<ventasModel>()
 
     useEffect(() => {
-        axios.get(`${urlVentas}/${id}`)
-            .then((respuesta: AxiosResponse<ventasModel>) => {
+        const res = services.getVenta(id)
+            res.then((respuesta: AxiosResponse<ventasModel>) => {
                 respuesta.data.fechaDeVenta = new Date(respuesta.data.fechaDeVenta)
                 setVenta(respuesta.data)
                 console.log(venta)

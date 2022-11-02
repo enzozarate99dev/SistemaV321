@@ -1,18 +1,19 @@
-import axios from "axios";
-import { Link } from "react-router-dom";
-import Verificar from "../Generales/verificador";
-import { productoModel } from "../Models/producto.model";
-import Button from "../utils/Button";
-import confirmar from "../utils/Confirmar";
-import { urlClientes, urlProductos } from "../Generales/endpoints";
-import { clienteModel } from "../Models/clientes.model";
+import { Link, useHistory } from "react-router-dom";
+import Verificar from "../../Generales/verificador";
+import { clienteModel } from "../../Models/clientes.model";
+import Button from "../../utils/Button";
+import confirmar from "../../utils/Confirmar";
+import * as services from "../Services/clientes.services";
 
 
 export default function ListadoClientes(props: propsListadoClientes) {
 
+    const history = useHistory()
+
     async function borrar(id: number) {
         try {
-            await axios.delete(`${urlClientes}/${id}`)
+            services.borrar(id)
+            history.go(0)
         }
         catch (error) {
             console.log(error.response.data)

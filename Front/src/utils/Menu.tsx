@@ -1,12 +1,19 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
 export default function Menu() {
     const claseActiva = "active";
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        /* <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <NavLink className="navbar-brand" to="/" activeClassName={claseActiva}>Listado de productos</NavLink>
+                <NavLink className="navbar-brand mb-0 h1" to="/" activeClassName={claseActiva}>
+                    <img className="d-inline-block align-top" width="30" height="30" src="https://e7.pngegg.com/pngimages/175/742/png-clipart-computer-icons-question-user-interface-creative-question-mark-miscellaneous-text.png"></img>
+                    Listado de productos
+                </NavLink>
                 <div className="collapse navbar-collapse">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
@@ -39,6 +46,35 @@ export default function Menu() {
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav> */
+
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand href="#home">Sistema</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
+                        <NavDropdown title="Productos" id="collasible-nav-dropdown">
+                            <NavDropdown.Item href="/">Gestionar productos</NavDropdown.Item>
+                            <NavDropdown.Item href="/productos/cargar">Cargar producto</NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="Clientes" id="collasible-nav-dropdown">
+                            <NavDropdown.Item href="/listadoClientes">Gestionar clientes</NavDropdown.Item>
+                            <NavDropdown.Item href="clientes">Cargar cliente</NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="Ventas" id="collasible-nav-dropdown">
+                            <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
+                            <NavDropdown.Item href="/ventas">Cargar venta</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                    <Nav>
+                        <Nav.Link href="#deets">Iniciar Sesion</Nav.Link>
+                        <Nav.Link eventKey={2} href="#memes">
+                            Registrarse
+                        </Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     )
 }

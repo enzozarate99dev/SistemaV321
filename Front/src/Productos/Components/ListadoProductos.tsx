@@ -1,13 +1,11 @@
-import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import { Link, useHistory } from "react-router-dom";
-import { urlProductos } from "../Generales/endpoints";
-import Verificar from "../Generales/verificador";
-import { actualizar, productoModel } from "../Models/producto.model";
-import Button from "../utils/Button";
-import confirmar from "../utils/Confirmar";
-import * as Yup from "yup";
-import FormGroupText from "../utils/FormGroupText";
+import Verificar from "../../Generales/verificador";
+import { actualizar, productoModel } from "../../Models/producto.model";
+import Button from "../../utils/Button";
+import confirmar from "../../utils/Confirmar";
+import * as services from "../Services/productos.services";
+import '../styles.css'
 
 
 export default function ListadoProductos(props: propsListadoProductos) {
@@ -16,20 +14,16 @@ export default function ListadoProductos(props: propsListadoProductos) {
 
     async function borrar(id: number) {
         try {
-            await axios.delete(`${urlProductos}/${id}`)
+            services.borrar(id)
         }
         catch (error) {
             console.log(error.response.data)
         }
     }
 
-    const modelo: actualizar = {
-    }
-
     async function actualizar(valores: actualizar) {
-        console.log(valores)
         try {
-            await axios.put(`${urlProductos}/actualizar`, valores)
+            services.actualizarF(valores)          
             history.go(0)
         }
         catch (error) {
@@ -50,7 +44,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
     return (
         <Verificar listado={props.productos}>
             <div className='container'>
-                <Formik initialValues={modelo} onSubmit={async (valores) => await actualizar(valores)}>
+                <Formik initialValues={{}} onSubmit={async (valores) => await actualizar(valores)}>
                     {(formikProps) => (
                         <Form>
                             <table className='table'>
@@ -76,7 +70,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
                                             <td>{producto.precio}</td>
                                             <td>{producto.cantidad}</td>
                                             <td><img width="50" height="50" src={producto.foto} alt="Poster" /></td>
-                                            <td><Field style={{ marginLeft: "30px" }} className="form-check-input" name="ids" value={producto.id} type="checkbox" /></td>
+                                            <td><Field style={{ marginLeft: "30px" }} onClick={console.log("first")} name="ids" id="ids" value={producto.id} type="checkbox" /></td>
                                         </tr>
                                     ))}
                                     <tr>

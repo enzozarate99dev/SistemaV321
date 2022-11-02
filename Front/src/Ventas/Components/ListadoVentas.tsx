@@ -1,25 +1,24 @@
-import axios, { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Verificar from "../Generales/verificador";
-import { listadoVentas, ventasModel } from "../Models/ventas.model";
-import Button from "../utils/Button";
-import confirmar from "../utils/Confirmar";
-import { urlVentas } from "../Generales/endpoints";
+import { Link, useHistory } from "react-router-dom";
+import Verificar from "../../Generales/verificador";
+import { ventasModel } from "../../Models/ventas.model";
+import Button from "../../utils/Button";
+import confirmar from "../../utils/Confirmar";
+import * as services from "../Services/ventas.services";
 
 
 export default function ListadoVentas(props: propsListadoVentas) {
 
+    const history = useHistory()
 
     async function borrar(id: number) {
         try {
-            await axios.delete(`${urlVentas}/${id}`)
+            services.borrar(id)
+            history.go(0)
         }
         catch (error) {
             console.log(error.response.data)
         }
     }
-
 
     function formatDate(fecha: string): string {
         var array = fecha.split("T")

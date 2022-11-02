@@ -1,16 +1,16 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { urlClientes } from "../Generales/endpoints";
-import { clienteModel } from "../Models/clientes.model";
+import { clienteModel } from "../../Models/clientes.model";
+import * as services from '../Services/clientes.services';
 
 export default function InfoCliente() {
     const { id }: any = useParams();
     const [cliente, setCliente] = useState<clienteModel>()
 
     useEffect(() => {
-        axios.get(`${urlClientes}/${id}`)
-            .then((respuesta: AxiosResponse<clienteModel>) => {
+        const res = services.getCliente(id)
+            res.then((respuesta: AxiosResponse<clienteModel>) => {
                 setCliente(respuesta.data)
             })
     }, [id])

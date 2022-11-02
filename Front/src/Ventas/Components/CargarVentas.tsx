@@ -1,10 +1,11 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { productoModel } from "../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../Models/ventas.model";
-import { urlProductos, urlVentas } from "../Generales/endpoints";
-import MostrarErrores from "../utils/MostrarErrores";
+import { urlProductos } from "../../Generales/endpoints";
+import { productoModel } from "../../Models/producto.model";
+import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../../Models/ventas.model";
+import MostrarErrores from "../../utils/MostrarErrores";
+import * as services from "../Services/ventas.services";
 import FormularioVentas from "./FormularioVentas";
 
 export default function CargarVentas() {
@@ -14,8 +15,8 @@ export default function CargarVentas() {
     const [productos, setProductos] = useState<productoModel[]>([])
 
     useEffect(() => {
-        axios.get(`${urlVentas}/postget`)
-            .then((respuesta: AxiosResponse<ventasPostGetModel>) => {
+        const res = services.getProductos()
+            res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
                 console.log(respuesta.data.productos)
                 setProductos(respuesta.data.productos);
             })
@@ -34,9 +35,8 @@ export default function CargarVentas() {
     }
 
     async function crear(venta: nuevoVentasModel) {
-        console.log(venta)
         try {
-            await axios.post(`${urlVentas}`, venta)
+            services.crear(venta)
             history.push(`${urlProductos}`)
         }
         catch (error) {
@@ -47,7 +47,7 @@ export default function CargarVentas() {
 
     return (
         <>
-            <h3>Cargar Venta</h3>
+            <h3 style={{marginTop:'1rem'}}>Cargar Venta</h3>
             <MostrarErrores errores={errores} />
             <FormularioVentas productosDisp={productos}
                 modelo={{ nombreCliente: '', cantidad: [], productosIds: [] }}

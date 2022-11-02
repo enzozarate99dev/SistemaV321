@@ -1,7 +1,6 @@
 import { Field, FormikProps } from "formik";
-import { useState } from "react";
-import { productoModel } from "../Models/producto.model";
-import { ventasCrear } from "../Models/ventas.model";
+import { productoModel } from "../../Models/producto.model";
+import { ventasCrear } from "../../Models/ventas.model";
 
 export default function NuevoProducto(props: propsNuevoProducto) {
 

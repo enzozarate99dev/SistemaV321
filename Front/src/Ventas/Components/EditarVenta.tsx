@@ -1,13 +1,12 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { productoModel } from "../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasModel, ventasPostGetModel } from "../Models/ventas.model";
-import Cargando from "../utils/Cargando";
-import { urlVentas } from "../Generales/endpoints";
-import MostrarErrores from "../utils/MostrarErrores";
+import { productoModel } from "../../Models/producto.model";
+import { nuevoVentasModel, ventasCrear, ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
+import Cargando from "../../utils/Cargando";
+import MostrarErrores from "../../utils/MostrarErrores";
+import * as services from "../Services/ventas.services";
 import EditorVentas from "./EditorVentas";
-import FormularioVentas from "./FormularioVentas";
 
 
 
@@ -20,8 +19,8 @@ export default function EditarVenta() {
     const [productos, setProductos] = useState<productoModel[]>([])
 
     useEffect(() => {
-        axios.get(`${urlVentas}/postget`)
-            .then((respuesta: AxiosResponse<ventasPostGetModel>) => {
+        const res = services.getProductos()
+            res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
                 setProductos(respuesta.data.productos);
             })
     }, [])
@@ -39,8 +38,8 @@ export default function EditarVenta() {
     }
 
     useEffect(() => {
-        axios.get(`${urlVentas}/${id}`)
-            .then((respuesta: AxiosResponse<ventasModel>) => {
+        const res = services.getVenta(id)
+            res.then((respuesta: AxiosResponse<ventasModel>) => {
                 var arre1: number[] = crearArreglo1(respuesta.data)
                 var arre2: number[] = crearArreglo2(respuesta.data)
                 const modelo: ventasCrear = {
@@ -65,9 +64,8 @@ export default function EditarVenta() {
     }
 
     async function editar(ventaEditar: nuevoVentasModel) {
-        console.log(ventaEditar)
         try {
-            await axios.put(`${urlVentas}/${id}`, ventaEditar)
+            services.editar(ventaEditar,id)
             history.push('/listadoVentas')
         }
         catch (error) {
@@ -77,7 +75,7 @@ export default function EditarVenta() {
 
     return (
         <>
-            <h3>Editar Venta</h3>
+            <h3 style={{marginTop:'1rem'}}>Editar Venta</h3>
             <MostrarErrores errores={errores} />
             {venta ? <EditorVentas
                 modelo={venta} onSubmit={async valores => await convertir(valores)} productosDisp={productos}

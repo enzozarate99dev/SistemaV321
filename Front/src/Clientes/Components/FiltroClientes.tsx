@@ -1,13 +1,11 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { urlClientes, urlVentas } from "../Generales/endpoints";
-import { clienteModel } from "../Models/clientes.model";
-import { ventasModel, ventasPostGetModel } from "../Models/ventas.model";
-import Button from "../utils/Button";
-import FormGroupFecha from "../utils/FormGroupFecha";
-import Paginacion from "../utils/Paginacion";
+import { clienteModel } from "../../Models/clientes.model";
+import Button from "../../utils/Button";
+import Paginacion from "../../utils/Paginacion";
+import * as services from "../Services/clientes.services";
 import ListadoClientes from "./ListadoClientes";
 
 export default function FiltroClientes() {
@@ -46,9 +44,9 @@ export default function FiltroClientes() {
 
     function buscarCliente(valores: filtroClientesProps) {
         modificarURL(valores)
-        axios.get(`${urlClientes}/filtrar`, { params: valores })
-            .then((respuesta: AxiosResponse<clienteModel[]>) => {
-                console.log(respuesta.data)
+        const data = services.filtrar(valores)
+            data.then((respuesta: AxiosResponse<clienteModel[]>) => {
+                console.log(respuesta)
                 const totalDeRegistros = parseInt(
                     respuesta.headers["cantidadtotalregistros"],
                     10
@@ -62,7 +60,7 @@ export default function FiltroClientes() {
 
     return (
         <>
-            <h3>Filtrar Clientes</h3>
+            <h3 style={{marginTop:'1rem'}}>Filtrar Clientes</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarCliente(valores)
@@ -107,7 +105,7 @@ export default function FiltroClientes() {
     )
 }
 
-interface filtroClientesProps {
+export interface filtroClientesProps {
     nombreYApellido: string;
     pagina: number;
     recordsPorPagina: number;

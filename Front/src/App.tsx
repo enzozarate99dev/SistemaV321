@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import rutas from './Generales/routesConfig';
 import Menu from './utils/Menu';
+import './fondo.css'
 
 function App() {
 

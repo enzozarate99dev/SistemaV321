@@ -59,7 +59,7 @@ export default function FiltroProductos() {
         }
 
         queryStrings.push(`pagina=${valores.pagina}`)
-        history.push(`/?${queryStrings.join('&')}`)
+        history.push(`/listadoProductos?${queryStrings.join('&')}`)
     }
 
     function buscarProducto(valores: filtroVentasProps) {

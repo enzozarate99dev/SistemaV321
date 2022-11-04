@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace SistemaApi
 {
@@ -20,6 +21,13 @@ namespace SistemaApi
                 if (resultadoActual.Value is string)
                 {
                     respuesta.Add(resultadoActual.Value.ToString());
+                }
+                else if(resultadoActual.Value is IEnumerable<IdentityError> errores)
+                {
+                    foreach(var error in errores)
+                    {
+                        respuesta.Add(error.Description);
+                    }
                 }
                 else
                 {

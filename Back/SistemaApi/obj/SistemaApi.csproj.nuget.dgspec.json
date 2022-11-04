@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj": {}
+    "C:\\Users\\Lahoz\\Desktop\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj": {
+    "C:\\Users\\Lahoz\\Desktop\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj",
+        "projectUniqueName": "C:\\Users\\Lahoz\\Desktop\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj",
         "projectName": "SistemaApi",
-        "projectPath": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj",
-        "packagesPath": "C:\\Users\\Makers\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Makers\\Desktop\\Sistema\\SistemaVentas\\Back\\SistemaApi\\obj\\",
+        "projectPath": "C:\\Users\\Lahoz\\Desktop\\SistemaVentas\\Back\\SistemaApi\\SistemaApi.csproj",
+        "packagesPath": "C:\\Users\\Lahoz\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lahoz\\Desktop\\SistemaVentas\\Back\\SistemaApi\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Makers\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lahoz\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -54,6 +51,10 @@
             "Microsoft.AspNet.WebApi.Core": {
               "target": "Package",
               "version": "[5.2.9, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.10, )"
             },
             "Microsoft.AspNetCore.Http": {
               "target": "Package",

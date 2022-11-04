@@ -1,12 +1,19 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useHistory } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Autorizado from "../auth/Autorizado";
+import Button from "./Button";
+import { logout } from "../auth/handlerJWT";
+import { useContext } from "react";
+import AutenticacionContext from "../auth/AutenticacionContext";
 
 
 export default function Menu() {
+    const {actualizar} = useContext(AutenticacionContext)
     const claseActiva = "active";
+    const history = useHistory()
     return (
         /* <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -53,26 +60,42 @@ export default function Menu() {
                 <Navbar.Brand href="#home">Sistema</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
-                        <NavDropdown title="Productos" id="collasible-nav-dropdown">
-                            <NavDropdown.Item href="/">Gestionar productos</NavDropdown.Item>
-                            <NavDropdown.Item href="/productos/cargar">Cargar producto</NavDropdown.Item>
-                        </NavDropdown>
-                        <NavDropdown title="Clientes" id="collasible-nav-dropdown">
-                            <NavDropdown.Item href="/listadoClientes">Gestionar clientes</NavDropdown.Item>
-                            <NavDropdown.Item href="clientes">Cargar cliente</NavDropdown.Item>
-                        </NavDropdown>
-                        <NavDropdown title="Ventas" id="collasible-nav-dropdown">
-                            <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
-                            <NavDropdown.Item href="/ventas">Cargar venta</NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                    <Nav>
-                        <Nav.Link href="#deets">Iniciar Sesion</Nav.Link>
-                        <Nav.Link eventKey={2} href="#memes">
-                            Registrarse
-                        </Nav.Link>
-                    </Nav>
+                    <Autorizado autorizado={
+                        <>
+                            <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
+                                <NavDropdown title="Productos" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item href="/listadoProductos">Gestionar productos</NavDropdown.Item>
+                                    <NavDropdown.Item href="/productos/cargar">Cargar producto</NavDropdown.Item>
+                                </NavDropdown>
+                                <NavDropdown title="Clientes" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item href="/listadoClientes">Gestionar clientes</NavDropdown.Item>
+                                    <NavDropdown.Item href="clientes">Cargar cliente</NavDropdown.Item>
+                                </NavDropdown>
+                                <NavDropdown title="Ventas" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
+                                    <NavDropdown.Item href="/ventas">Cargar venta</NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav>
+                            <div className="d-flex">
+                                <Button onClick={()=>{
+                                    logout()
+                                    actualizar([])
+                                    history.push('/')
+                                    history.go(0)
+                                }} className="nav-link btn btn-link">Log out</Button>
+                            </div>
+                        </>
+                    } noAutorizado={
+                        <>
+                            <Nav>
+                                <Nav.Link href="/login">Iniciar Sesion</Nav.Link>
+                                <Nav.Link eventKey={2} href="/registro">
+                                    Registrarse
+                                </Nav.Link>
+                            </Nav>
+                        </>
+                    }
+                    />
                 </Navbar.Collapse>
             </Container>
         </Navbar>

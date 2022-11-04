@@ -14,6 +14,7 @@ export default function CargarCliente() {
         try {
             services.crear(cliente)
             history.push(`/listadoClientes`)
+            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data);

@@ -5,7 +5,7 @@ export default function FormGroupText(props: formGroupTextProps){
     return(
         <div className="form-group">
             {props.label ? <label htmlFor={props.campo}>{props.label}</label> : null}
-            <Field name={props.campo} style={props.style} className="form-control" placeholder={props.placeholder} />
+            <Field type={props.type} name={props.campo} style={props.style} className="form-control" placeholder={props.placeholder} />
             <ErrorMessage name={props.campo}>{mensaje => <MostrarErrorCampo mensaje={mensaje}/>}</ErrorMessage> 
         </div>
     )
@@ -16,4 +16,9 @@ interface formGroupTextProps{
     label?: string;
     placeholder?: string;
     style?: React.CSSProperties
+    type: 'text'|'password';
+}
+
+FormGroupText.defaultProps = {
+    type: 'text'
 }

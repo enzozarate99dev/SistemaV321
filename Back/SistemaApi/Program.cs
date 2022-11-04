@@ -2,6 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using SistemaApi;
 using AutoMapper;
 using SistemaApi.Utilidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -21,6 +25,21 @@ builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opciones => opciones.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer= false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"])),
+        ClockSkew = TimeSpan.Zero
+    });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("defaultConnection")));
 

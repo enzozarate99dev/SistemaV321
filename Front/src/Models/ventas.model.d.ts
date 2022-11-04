@@ -8,6 +8,7 @@ export interface ventasModel{
     productos: productoModel[],
     precioTotal?: number;
     fechaDeVenta: Date;
+    formaDePago: string;
 }
 
 export interface listadoVentas{
@@ -18,6 +19,9 @@ export interface ventasCrear{
     nombreCliente: string;
     productosIds: number[];
     cantidad: number[];
+    efectivo: boolean;
+    ctaCorriente: boolean;
+    transferencia: boolean;
 }
 
 export interface ventasPostGetModel{
@@ -27,4 +31,5 @@ export interface ventasPostGetModel{
 export interface nuevoVentasModel{
     nombreCliente:  string;
     productosIds: number[][];
+    formaDePago: string;
 }

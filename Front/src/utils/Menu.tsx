@@ -1,63 +1,79 @@
-import { Link, NavLink, useHistory } from "react-router-dom";
+import { useContext } from "react";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import Autorizado from "../auth/Autorizado";
-import Button from "./Button";
-import { logout } from "../auth/handlerJWT";
-import { useContext } from "react";
+import { useHistory } from "react-router-dom";
+import UserIcon from "../assets/UserIcon";
 import AutenticacionContext from "../auth/AutenticacionContext";
+import Autorizado from "../auth/Autorizado";
+import { logout } from "../auth/handlerJWT";
+import Button from "./Button";
 
 
 export default function Menu() {
-    const {actualizar} = useContext(AutenticacionContext)
+    const { actualizar } = useContext(AutenticacionContext)
     const claseActiva = "active";
     const history = useHistory()
     return (
         /* <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <NavLink className="navbar-brand mb-0 h1" to="/" activeClassName={claseActiva}>
-                    <img className="d-inline-block align-top" width="30" height="30" src="https://e7.pngegg.com/pngimages/175/742/png-clipart-computer-icons-question-user-interface-creative-question-mark-miscellaneous-text.png"></img>
-                    Listado de productos
-                </NavLink>
-                <div className="collapse navbar-collapse">
+                <NavLink className="navbar-brand"
+                    activeClassName={claseActiva}
+                    to="/">Inicio</NavLink>
+                <div className="collapse navbar-collapse"
+                    style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <NavLink className="navbar-brand" activeClassName={claseActiva} to="/listadoClientes">
-                                Listado Clientes
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="navbar-brand" activeClassName={claseActiva} to="/listadoVentas">
-                                Listado Ventas
-                            </NavLink>
-                        </li>
+                        <Autorizado role="admin"
+                            autorizado={
+                                <>
+                                    <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
+                                        <NavDropdown title="Productos" id="collasible-nav-dropdown">
+                                            <NavDropdown.Item href="/listadoProductos">Gestionar productos</NavDropdown.Item>
+                                            <NavDropdown.Item href="/productos/cargar">Cargar producto</NavDropdown.Item>
+                                        </NavDropdown>
+                                        <NavDropdown title="Clientes" id="collasible-nav-dropdown">
+                                            <NavDropdown.Item href="/listadoClientes">Gestionar clientes</NavDropdown.Item>
+                                            <NavDropdown.Item href="clientes">Cargar cliente</NavDropdown.Item>
+                                        </NavDropdown>
+                                        <NavDropdown title="Ventas" id="collasible-nav-dropdown">
+                                            <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
+                                            <NavDropdown.Item href="/ventas">Cargar venta</NavDropdown.Item>
+                                        </NavDropdown>
+                                    </Nav>
+                                </>
+                            }
+                        />
                     </ul>
-                    <ul className="nav navbar-nav navbar-right">
-                        <li className="nav-item">
-                            <NavLink className="navbar-brand" activeClassName={claseActiva} to="/ventas">
-                                Cargar Ventas
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="navbar-brand" activeClassName={claseActiva} to="/clientes">
-                                Cargar Cliente
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="navbar-brand" activeClassName={claseActiva} to="/productos/cargar">
-                                Cargar productos
-                            </NavLink>
-                        </li>
-                    </ul>
+                    <div className="d-flex">
+                        <Autorizado
+                            autorizado={<>
+                                <Button
+                                    onClick={() => {
+                                        logout();
+                                        actualizar([]);
+                                        history.push('/')
+                                        history.go(0)
+                                    }}
+                                    className="nav-link btn btn-link">Log out</Button>
+                            </>}
+                            noAutorizado={<>
+                                <Link to="/Registro" className="nav-link btn btn-link">
+                                    Registro
+                                </Link>
+                                <Link to="/Login" className="nav-link btn btn-link">
+                                    Login
+                                </Link>
+                            </>}
+                        />
+                    </div>
                 </div>
             </div>
         </nav> */
 
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
             <Container>
-                <Navbar.Brand href="#home">Sistema</Navbar.Brand>
+                <Navbar.Brand href="/">Sistema</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Autorizado autorizado={
@@ -77,12 +93,12 @@ export default function Menu() {
                                 </NavDropdown>
                             </Nav>
                             <div className="d-flex">
-                                <Button onClick={()=>{
+                                <Button onClick={() => {
                                     logout()
                                     actualizar([])
                                     history.push('/')
                                     history.go(0)
-                                }} className="nav-link btn btn-link">Log out</Button>
+                                }} className="nav-link btn btn-secondary">Log out</Button>
                             </div>
                         </>
                     } noAutorizado={
@@ -101,3 +117,4 @@ export default function Menu() {
         </Navbar>
     )
 }
+

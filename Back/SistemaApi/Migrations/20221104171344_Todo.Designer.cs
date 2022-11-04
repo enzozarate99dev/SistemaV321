@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221103125016_Usuarios")]
-    partial class Usuarios
+    [Migration("20221104171344_Todo")]
+    partial class Todo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -230,6 +230,9 @@ namespace SistemaApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<double?>("Deuda")
+                        .HasColumnType("float");
+
                     b.Property<string>("Domicilio")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -298,10 +301,13 @@ namespace SistemaApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("NombreCliente")
+                    b.Property<string>("FormaDePago")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -309,6 +315,8 @@ namespace SistemaApi.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
 
                     b.ToTable("Ventas");
                 });
@@ -382,6 +390,18 @@ namespace SistemaApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Cliente", "Cliente")
+                        .WithMany("Ventas")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("Venta1");
+
+                    b.Navigation("Cliente");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.VentaProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Producto", "Producto")
@@ -399,6 +419,11 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
 
                     b.Navigation("Venta");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Cliente", b =>
+                {
+                    b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Producto", b =>

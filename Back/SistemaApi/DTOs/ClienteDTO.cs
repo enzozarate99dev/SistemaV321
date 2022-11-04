@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaApi.Entidades;
+using System.ComponentModel.DataAnnotations;
 
 namespace SistemaApi.DTOs
 {
@@ -9,5 +11,7 @@ namespace SistemaApi.DTOs
         public string Email { get; set; }
         public string Telefono { get; set; }
         public string Domicilio { get; set; }
+        public double? Deuda { get; set; }
+        public List<int> IdsVentas { get; set; }
     }
 }

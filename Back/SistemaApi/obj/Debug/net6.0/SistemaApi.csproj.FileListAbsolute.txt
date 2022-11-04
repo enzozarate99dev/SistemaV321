@@ -584,3 +584,4 @@ C:\Users\Lahoz\Desktop\SistemaVentas\Back\SistemaApi\obj\Debug\net6.0\SistemaApi
 C:\Users\Lahoz\Desktop\SistemaVentas\Back\SistemaApi\obj\Debug\net6.0\SistemaApi.genruntimeconfig.cache
 C:\Users\Lahoz\Desktop\SistemaVentas\Back\SistemaApi\obj\Debug\net6.0\ref\SistemaApi.dll
 C:\Users\Lahoz\Desktop\SistemaVentas\Back\SistemaApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Makers\Desktop\Sistema\SistemaVentas\Back\SistemaApi\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

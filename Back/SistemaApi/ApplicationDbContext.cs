@@ -15,6 +15,10 @@ namespace SistemaApi
 
             modelBuilder.Entity<VentaProducto>()
                 .HasKey(x => new { x.ProductoId, x.VentaId });
+            modelBuilder.Entity<Venta>(e => {
+                e.HasOne(x => x.Cliente).WithMany(y => y.Ventas).HasForeignKey(z => z.ClienteId).HasConstraintName("Venta1");
+                });
+
 
 
             base.OnModelCreating(modelBuilder);

@@ -5,6 +5,7 @@ import { productoModel } from "../../Models/producto.model";
 import { ventasCrear } from "../../Models/ventas.model";
 import NuevoProducto from "../../Productos/Components/NuevoProducto";
 import Button from "../../utils/Button";
+import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
 import FormGroupText from "../../utils/FormGroupText";
 
 
@@ -34,6 +35,9 @@ export default function FormularioVentas(props: formularioVentasProps) {
                     <Link style={{ marginLeft: '1rem', marginTop: '1rem', marginBottom: '1rem' }} className="btn btn-secondary" to="/">
                         Cancelar
                     </Link>
+                    <FormGroupCheckbox campo="efectivo" label="Efectivo"/>
+                    <FormGroupCheckbox campo="ctaCorriente" label="Cuenta Corriente"/>
+                    <FormGroupCheckbox campo="transferencia" label="Transferencia"/>
                 </Form>
             )}
         </Formik>

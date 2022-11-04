@@ -32,6 +32,7 @@ export default function Login() {
             <FormularioAuth
                 modelo={{ email: '', password: '' }}
                 onSubmit={async valores => await login(valores)}
+                tipo="Login"
             />
         </>
     )

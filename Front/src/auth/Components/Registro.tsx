@@ -28,10 +28,10 @@ export default function Registro() {
 
     return (
         <>
-            <h3>Registro</h3>
             <MostrarErrores errores={errores}/>
             <FormularioAuth modelo={{ email: '', password: '' }}
-                onSubmit={async valores => await registrar(valores)} />
+                onSubmit={async valores => await registrar(valores)}
+                tipo="Registro" />
         </>
     )
 }

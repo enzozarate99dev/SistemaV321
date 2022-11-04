@@ -14,5 +14,5 @@ export default function FormGroupCheckbox(props: formGroupCheckbox){
 interface formGroupCheckbox{
     label?: string;
     campo: string;
-    value: number;
+    value?: number;
 }

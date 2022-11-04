@@ -14,7 +14,7 @@ export default function CargarProducto() {
     async function crear(producto:productoCrear) {
         try{
             services.crear(producto)
-            history.push('/');
+            history.push('/listadoProductos');
         }
         catch (error){
             setErrores(error.response.data)

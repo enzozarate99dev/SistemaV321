@@ -27,9 +27,20 @@ export default function CargarVentas() {
         for (let i = 0; i < objeto.productosIds.length; i++) {
             arraygeneral[i] = [objeto.productosIds[i], objeto.cantidad[i]]
         }
+        var fDePago = ''
+        if(objeto.efectivo){
+            fDePago = "Efectivo"
+        }
+        if(objeto.ctaCorriente){
+            fDePago = "Cuenta Corriente"
+        }
+        if(objeto.transferencia){
+            fDePago = "Transferencia"
+        }
         var venta: nuevoVentasModel = {
             nombreCliente: objeto.nombreCliente,
-            productosIds: arraygeneral
+            productosIds: arraygeneral,
+            formaDePago: fDePago
         }
         crear(venta)
     }
@@ -37,7 +48,7 @@ export default function CargarVentas() {
     async function crear(venta: nuevoVentasModel) {
         try {
             services.crear(venta)
-            history.push(`${urlProductos}`)
+            history.push('/listadoVentas')
         }
         catch (error) {
             setErrores(error.response.data);
@@ -50,7 +61,7 @@ export default function CargarVentas() {
             <h3 style={{marginTop:'1rem'}}>Cargar Venta</h3>
             <MostrarErrores errores={errores} />
             <FormularioVentas productosDisp={productos}
-                modelo={{ nombreCliente: '', cantidad: [], productosIds: [] }}
+                modelo={{ nombreCliente: '', cantidad: [], productosIds: [], efectivo: false, ctaCorriente: false, transferencia: false }}
                 onSubmit={async valores => convertir(valores)}
             />
         </>

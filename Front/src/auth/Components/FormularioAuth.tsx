@@ -25,7 +25,7 @@ export default function FormularioAuth(props: formularioAuthProps) {
                         <div className="d-flex justify-content-center" style={{marginTop:'-10px'}}>
                             <SvgComponent/>
                         </div>
-                        <h3 className="text-center fs-1 fw-bold">Login</h3>
+                        <h3 className="text-center fs-1 fw-bold">{props.tipo}</h3>
                         <div className="input-group mt-4">
                             <div className="input-group-text bg-info" style={{borderRadius:'20px', marginRight:'5px', marginLeft:'-5px'}}>
                                 <UsernameIcon/>
@@ -36,7 +36,7 @@ export default function FormularioAuth(props: formularioAuthProps) {
                             <div className="input-group-text bg-info" style={{borderRadius:'20px', marginRight:'5px', marginLeft:'-5px'}}>
                                 <PasswordIcon/>
                             </div>
-                            <Field className="form-control bg-light" name="password" type="passwrod" placeholder="Password" />
+                            <Field className="form-control bg-light" name="password" type="password" placeholder="Password" />
                         </div>
                         <Button disabled={formikProps.isSubmitting} className="btn btn-info text-white w-100 mt-4 fw-semibold shadow-sm" style={{marginTop:'1rem', width:'310px', marginBottom:'0.2rem'}} type="submit">Enviar</Button>
                         <div className="d-flex gap-1 justify-content-center mt-1">
@@ -52,4 +52,5 @@ export default function FormularioAuth(props: formularioAuthProps) {
 interface formularioAuthProps {
     modelo: credencialesUsuario;
     onSubmit(valores: credencialesUsuario, acciones: FormikHelpers<credencialesUsuario>): void;
+    tipo: string;
 }

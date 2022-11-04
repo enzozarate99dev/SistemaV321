@@ -12,9 +12,9 @@ function App() {
 
   const [claims, setClaims] = useState<claim[]>([])
 
-  useEffect(()=>{
+  useEffect(() => {
     setClaims(obtenerClaims())
-  },[])
+  }, [])
 
   function actualizar(claims: claim[]) {
     setClaims(claims)
@@ -23,20 +23,22 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <AutenticacionContext.Provider value={{ claims, actualizar }}>
-          <Menu />
-          <div className="container">
-            <Switch>
-              {rutas.map(ruta =>
-                <Route key={ruta.path} path={ruta.path}
-                  exact={ruta.exact}>
-                    <ruta.componente />               
-                </Route>)}
-            </Switch>
-          </div>
-        </AutenticacionContext.Provider>
-      </BrowserRouter>
+
+        <BrowserRouter>
+          <AutenticacionContext.Provider value={{ claims, actualizar }}>
+            <Menu />
+            <div className="container">
+              <Switch>
+                {rutas.map(ruta =>
+                  <Route key={ruta.path} path={ruta.path}
+                    exact={ruta.exact}>
+                    <ruta.componente />
+                  </Route>)}
+              </Switch>
+            </div>
+          </AutenticacionContext.Provider>
+        </BrowserRouter>
+
     </>
   );
 }

@@ -17,9 +17,10 @@ namespace SistemaApi.Utilidades
             CreateMap<Venta, VentaDTO>()
                 .ForMember(x => x.Productos, options => options.MapFrom(MapearVentaProducto));
 
-            CreateMap<Cliente, ClienteDTO>().ReverseMap();
             CreateMap<ClienteCreacionDTO, Cliente>();
+            CreateMap<Cliente, ClienteDTO>().ReverseMap();     
         }
+
 
         private List<VentaProducto> MapearVentaProducto(VentaCreacionDTO ventaCreacionDTO,
                 Venta venta)

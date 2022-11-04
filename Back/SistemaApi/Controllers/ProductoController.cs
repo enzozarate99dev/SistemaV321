@@ -76,16 +76,8 @@ namespace SistemaApi.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromForm] ProductoCreacion2DTO productoCreacionDTO2)
+        public async Task<ActionResult> Post([FromForm] ProductoCreacionDTO productoCreacionDTO)
         {
-            var productoCreacionDTO = new ProductoCreacionDTO();
-            productoCreacionDTO.Nombre = productoCreacionDTO2.Nombre;
-            productoCreacionDTO.Codigo = productoCreacionDTO2.Codigo;
-            productoCreacionDTO.Descripcion = productoCreacionDTO2.Descripcion;
-            productoCreacionDTO.Categoria = productoCreacionDTO2.Categoria;
-            productoCreacionDTO.Foto = productoCreacionDTO2.Foto;
-            productoCreacionDTO.Precio = Convert.ToDouble(productoCreacionDTO2.Precio);
-            productoCreacionDTO.Cantidad = Convert.ToInt32(productoCreacionDTO2.Cantidad);
             var producto = mapper.Map<Producto>(productoCreacionDTO);
             if (productoCreacionDTO.Foto != null)
             {

@@ -11,5 +11,6 @@ namespace SistemaApi.DTOs
 
         [ModelBinder(BinderType = typeof(TypeBinder<List<int[]>>))]
         public List<int[]> ProductosIds { get; set; }
+        public string FormaDePago { get; set; }
     }
 }

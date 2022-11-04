@@ -50,7 +50,7 @@ namespace SistemaApi.Controllers
 
             if (!string.IsNullOrEmpty(ventaFiltrarDTO.NombreCliente))
             { 
-                ventasQueryable = ventasQueryable.Where(x => x.NombreCliente.Contains(ventaFiltrarDTO.NombreCliente));
+                ventasQueryable = ventasQueryable.Where(x => x.Cliente.NombreYApellido.Contains(ventaFiltrarDTO.NombreCliente));
             }
 
             if (ventaFiltrarDTO.ProductoId != 0)
@@ -77,12 +77,16 @@ namespace SistemaApi.Controllers
         public async Task<ActionResult> Post([FromBody] VentaCreacionDTO ventaCreacionDTO)
         {
             double total = 0;
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.NombreYApellido == ventaCreacionDTO.NombreCliente);
+            if(cliente == null)
+            {
+                return BadRequest("El cliente no esta registrado");
+            }
 
             if(ventaCreacionDTO.ProductosIds.Count == 0)
             {
                 return BadRequest("Ingresar al menos un producto");
             }
-
             foreach (var tuple in ventaCreacionDTO.ProductosIds)
             {
                 var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
@@ -91,8 +95,6 @@ namespace SistemaApi.Controllers
                     return BadRequest("No hay suficientes unidades del producto");
                 }
             }
-
-
             foreach (var tuple in ventaCreacionDTO.ProductosIds)
             {
                 var id = tuple[0];
@@ -104,6 +106,14 @@ namespace SistemaApi.Controllers
             var venta = mapper.Map<Venta>(ventaCreacionDTO);
             venta.PrecioTotal = total;
             venta.FechaDeVenta = DateTime.Now;
+            if (venta.FormaDePago == "Cuenta Corriente")
+            {
+                cliente.Deuda += total;
+            }
+            else
+            {
+                cliente.Deuda += 0;
+            }
             context.Add(venta);
             await context.SaveChangesAsync();
             return NoContent();

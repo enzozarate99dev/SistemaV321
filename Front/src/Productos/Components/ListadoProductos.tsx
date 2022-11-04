@@ -47,7 +47,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
                 <Formik initialValues={{}} onSubmit={async (valores) => await actualizar(valores)}>
                     {(formikProps) => (
                         <Form>
-                            <table className='table'>
+                            <table className='table table-dark-bordered'>
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -70,7 +70,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
                                             <td>{producto.precio}</td>
                                             <td>{producto.cantidad}</td>
                                             <td><img width="50" height="50" src={producto.foto} alt="Poster" /></td>
-                                            <td><Field style={{ marginLeft: "30px" }} onClick={console.log("first")} name="ids" id="ids" value={producto.id} type="checkbox" /></td>
+                                            <td><Field style={{ marginLeft: "30px" }} name="ids" id="ids" value={producto.id.toString()} type="checkbox" /></td>
                                         </tr>
                                     ))}
                                     <tr>

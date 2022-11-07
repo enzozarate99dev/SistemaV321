@@ -85,7 +85,7 @@ export default function Menu() {
                                 </NavDropdown>
                                 <NavDropdown title="Clientes" id="collasible-nav-dropdown">
                                     <NavDropdown.Item href="/listadoClientes">Gestionar clientes</NavDropdown.Item>
-                                    <NavDropdown.Item href="clientes">Cargar cliente</NavDropdown.Item>
+                                    <NavDropdown.Item href="/clientes">Cargar cliente</NavDropdown.Item>
                                 </NavDropdown>
                                 <NavDropdown title="Ventas" id="collasible-nav-dropdown">
                                     <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>

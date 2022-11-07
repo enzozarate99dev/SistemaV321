@@ -1,7 +1,6 @@
 import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { urlProductos } from "../../Generales/endpoints";
+import { useHistory, useParams } from "react-router-dom";
 import { productoModel } from "../../Models/producto.model";
 import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../../Models/ventas.model";
 import MostrarErrores from "../../utils/MostrarErrores";
@@ -11,15 +10,16 @@ import FormularioVentas from "./FormularioVentas";
 export default function CargarVentas() {
 
     const history = useHistory();
+    const { id }: any = useParams()
     const [errores, setErrores] = useState<string[]>([]);
     const [productos, setProductos] = useState<productoModel[]>([])
 
     useEffect(() => {
         const res = services.getProductos()
-            res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
-                console.log(respuesta.data.productos)
-                setProductos(respuesta.data.productos);
-            })
+        res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
+            console.log(respuesta.data.productos)
+            setProductos(respuesta.data.productos);
+        })
     }, [])
 
     async function convertir(objeto: ventasCrear) {
@@ -28,17 +28,17 @@ export default function CargarVentas() {
             arraygeneral[i] = [objeto.productosIds[i], objeto.cantidad[i]]
         }
         var fDePago = ''
-        if(objeto.efectivo){
+        if (objeto.efectivo) {
             fDePago = "Efectivo"
         }
-        if(objeto.ctaCorriente){
+        if (objeto.ctaCorriente) {
             fDePago = "Cuenta Corriente"
         }
-        if(objeto.transferencia){
+        if (objeto.transferencia) {
             fDePago = "Transferencia"
         }
         var venta: nuevoVentasModel = {
-            nombreCliente: objeto.nombreCliente,
+            clienteId: id,
             productosIds: arraygeneral,
             formaDePago: fDePago
         }
@@ -58,10 +58,10 @@ export default function CargarVentas() {
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Cargar Venta</h3>
+            <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <MostrarErrores errores={errores} />
             <FormularioVentas productosDisp={productos}
-                modelo={{ nombreCliente: '', cantidad: [], productosIds: [], efectivo: false, ctaCorriente: false, transferencia: false }}
+                modelo={{ clienteId: id, cantidad: [], productosIds: [], efectivo: false, ctaCorriente: false, transferencia: false }}
                 onSubmit={async valores => convertir(valores)}
             />
         </>

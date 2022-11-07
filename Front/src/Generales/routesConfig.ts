@@ -9,6 +9,7 @@ import EditarProducto from "../Productos/Components/EditarProducto";
 import FiltroProductos from "../Productos/Components/FiltroProductos";
 import Redireccionar from "../utils/Redireccionar";
 import CargarVentas from "../Ventas/Components/CargarVentas";
+import ClientesDisponibles from "../Ventas/Components/ClientesDisponibles";
 import DetalleVentas from "../Ventas/Components/DetalleVentas";
 import EditarVenta from "../Ventas/Components/EditarVenta";
 import FiltroVentas from "../Ventas/Components/FiltroVentas";
@@ -19,11 +20,14 @@ const rutas = [
     {path: '/productos/cargar', componente: CargarProducto, exact: true},
     {path: '/productos/editar/:id(\\d+)', componente: EditarProducto, exact: true},
 
-    {path: '/ventas', componente: CargarVentas, exact: true},
+    {path: '/ventas', componente: ClientesDisponibles, exact: true},
+    {path: '/ventas/:id(\\d+)', componente: CargarVentas, exact: true},
     {path: '/ventas/editar/:id(\\d+)', componente: EditarVenta, exact: true},
+    {path: '/ventas/cancelar/:id(\\d+)', componente: EditarVenta, exact: true},
     {path: '/listadoVentas', componente: FiltroVentas, exact: true},
-    {path: '/ventas/:id(\\d+)', componente: DetalleVentas, exact: true},
+    {path: '/ventas/detalle/:id(\\d+)', componente: DetalleVentas, exact: true},
 
+    
     {path: '/clientes', componente: CargarCliente, exact: true},
     {path: '/listadoClientes', componente: FiltroClientes, exact: true},
     {path: '/clientes/editar/:id(\\d+)', componente: EditarCliente, exact: true},

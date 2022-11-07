@@ -199,7 +199,8 @@ namespace SistemaApi.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     PrecioTotal = table.Column<double>(type: "float", nullable: true),
                     FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FormaDePago = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FormaDePago = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adeudada = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

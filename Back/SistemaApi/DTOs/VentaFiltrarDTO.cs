@@ -8,7 +8,7 @@
         {
             get { return new PaginacionDTO() { Pagina = Pagina, RecordsPorPagina = RecordsPorPagina }; }
         }
-        public string? NombreCliente { get; set; }
+        public int ClienteId { get; set; }
         public int ProductoId { get; set; }
         public DateTime? FechaDeVenta { get; set; }
     }

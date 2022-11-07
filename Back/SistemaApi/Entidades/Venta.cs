@@ -10,6 +10,7 @@ namespace SistemaApi.Entidades
         [Required]
         public DateTime FechaDeVenta { get; set; }
         public string FormaDePago { get; set; }
+        public double Adeudada { get; set; }
         public List<VentaProducto> VentaProducto { get; set; }
         public virtual Cliente Cliente { get; set; }
     }

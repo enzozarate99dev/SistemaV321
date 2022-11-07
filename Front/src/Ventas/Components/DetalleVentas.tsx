@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ventasModel } from "../../Models/ventas.model";
 import * as services from "../Services/ventas.services";
+import * as serClientes from "../../Clientes/Services/clientes.services"
+import { clienteModel } from "../../Models/clientes.model";
 
 export default function DetalleVentas() {
     const { id }: any = useParams();
@@ -22,10 +24,19 @@ export default function DetalleVentas() {
         return total
     }
 
+    function nombreCliente(id: number|undefined):string{
+        var nombre: string = ''
+        const res = serClientes.getCliente(id)
+        res.then((res: AxiosResponse<clienteModel>)=>{
+            nombre = res.data.nombreYApellido
+        })
+        return nombre
+    }
+
     return (
         <div className='container'>
             <h4>Detalle de venta {id}</h4>
-            <h5>Cliente: {venta?.nombreCliente}</h5>
+            <h5>Cliente: {nombreCliente(venta?.clienteId)}</h5>
             <table className='table'>
                 <thead>
                     <tr className='table-warning'>

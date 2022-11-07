@@ -48,9 +48,9 @@ namespace SistemaApi.Controllers
         {
             var ventasQueryable = context.Ventas.AsQueryable();
 
-            if (!string.IsNullOrEmpty(ventaFiltrarDTO.NombreCliente))
+            if (ventaFiltrarDTO.ClienteId != 0)
             { 
-                ventasQueryable = ventasQueryable.Where(x => x.Cliente.NombreYApellido.Contains(ventaFiltrarDTO.NombreCliente));
+                ventasQueryable = ventasQueryable.Where(x => x.ClienteId == ventaFiltrarDTO.ClienteId);
             }
 
             if (ventaFiltrarDTO.ProductoId != 0)
@@ -63,7 +63,7 @@ namespace SistemaApi.Controllers
             if (ventaFiltrarDTO.FechaDeVenta != null)
             {
 
-                ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date == ventaFiltrarDTO.FechaDeVenta.Value.Date);
+                ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date <= ventaFiltrarDTO.FechaDeVenta.Value.Date);
             }
 
             await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
@@ -77,7 +77,7 @@ namespace SistemaApi.Controllers
         public async Task<ActionResult> Post([FromBody] VentaCreacionDTO ventaCreacionDTO)
         {
             double total = 0;
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.NombreYApellido == ventaCreacionDTO.NombreCliente);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == ventaCreacionDTO.ClienteId);
             if(cliente == null)
             {
                 return BadRequest("El cliente no esta registrado");
@@ -108,10 +108,12 @@ namespace SistemaApi.Controllers
             venta.FechaDeVenta = DateTime.Now;
             if (venta.FormaDePago == "Cuenta Corriente")
             {
+                venta.Adeudada = total;
                 cliente.Deuda += total;
             }
             else
             {
+                venta.Adeudada = 0;
                 cliente.Deuda += 0;
             }
             context.Add(venta);
@@ -141,6 +143,21 @@ namespace SistemaApi.Controllers
             }
 
             venta = mapper.Map(ventaCreacionDTO, venta);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPut("/cancelar/{id:int}")]
+        public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
+        {
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+            venta.Adeudada -= ventaCancelarDTO.Pago;
+
             await context.SaveChangesAsync();
             return NoContent();
         }

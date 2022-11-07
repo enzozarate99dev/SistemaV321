@@ -43,9 +43,12 @@ export default function EditarVenta() {
                 var arre1: number[] = crearArreglo1(respuesta.data)
                 var arre2: number[] = crearArreglo2(respuesta.data)
                 const modelo: ventasCrear = {
-                    nombreCliente: respuesta.data.nombreCliente,
+                    clienteId: respuesta.data.clienteId,
                     productosIds: arre1,
-                    cantidad: arre2
+                    cantidad: arre2,
+                    efectivo: false,
+                    ctaCorriente: false,
+                    transferencia: false
                 }
                 setVenta(modelo)
             })
@@ -56,9 +59,20 @@ export default function EditarVenta() {
         for (let i = 0; i < ventaEditar.productosIds.length; i++) {
             arraygeneral[i] = [ventaEditar.productosIds[i], ventaEditar.cantidad[i]]
         }
+        var fDePago = ''
+        if (ventaEditar.efectivo) {
+            fDePago = "Efectivo"
+        }
+        if (ventaEditar.ctaCorriente) {
+            fDePago = "Cuenta Corriente"
+        }
+        if (ventaEditar.transferencia) {
+            fDePago = "Transferencia"
+        }
         var venta: nuevoVentasModel = {
-            nombreCliente: ventaEditar.nombreCliente,
-            productosIds: arraygeneral
+            clienteId: ventaEditar.clienteId,
+            productosIds: arraygeneral,
+            formaDePago: fDePago
         }
         editar(venta)
     }

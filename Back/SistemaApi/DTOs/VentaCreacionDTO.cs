@@ -6,8 +6,7 @@ namespace SistemaApi.DTOs
 {
     public class VentaCreacionDTO
     {
-        [Required(ErrorMessage = "El campo {0} es requerido")]
-        public string NombreCliente { get; set; }
+        public int ClienteId { get; set; }
 
         [ModelBinder(BinderType = typeof(TypeBinder<List<int[]>>))]
         public List<int[]> ProductosIds { get; set; }

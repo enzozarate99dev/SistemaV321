@@ -1,6 +1,6 @@
 import axios from "axios";
 import { urlVentas } from "../../Generales/endpoints";
-import { nuevoVentasModel } from "../../Models/ventas.model";
+import { nuevoVentasModel, ventaCancelar } from "../../Models/ventas.model";
 import { filtroVentasProps } from "../Components/FiltroVentas";
 
 
@@ -30,3 +30,8 @@ export async function getVenta(id:any) {
     const res = axios.get(`${urlVentas}/${id}`)
     return res
 }
+
+export async function cancelar(id:any, pago: ventaCancelar){
+    await axios.put(`${urlVentas}/${id}`,pago)
+}
+

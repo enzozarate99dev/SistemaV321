@@ -20,6 +20,14 @@ namespace SistemaApi.Controllers
             this.context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<ClienteDTO>>> GetTodos()
+        {
+            var clientes = await context.Clientes.Include(x => x.Ventas).ThenInclude(y => y.VentaProducto).ThenInclude(z => z.Producto).ToListAsync();
+            return mapper.Map<List<ClienteDTO>>(clientes);
+        }
+
+
         [HttpGet("filtrar")]
         public async Task<ActionResult<List<ClienteDTO>>> Filtrar([FromQuery] ClienteFiltrarDTO clienteFiltrarDTO)
         {
@@ -38,7 +46,7 @@ namespace SistemaApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ClienteDTO>> Get(int id)
         {
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == id);
+            var cliente = await context.Clientes.Include(x=>x.Ventas).ThenInclude(y=>y.VentaProducto).ThenInclude(z=>z.Producto).FirstOrDefaultAsync(x => x.Id == id);
 
             if (cliente == null) { return NotFound(); }
 

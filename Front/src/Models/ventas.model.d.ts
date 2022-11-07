@@ -4,11 +4,12 @@ import { productoModel } from "./producto.model";
 
 export interface ventasModel{
     id: number;
-    nombreCliente: string;
+    clienteId: number;
     productos: productoModel[],
     precioTotal?: number;
     fechaDeVenta: Date;
     formaDePago: string;
+    adeudada: number;
 }
 
 export interface listadoVentas{
@@ -16,7 +17,7 @@ export interface listadoVentas{
 }
 
 export interface ventasCrear{
-    nombreCliente: string;
+    clienteId: number;
     productosIds: number[];
     cantidad: number[];
     efectivo: boolean;
@@ -24,12 +25,16 @@ export interface ventasCrear{
     transferencia: boolean;
 }
 
+export interface ventaCancelar{
+    pago: number;
+}
+
 export interface ventasPostGetModel{
     productos: productoModel[];
 }
 
 export interface nuevoVentasModel{
-    nombreCliente:  string;
+    clienteId:  number;
     productosIds: number[][];
     formaDePago: string;
 }

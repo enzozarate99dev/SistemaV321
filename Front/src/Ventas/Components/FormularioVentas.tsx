@@ -24,7 +24,6 @@ export default function FormularioVentas(props: formularioVentasProps) {
         >
             {(formikProps) => (
                 <Form>
-                    <FormGroupText campo="nombreCliente" label="Nombre del Cliente" placeholder="Nombre del cliente" />
                     {productos.map((producto, index) => <NuevoProducto formikProps={formikProps} productosDisp={props.productosDisp} index={index} />)}
                     <Button onClick={onClickButton} className="btn btn-warning" style={{ marginRight: '1rem', marginTop: '1rem', marginBottom: '1rem' }} type="button">
                         Añadir Producto

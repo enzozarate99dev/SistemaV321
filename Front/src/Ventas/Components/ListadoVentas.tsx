@@ -1,9 +1,12 @@
 import { Link, useHistory } from "react-router-dom";
+import { AxiosResponse } from "axios";
 import Verificar from "../../Generales/verificador";
 import { ventasModel } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/ventas.services";
+import * as serClientes from "../../Clientes/Services/clientes.services"
+import { clienteModel } from "../../Models/clientes.model";
 
 
 export default function ListadoVentas(props: propsListadoVentas) {
@@ -35,6 +38,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 Borrar
             </Button>
         </>
+    
+    function nombreCliente(id: number):string{
+        var nombre: string = ''
+        const res = serClientes.getCliente(id)
+        res.then((res: AxiosResponse<clienteModel>)=>{
+            nombre = res.data.nombreYApellido
+        })
+        return nombre
+    }
 
     return (
         <Verificar listado={props.ventas}>
@@ -53,11 +65,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
                         {props.ventas?.map((venta) => (
                             <tr key={venta.id}>
                                 <td>{venta.id}</td>
-                                <td>{venta.nombreCliente}</td>
+                                <td>{nombreCliente(venta.clienteId)}</td>
                                 <td>{venta.precioTotal}</td>
                                 <td>{formatDate(venta.fechaDeVenta.toString())}</td>
                                 <td>
-                                    {botones(`ventas/editar/${venta.id}`, `ventas/${venta.id}`, venta.id)}
+                                    {botones(`ventas/editar/${venta.id}`, `ventas/detalle/${venta.id}`, venta.id)}
                                 </td>
                             </tr>
                         ))}

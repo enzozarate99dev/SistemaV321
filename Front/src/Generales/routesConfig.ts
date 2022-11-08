@@ -8,11 +8,14 @@ import CargarProducto from "../Productos/Components/CargarProducto";
 import EditarProducto from "../Productos/Components/EditarProducto";
 import FiltroProductos from "../Productos/Components/FiltroProductos";
 import Redireccionar from "../utils/Redireccionar";
+import CancelarVenta from "../Ventas/Components/CancelarVenta";
 import CargarVentas from "../Ventas/Components/CargarVentas";
 import ClientesDisponibles from "../Ventas/Components/ClientesDisponibles";
 import DetalleVentas from "../Ventas/Components/DetalleVentas";
 import EditarVenta from "../Ventas/Components/EditarVenta";
 import FiltroVentas from "../Ventas/Components/FiltroVentas";
+import Redirigir from "../Ventas/Components/Redirigir";
+import CargarVentaCF from "../VentasConsFinal/Components/CargarVentaCF";
 
 
 const rutas = [
@@ -20,10 +23,12 @@ const rutas = [
     {path: '/productos/cargar', componente: CargarProducto, exact: true},
     {path: '/productos/editar/:id(\\d+)', componente: EditarProducto, exact: true},
 
+    {path: '/redirigirVentas', componente: Redirigir, exact: true},
     {path: '/ventas', componente: ClientesDisponibles, exact: true},
+    {path: '/ventasConsumidorFinal', componente: CargarVentaCF, exact: true},
     {path: '/ventas/:id(\\d+)', componente: CargarVentas, exact: true},
     {path: '/ventas/editar/:id(\\d+)', componente: EditarVenta, exact: true},
-    {path: '/ventas/cancelar/:id(\\d+)', componente: EditarVenta, exact: true},
+    {path: '/ventas/cancelar/:id(\\d+)', componente: CancelarVenta, exact: true},
     {path: '/listadoVentas', componente: FiltroVentas, exact: true},
     {path: '/ventas/detalle/:id(\\d+)', componente: DetalleVentas, exact: true},
 

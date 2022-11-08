@@ -32,6 +32,6 @@ export async function getVenta(id:any) {
 }
 
 export async function cancelar(id:any, pago: ventaCancelar){
-    await axios.put(`${urlVentas}/${id}`,pago)
+    await axios.put(`${urlVentas}/cancelar/${id}`,pago)
 }
 

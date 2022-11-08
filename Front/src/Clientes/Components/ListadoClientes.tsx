@@ -40,6 +40,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
                             <th></th>
                             <th>#</th>
                             <th>Nombre y Apellido</th>
+                            <th>Deuda Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +51,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
                                 </td>
                                 <td>{cliente.id}</td>
                                 <td>{cliente.nombreYApellido}</td>
+                                <td>{cliente.deuda}</td>
                             </tr>
                         ))}
                     </tbody>

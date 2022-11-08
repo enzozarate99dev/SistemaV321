@@ -1,6 +1,6 @@
 ﻿namespace SistemaApi.DTOs
 {
-    public class VentaFiltrarDTO
+    public class VentaConsumidorFinalFiltrarDTO
     {
         public int Pagina { get; set; }
         public int RecordsPorPagina { get; set; }
@@ -8,7 +8,6 @@
         {
             get { return new PaginacionDTO() { Pagina = Pagina, RecordsPorPagina = RecordsPorPagina }; }
         }
-        public int ClienteId { get; set; }
         public int ProductoId { get; set; }
         public DateTime? FechaDeVenta { get; set; }
         public bool Consumidor { get; set; }

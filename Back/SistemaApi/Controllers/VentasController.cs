@@ -46,30 +46,37 @@ namespace SistemaApi.Controllers
         [HttpGet("filtrar")]
         public async Task<ActionResult<List<VentaDTO>>> Filtrar([FromQuery] VentaFiltrarDTO ventaFiltrarDTO)
         {
-            var ventasQueryable = context.Ventas.AsQueryable();
-
-            if (ventaFiltrarDTO.ClienteId != 0)
-            { 
-                ventasQueryable = ventasQueryable.Where(x => x.ClienteId == ventaFiltrarDTO.ClienteId);
-            }
-
-            if (ventaFiltrarDTO.ProductoId != 0)
+            if (ventaFiltrarDTO.Consumidor && !ventaFiltrarDTO.Registrado)
             {
-                ventasQueryable = ventasQueryable
-                    .Where(x => x.VentaProducto.Select(y => y.ProductoId)
-                    .Contains(ventaFiltrarDTO.ProductoId));
+                return new List<VentaDTO>();
             }
-
-            if (ventaFiltrarDTO.FechaDeVenta != null)
+            else
             {
+                var ventasQueryable = context.Ventas.AsQueryable();
 
-                ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date <= ventaFiltrarDTO.FechaDeVenta.Value.Date);
-            }
+                if (ventaFiltrarDTO.ClienteId != 0)
+                {
+                    ventasQueryable = ventasQueryable.Where(x => x.ClienteId == ventaFiltrarDTO.ClienteId);
+                }
 
-            await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
+                if (ventaFiltrarDTO.ProductoId != 0)
+                {
+                    ventasQueryable = ventasQueryable
+                        .Where(x => x.VentaProducto.Select(y => y.ProductoId)
+                        .Contains(ventaFiltrarDTO.ProductoId));
+                }
 
-            var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).ToListAsync();
-            return mapper.Map<List<VentaDTO>>(ventas);
+                if (ventaFiltrarDTO.FechaDeVenta != null)
+                {
+
+                    ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date <= ventaFiltrarDTO.FechaDeVenta.Value.Date);
+                }
+
+                await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
+
+                var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).ToListAsync();
+                return mapper.Map<List<VentaDTO>>(ventas);
+            }       
         }
 
 
@@ -147,16 +154,18 @@ namespace SistemaApi.Controllers
             return NoContent();
         }
 
-        [HttpPut("/cancelar/{id:int}")]
+        [HttpPut("cancelar/{id:int}")]
         public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
         {
             var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == venta.ClienteId);
 
             if (venta == null)
             {
                 return NotFound();
             }
             venta.Adeudada -= ventaCancelarDTO.Pago;
+            cliente.Deuda -= ventaCancelarDTO.Pago;
 
             await context.SaveChangesAsync();
             return NoContent();

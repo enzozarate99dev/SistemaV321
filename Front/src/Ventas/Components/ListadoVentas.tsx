@@ -5,13 +5,15 @@ import { ventasModel } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/ventas.services";
-import * as serClientes from "../../Clientes/Services/clientes.services"
 import { clienteModel } from "../../Models/clientes.model";
+import { useEffect, useState } from "react";
+import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 
 
 export default function ListadoVentas(props: propsListadoVentas) {
 
     const history = useHistory()
+    
 
     async function borrar(id: number) {
         try {
@@ -38,25 +40,19 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 Borrar
             </Button>
         </>
-    
-    function nombreCliente(id: number):string{
-        var nombre: string = ''
-        const res = serClientes.getCliente(id)
-        res.then((res: AxiosResponse<clienteModel>)=>{
-            nombre = res.data.nombreYApellido
-        })
-        return nombre
-    }
 
+        
+
+    
     return (
         <Verificar listado={props.ventas}>
             <div className='container'>
                 <table className='table'>
                     <thead>
                         <tr>
-                            <th>#</th>
                             <th>Nombre y Apellido</th>
                             <th>Total</th>
+                            <th>Forma De Pago</th>
                             <th>Fecha</th>
                             <th></th>
                         </tr>
@@ -64,12 +60,23 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     <tbody>
                         {props.ventas?.map((venta) => (
                             <tr key={venta.id}>
-                                <td>{venta.id}</td>
-                                <td>{nombreCliente(venta.clienteId)}</td>
+                                <td>{props.clientes![venta.clienteId - 1].nombreYApellido!}</td>
                                 <td>{venta.precioTotal}</td>
+                                <td>{venta.formaDePago}</td>
                                 <td>{formatDate(venta.fechaDeVenta.toString())}</td>
                                 <td>
                                     {botones(`ventas/editar/${venta.id}`, `ventas/detalle/${venta.id}`, venta.id)}
+                                </td>
+                            </tr>
+                        ))}
+                        {props.ventasConsFinal?.map(ventacf => (
+                            <tr key={ventacf.id}>
+                                <td>{ventacf.nombreCliente}</td>
+                                <td>{ventacf.precioTotal}</td>
+                                <td>{ventacf.formaDePago}</td>
+                                <td>{formatDate(ventacf.fechaDeVenta.toString())}</td>
+                                <td>
+                                    {botones(`ventas/editar/${ventacf.id}`, `ventas/detalle/${ventacf.id}`, ventacf.id)}
                                 </td>
                             </tr>
                         ))}
@@ -82,4 +89,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
 interface propsListadoVentas {
     ventas?: ventasModel[];
+    ventasConsFinal?: ventasConsumidorFinalModel[];
+    clientes?: clienteModel[]
 }

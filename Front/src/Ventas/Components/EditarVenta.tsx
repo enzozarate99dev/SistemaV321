@@ -47,8 +47,8 @@ export default function EditarVenta() {
                     productosIds: arre1,
                     cantidad: arre2,
                     efectivo: false,
-                    ctaCorriente: false,
-                    transferencia: false
+                    transferencia: false,
+                    ctaCorriente: false
                 }
                 setVenta(modelo)
             })

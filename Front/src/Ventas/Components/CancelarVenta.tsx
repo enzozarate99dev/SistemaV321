@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { nuevoVentasModel, ventaCancelar } from "../../Models/ventas.model";
+import { ventaCancelar } from "../../Models/ventas.model";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/ventas.services";
 import FormCancelar from "./FormCancelar";
-import FormularioVentas from "./FormularioVentas";
 
-export default function CargarVentas() {
+export default function CancelarVenta() {
 
     const history = useHistory();
     const { id }: any = useParams()
@@ -14,9 +13,11 @@ export default function CargarVentas() {
 
 
     async function cancelar(venta: ventaCancelar) {
+        console.log(venta)
         try {
             services.cancelar(id,venta)
             history.push('/listadoClientes')
+            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data);
@@ -26,7 +27,6 @@ export default function CargarVentas() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <MostrarErrores errores={errores} />
             <FormCancelar
                 modelo={{ pago: 0 }}

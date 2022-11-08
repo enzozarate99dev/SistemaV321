@@ -3,7 +3,7 @@ import { productoModel } from "../../Models/producto.model";
 import { ventasCrear } from "../../Models/ventas.model";
 import { ventasConsumidorFinalCrear } from "../../Models/ventasCf.model";
 
-export default function NuevoProducto(props: propsNuevoProducto) {
+export default function NuevoProductoCF(props: propsNuevoProducto) {
 
     return (
         <div className="form-group mx-sm-3 mb-2">
@@ -18,7 +18,7 @@ export default function NuevoProducto(props: propsNuevoProducto) {
 }
 
 interface propsNuevoProducto {
-    formikProps: FormikProps<ventasCrear>;
+    formikProps: FormikProps<ventasConsumidorFinalCrear>;
     productosDisp: productoModel[]
     index: number
 }

@@ -1,14 +1,12 @@
 import { AxiosResponse } from "axios";
 import { Form, Formik, FormikHelpers } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { productoModel } from "../../Models/producto.model";
-import { ventaCancelar, ventasCrear, ventasModel } from "../../Models/ventas.model";
-import NuevoProducto from "../../Productos/Components/NuevoProducto";
+import { ventaCancelar, ventasModel } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
 import FormGroupText from "../../utils/FormGroupText";
-import * as services from "../Services/ventas.services"
+import * as services from "../Services/ventas.services";
+import * as Yup from 'yup'
 
 
 export default function FormCancelar(props: formularioVentasProps) {
@@ -16,12 +14,12 @@ export default function FormCancelar(props: formularioVentasProps) {
     const {id}: any = useParams()
     const [deuda, setDeuda] = useState<number>()
 
-    function deudaF(){
+    useEffect(()=>{
         const res = services.getVenta(id)
         res.then((res:AxiosResponse<ventasModel>)=>{
-            setDeuda(res.data.precioTotal)
+            setDeuda(res.data.adeudada)
         })
-    }
+    })
 
     
 
@@ -29,6 +27,9 @@ export default function FormCancelar(props: formularioVentasProps) {
         <Formik
             initialValues={props.modelo}
             onSubmit={props.onSubmit}
+            validationSchema={Yup.object({
+                pago: Yup.number().required("Este campo es requerido").max(deuda!)
+            })}
         >
             {(formikProps) => (
                 <Form>

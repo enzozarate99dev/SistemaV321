@@ -299,8 +299,8 @@ namespace SistemaApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("Adeudada")
-                        .HasColumnType("bit");
+                    b.Property<double>("Adeudada")
+                        .HasColumnType("float");
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
@@ -320,6 +320,51 @@ namespace SistemaApi.Migrations
                     b.HasIndex("ClienteId");
 
                     b.ToTable("Ventas");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaCFProducto", b =>
+                {
+                    b.Property<int>("VentaCFId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Unidades")
+                        .HasColumnType("int");
+
+                    b.HasKey("VentaCFId", "ProductoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("VentaCFProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaConsumidorFinal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("FechaDeVenta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FormaDePago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreCliente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("PrecioTotal")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VentaConsumidorFinal");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaProducto", b =>
@@ -403,6 +448,25 @@ namespace SistemaApi.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.VentaCFProducto", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Producto", "Producto")
+                        .WithMany("VentaCFProducto")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaApi.Entidades.VentaConsumidorFinal", "VentaCF")
+                        .WithMany("VentaCFProducto")
+                        .HasForeignKey("VentaCFId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("VentaCF");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.VentaProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Producto", "Producto")
@@ -429,12 +493,19 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Producto", b =>
                 {
+                    b.Navigation("VentaCFProducto");
+
                     b.Navigation("VentaProducto");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.Navigation("VentaProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaConsumidorFinal", b =>
+                {
+                    b.Navigation("VentaCFProducto");
                 });
 #pragma warning restore 612, 618
         }

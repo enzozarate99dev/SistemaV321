@@ -18,7 +18,8 @@ namespace SistemaApi
             modelBuilder.Entity<Venta>(e => {
                 e.HasOne(x => x.Cliente).WithMany(y => y.Ventas).HasForeignKey(z => z.ClienteId).HasConstraintName("Venta1");
                 });
-
+            modelBuilder.Entity<VentaCFProducto>()
+                .HasKey(x => new { x.VentaCFId, x.ProductoId });
 
 
             base.OnModelCreating(modelBuilder);
@@ -27,5 +28,7 @@ namespace SistemaApi
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaProducto> VentaProductos { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
+        public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }
     }
 }

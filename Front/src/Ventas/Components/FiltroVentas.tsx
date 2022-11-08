@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { productoModel } from "../../Models/producto.model";
@@ -8,13 +8,22 @@ import Button from "../../utils/Button";
 import FormGroupFecha from "../../utils/FormGroupFecha";
 import Paginacion from "../../utils/Paginacion";
 import * as services from '../Services/ventas.services';
+import * as servicesCF from '../../VentasConsFinal/Services/consumidorFinal.services'
 import ListadoVentas from "./ListadoVentas";
+import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
+import { clienteModel } from "../../Models/clientes.model";
+import * as serClientes from "../../Clientes/Services/clientes.services"
+import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
+import { boolean } from "yup";
+
 
 export default function FiltroVentas() {
 
     const [totalDePaginas, setTotalDePaginas] = useState(0);
     const [productos, setProductos] = useState<productoModel[]>([])
     const [ventas, setVentas] = useState<ventasModel[]>()
+    const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
+    const [clientes, setClientes] = useState<clienteModel[]>([])
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -22,15 +31,24 @@ export default function FiltroVentas() {
         nombreCliente: '',
         productoId: 0,
         fechaDeVenta: new Date,
+        consumidor: false,
+        registrado: false,
         pagina: 1,
         recordsPorPagina: 10
     }
 
     useEffect(() => {
+        const res = serClientes.getTodosLosClientes()
+        res.then((resp: AxiosResponse<clienteModel[]>) => {
+            setClientes(resp.data)
+        })
+    })
+
+    useEffect(() => {
         const res = services.getProductos()
-            res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
-                setProductos(respuesta.data.productos);
-            })
+        res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
+            setProductos(respuesta.data.productos);
+        })
     }, [])
 
     useEffect(() => {
@@ -45,6 +63,7 @@ export default function FiltroVentas() {
             valorInicial.pagina = parseInt(query.get('pagina')!, 10)
         }
         buscarVenta(valorInicial)
+        buscarVentaCF(valorInicial)
     }, [])
 
     function modificarURL(valores: filtroVentasProps) {
@@ -63,25 +82,37 @@ export default function FiltroVentas() {
         history.push(`/listadoVentas?${queryStrings.join('&')}`)
     }
 
+    function buscarVentaCF(valores: filtroVentasProps) {
+        console.log(valores)
+        modificarURL(valores)
+        const res = servicesCF.filtrar(valores)
+        res.then((respuesta: AxiosResponse<ventasConsumidorFinalModel[]>) => {
+            const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10)
+            setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
+            console.log(respuesta.data)
+            setVentasCF(respuesta.data)
+        })
+    }
+
     function buscarVenta(valores: filtroVentasProps) {
+        console.log(valores)
         modificarURL(valores)
         const res = services.filtrar(valores)
-            res.then((respuesta: AxiosResponse<ventasModel[]>) => {
-                console.log(respuesta.data)
-                const totalDeRegistros = parseInt(
-                    respuesta.headers["cantidadtotalregistros"],
-                    10
-                );
-                setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-
-                setVentas(respuesta.data);
-            })
+        res.then((respuesta: AxiosResponse<ventasModel[]>) => {
+            const totalDeRegistros = parseInt(
+                respuesta.headers["cantidadtotalregistros"],
+                10
+            );
+            setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
+            console.log(respuesta.data)
+            setVentas(respuesta.data);
+        })
     }
 
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Filtrar Ventas</h3>
+            <h3 style={{ marginTop: '1rem' }}>Filtrar Ventas</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarVenta(valores)
@@ -99,13 +130,21 @@ export default function FiltroVentas() {
                                 </div>
                                 <div className="form-group mx-sm-3 mb-2">
                                     <select className="form-control" {...formikProps.getFieldProps('productoId')}>
-                                        <option value="0">--Seleccione un producto--</option>
+                                        <option value="0">Seleccione un producto</option>
                                         {productos.map(producto =>
                                             <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
                                     </select>
                                 </div>
                                 <div className="form-group mx-sm-3 mb-2">
                                     <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
+                                </div>
+                                <div style={{marginLeft:'-10px'}} className="form-group mx-sm-3 mb-2">
+                                    <Field className="form-check-input" id="consumidor" name="consumidor" type="checkbox" />
+                                    <label htmlFor="consumidor">C. Final</label>
+                                </div>
+                                <div className="form-group mx-sm-3 mb-2">
+                                    <Field className="form-check-input" id="registrado" name="registrado" type="checkbox" />
+                                    <label htmlFor="registrado">Cliente Registrado</label>
                                 </div>
                                 <Button
                                     className="btn btn-primary mb-2 mx-sm-3"
@@ -119,7 +158,7 @@ export default function FiltroVentas() {
                             </div>
                         </Form>
 
-                        <ListadoVentas ventas={ventas} />
+                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} clientes={clientes} />
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}
@@ -140,6 +179,8 @@ export interface filtroVentasProps {
     nombreCliente: string;
     productoId: number;
     fechaDeVenta: Date;
+    consumidor: boolean;
+    registrado: boolean
     pagina: number;
     recordsPorPagina: number;
 }

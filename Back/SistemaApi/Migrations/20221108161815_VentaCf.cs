@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class Todo : Migration
+    public partial class VentaCf : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -82,6 +82,22 @@ namespace SistemaApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Productos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VentaConsumidorFinal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
+                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FormaDePago = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VentaConsumidorFinal", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,7 +216,7 @@ namespace SistemaApi.Migrations
                     PrecioTotal = table.Column<double>(type: "float", nullable: true),
                     FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FormaDePago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Adeudada = table.Column<bool>(type: "bit", nullable: false)
+                    Adeudada = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -209,6 +225,31 @@ namespace SistemaApi.Migrations
                         name: "Venta1",
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VentaCFProducto",
+                columns: table => new
+                {
+                    VentaCFId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Unidades = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VentaCFProducto", x => new { x.VentaCFId, x.ProductoId });
+                    table.ForeignKey(
+                        name: "FK_VentaCFProducto_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VentaCFProducto_VentaConsumidorFinal_VentaCFId",
+                        column: x => x.VentaCFId,
+                        principalTable: "VentaConsumidorFinal",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -278,6 +319,11 @@ namespace SistemaApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VentaCFProducto_ProductoId",
+                table: "VentaCFProducto",
+                column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VentaProductos_VentaId",
                 table: "VentaProductos",
                 column: "VentaId");
@@ -306,6 +352,9 @@ namespace SistemaApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "VentaCFProducto");
+
+            migrationBuilder.DropTable(
                 name: "VentaProductos");
 
             migrationBuilder.DropTable(
@@ -313,6 +362,9 @@ namespace SistemaApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "VentaConsumidorFinal");
 
             migrationBuilder.DropTable(
                 name: "Productos");

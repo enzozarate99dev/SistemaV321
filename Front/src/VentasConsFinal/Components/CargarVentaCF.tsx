@@ -2,27 +2,28 @@ import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../../Models/ventas.model";
+import { ventasPostGetModel } from "../../Models/ventas.model";
+import { nuevoVentasCFModel, ventasConsumidorFinalCrear } from "../../Models/ventasCf.model";
 import MostrarErrores from "../../utils/MostrarErrores";
-import * as services from "../Services/ventas.services";
-import FormularioVentas from "./FormularioVentas";
+import * as servicesVentas from "../../Ventas/Services/ventas.services";
+import * as services from "../Services/consumidorFinal.services"
+import FormularioConsumidorFinal from "./FormularioConsumidorFinal";
 
-export default function CargarVentas() {
+export default function CargarVentaCF() {
 
     const history = useHistory();
-    const { id }: any = useParams()
     const [errores, setErrores] = useState<string[]>([]);
     const [productos, setProductos] = useState<productoModel[]>([])
 
     useEffect(() => {
-        const res = services.getProductos()
+        const res = servicesVentas.getProductos()
         res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
             console.log(respuesta.data.productos)
             setProductos(respuesta.data.productos);
         })
     }, [])
 
-    async function convertir(objeto: ventasCrear) {
+    async function convertir(objeto: ventasConsumidorFinalCrear) {
         console.log(objeto)
         var arraygeneral = []
         for (let i = 0; i < objeto.productosIds.length; i++) {
@@ -32,21 +33,18 @@ export default function CargarVentas() {
         if (objeto.efectivo) {
             fDePago = "Efectivo"
         }
-        if (objeto.ctaCorriente) {
-            fDePago = "Cuenta Corriente"
-        }
         if (objeto.transferencia) {
             fDePago = "Transferencia"
         }
-        var venta: nuevoVentasModel = {
-            clienteId: id,
+        var venta: nuevoVentasCFModel = {
+            nombreCliente: objeto.nombreCliente,
             productosIds: arraygeneral,
             formaDePago: fDePago
         }
         crear(venta)
     }
 
-    async function crear(venta: nuevoVentasModel) {
+    async function crear(venta: nuevoVentasCFModel) {
         try {
             services.crear(venta)
             history.push('/listadoVentas')
@@ -61,8 +59,8 @@ export default function CargarVentas() {
         <>
             <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <MostrarErrores errores={errores} />
-            <FormularioVentas productosDisp={productos}
-                modelo={{ clienteId: id, cantidad: [], productosIds: [], efectivo: false, transferencia: false, ctaCorriente: false }}
+            <FormularioConsumidorFinal productosDisp={productos}
+                modelo={{ nombreCliente: '', cantidad: [], productosIds: [], efectivo: false, transferencia: false}}
                 onSubmit={async valores => convertir(valores)}
             />
         </>

@@ -89,7 +89,7 @@ export default function Menu() {
                                 </NavDropdown>
                                 <NavDropdown title="Ventas" id="collasible-nav-dropdown">
                                     <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
-                                    <NavDropdown.Item href="/ventas">Cargar venta</NavDropdown.Item>
+                                    <NavDropdown.Item href="/redirigirVentas">Cargar venta</NavDropdown.Item>
                                 </NavDropdown>
                             </Nav>
                             <div className="d-flex">

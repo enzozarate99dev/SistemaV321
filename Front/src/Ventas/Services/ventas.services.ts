@@ -35,3 +35,5 @@ export async function cancelar(id:any, pago: ventaCancelar){
     await axios.put(`${urlVentas}/cancelar/${id}`,pago)
 }
 
+
+

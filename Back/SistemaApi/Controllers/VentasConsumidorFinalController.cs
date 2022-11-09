@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
 using SistemaApi.Utilidades;
+using System.Linq;
 
 namespace SistemaApi.Controllers
 {
@@ -41,7 +42,6 @@ namespace SistemaApi.Controllers
             else
             {
                 var ventasQueryable = context.VentaConsumidorFinal.AsQueryable();
-
                 if (ventaConsumidorFinalFiltrarDTO.ProductoId != 0)
                 {
                     ventasQueryable = ventasQueryable

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { productoCrear } from "../../Models/producto.model";
 import MostrarErrores from "../../utils/MostrarErrores";
-import FormularioProductos from "./FormularioProductos";
 import * as services from "../Services/productos.services";
+import FormularioProductos from "./FormularioProductos";
 
 
 
@@ -15,6 +15,7 @@ export default function CargarProducto() {
         try{
             services.crear(producto)
             history.push('/listadoProductos');
+            history.go(0)
         }
         catch (error){
             setErrores(error.response.data)
@@ -31,4 +32,6 @@ export default function CargarProducto() {
         </>
     )
 }
+
+
 

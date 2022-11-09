@@ -7,11 +7,12 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/ventas.services";
 import FormularioVentas from "./FormularioVentas";
 
-export default function CargarVentas() {
+export default function CargarVentas(props: cargarVentaProps) {
 
     const history = useHistory();
     const { id }: any = useParams()
     const [errores, setErrores] = useState<string[]>([]);
+    const [modelo, setModelo] = useState<ventasCrear>()
     const [productos, setProductos] = useState<productoModel[]>([])
 
     useEffect(() => {
@@ -50,11 +51,21 @@ export default function CargarVentas() {
         try {
             services.crear(venta)
             history.push('/listadoVentas')
+            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data);
         }
     }
+
+    useEffect(()=>{
+        if(props.modelo){
+            setModelo(props.modelo)
+        }else{
+            const model={ clienteId: id, cantidad: [], productosIds: [], efectivo: false, transferencia: false, ctaCorriente: false }
+            setModelo(model)
+        }
+    },[])
 
 
     return (
@@ -62,9 +73,13 @@ export default function CargarVentas() {
             <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <MostrarErrores errores={errores} />
             <FormularioVentas productosDisp={productos}
-                modelo={{ clienteId: id, cantidad: [], productosIds: [], efectivo: false, transferencia: false, ctaCorriente: false }}
+                modelo = {modelo!}
                 onSubmit={async valores => convertir(valores)}
             />
         </>
     )
+}
+
+interface cargarVentaProps{
+    modelo?: ventasCrear
 }

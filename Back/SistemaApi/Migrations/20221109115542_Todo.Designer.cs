@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221108161815_VentaCf")]
-    partial class VentaCf
+    [Migration("20221109115542_Todo")]
+    partial class Todo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

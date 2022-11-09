@@ -69,7 +69,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                                 </td>
                             </tr>
                         ))}
-                        {props.ventasConsFinal?.map(ventacf => (
+                        {props.ventasConsFinal?.map((ventacf) => (
                             <tr key={ventacf.id}>
                                 <td>{ventacf.nombreCliente}</td>
                                 <td>{ventacf.precioTotal}</td>

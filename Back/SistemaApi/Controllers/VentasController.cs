@@ -53,7 +53,6 @@ namespace SistemaApi.Controllers
             else
             {
                 var ventasQueryable = context.Ventas.AsQueryable();
-
                 if (ventaFiltrarDTO.ClienteId != 0)
                 {
                     ventasQueryable = ventasQueryable.Where(x => x.ClienteId == ventaFiltrarDTO.ClienteId);
@@ -78,7 +77,6 @@ namespace SistemaApi.Controllers
                 return mapper.Map<List<VentaDTO>>(ventas);
             }       
         }
-
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] VentaCreacionDTO ventaCreacionDTO)

@@ -48,6 +48,7 @@ export default function CargarVentaCF() {
         try {
             services.crear(venta)
             history.push('/listadoVentas')
+            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data);

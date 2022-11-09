@@ -91,6 +91,10 @@ export default function Menu() {
                                     <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
                                     <NavDropdown.Item href="/redirigirVentas">Cargar venta</NavDropdown.Item>
                                 </NavDropdown>
+                                <NavDropdown title="Presupuestos" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item href="/listadoPresupuestos">Gestionar presupuestos</NavDropdown.Item>
+                                    <NavDropdown.Item href="/ventas/presupuesto">Generar presupuesto</NavDropdown.Item>
+                                </NavDropdown>
                             </Nav>
                             <div className="d-flex">
                                 <Button onClick={() => {

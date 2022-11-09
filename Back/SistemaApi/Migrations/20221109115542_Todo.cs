@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class VentaCf : Migration
+    public partial class Todo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

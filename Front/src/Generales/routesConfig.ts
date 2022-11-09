@@ -4,6 +4,8 @@ import CargarCliente from "../Clientes/Components/CargarCliente";
 import EditarCliente from "../Clientes/Components/EditarCliente";
 import FiltroClientes from "../Clientes/Components/FiltroClientes";
 import InfoCliente from "../Clientes/Components/InfoCliente";
+import FiltroPresupuestos from "../Presupuestos/Components/FiltroPresupuestos";
+import Presupuesto from "../Presupuestos/Components/Presupuesto";
 import CargarProducto from "../Productos/Components/CargarProducto";
 import EditarProducto from "../Productos/Components/EditarProducto";
 import FiltroProductos from "../Productos/Components/FiltroProductos";
@@ -32,7 +34,9 @@ const rutas = [
     {path: '/listadoVentas', componente: FiltroVentas, exact: true},
     {path: '/ventas/detalle/:id(\\d+)', componente: DetalleVentas, exact: true},
 
-    
+    {path: '/ventas/presupuesto', componente: Presupuesto, exact: true},
+    {path: '/listadoPresupuestos', componente: FiltroPresupuestos, exact: true},
+
     {path: '/clientes', componente: CargarCliente, exact: true},
     {path: '/listadoClientes', componente: FiltroClientes, exact: true},
     {path: '/clientes/editar/:id(\\d+)', componente: EditarCliente, exact: true},

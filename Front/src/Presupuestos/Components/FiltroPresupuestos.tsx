@@ -1,47 +1,33 @@
 import { AxiosResponse } from "axios";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import { presupuestoModel } from "../../Models/presupuestos.model";
 import { productoModel } from "../../Models/producto.model";
-import { ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
+import { ventasPostGetModel } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
 import FormGroupFecha from "../../utils/FormGroupFecha";
+import FormGroupText from "../../utils/FormGroupText";
 import Paginacion from "../../utils/Paginacion";
-import * as services from '../Services/ventas.services';
-import * as servicesCF from '../../VentasConsFinal/Services/consumidorFinal.services'
-import ListadoVentas from "./ListadoVentas";
-import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
-import { clienteModel } from "../../Models/clientes.model";
-import * as serClientes from "../../Clientes/Services/clientes.services"
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
-import { boolean } from "yup";
+import * as services from '../../Ventas/Services/ventas.services';
+import * as presServices from '../Services/presupuestos.services';
+import ListadoPresupuestos from "./ListadoPresupuestos";
 
 
-export default function FiltroVentas() {
+export default function FiltroPresupuestos() {
 
     const [totalDePaginas, setTotalDePaginas] = useState(0);
     const [productos, setProductos] = useState<productoModel[]>([])
-    const [ventas, setVentas] = useState<ventasModel[]>()
-    const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
-    const [clientes, setClientes] = useState<clienteModel[]>([])
+    const [presupuesto, setPresupuesto] = useState<presupuestoModel[]>()
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
-    const valorInicial: filtroVentasProps = {
+    const valorInicial: filtroPresupuestosProps = {
         productoId: 0,
         fechaDeVenta: new Date,
-        consumidor: false,
-        registrado: false,
         pagina: 1,
         recordsPorPagina: 10
     }
-
-    useEffect(() => {
-        const res = serClientes.getTodosLosClientes()
-        res.then((resp: AxiosResponse<clienteModel[]>) => {
-            setClientes(resp.data)
-        })
-    },[])
 
     useEffect(() => {
         const res = services.getProductos()
@@ -51,82 +37,58 @@ export default function FiltroVentas() {
     }, [])
 
     useEffect(() => {
+        if (query.get('nombre')) {
+            valorInicial.nombre = query.get('nombre')!
+        }
         if (query.get('productoId')) {
             valorInicial.productoId = parseInt(query.get('productoId')!, 10)
-        }
-        if (query.get('registrado')) {
-            valorInicial.registrado = true
-        }
-        if (query.get('consumidor')) {
-            valorInicial.consumidor = true
         }
         if (query.get('pagina')) {
             valorInicial.pagina = parseInt(query.get('pagina')!, 10)
         }
-        buscarVenta(valorInicial)
-        buscarVentaCF(valorInicial)
+        buscarPresupuesto(valorInicial)
     }, [])
 
-    function modificarURL(valores: filtroVentasProps) {
+    function modificarURL(valores: filtroPresupuestosProps) {
         const queryStrings: string[] = []
+        if (valores.nombre) {
+            queryStrings.push(`nombre=${valores.nombre}`)
+        }
         if (valores.productoId) {
             queryStrings.push(`productoId=${valores.productoId}`)
         }
         if (valores.fechaDeVenta) {
             queryStrings.push(`fechaDeVenta=${valores.fechaDeVenta}`)
         }
-        if (valores.registrado) {
-            queryStrings.push(`registrado=${valores.registrado}`)
-        }
-        if (valores.consumidor) {
-            queryStrings.push(`consumidor=${valores.consumidor}`)
-        }
         queryStrings.push(`pagina=${valores.pagina}`)
-        history.push(`/listadoVentas?${queryStrings.join('&')}`)
+        history.push(`/listadoPresupuestos?${queryStrings.join('&')}`)
     }
 
-    function buscarVentaCF(valores: filtroVentasProps) {
-        console.log(valores)
+    function buscarPresupuesto(valores: filtroPresupuestosProps) {
         modificarURL(valores)
-        const res = servicesCF.filtrar(valores)
-        res.then((respuesta: AxiosResponse<ventasConsumidorFinalModel[]>) => {
+        const res = presServices.filtrar(valores)
+        res.then((respuesta: AxiosResponse<presupuestoModel[]>) => {
             const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10)
             setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
             console.log(respuesta.data)
-            setVentasCF(respuesta.data)
-            console.log(ventasCF)
+            setPresupuesto(respuesta.data)
         })
-        console.log(ventasCF)
     }
-
-    function buscarVenta(valores: filtroVentasProps) {
-        console.log(valores)
-        modificarURL(valores)
-        const res = services.filtrar(valores)
-        res.then((respuesta: AxiosResponse<ventasModel[]>) => {
-            const totalDeRegistros = parseInt(
-                respuesta.headers["cantidadtotalregistros"],
-                10
-            );
-            setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-            setVentas(respuesta.data);
-        })
-        console.log(ventas)
-    }
-
 
     return (
         <>
             <h3 style={{ marginTop: '1rem' }}>Filtrar Ventas</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
-                buscarVentaCF(valores)
-                buscarVenta(valores)              
+                buscarPresupuesto(valores)
             }}>
                 {(formikProps) => (
                     <>
                         <Form>
                             <div className="form-inline">
+                                <div className="form-group mx-sm-3 mb-2">
+                                    <FormGroupText campo="nombre" placeholder="Nombre" />
+                                </div>
                                 <div className="form-group mx-sm-3 mb-2">
                                     <select className="form-control" {...formikProps.getFieldProps('productoId')}>
                                         <option value="0">Seleccione un producto</option>
@@ -137,14 +99,6 @@ export default function FiltroVentas() {
                                 <div className="form-group mx-sm-3 mb-2">
                                     <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
                                 </div>
-                                <div style={{marginLeft:'-10px'}} className="form-group mx-sm-3 mb-2">
-                                    <Field className="form-check-input" id="consumidor" name="consumidor" type="checkbox" />
-                                    <label htmlFor="consumidor">C. Final</label>
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <Field className="form-check-input" id="registrado" name="registrado" type="checkbox" />
-                                    <label htmlFor="registrado">Cliente Registrado</label>
-                                </div>
                                 <Button
                                     className="btn btn-primary mb-2 mx-sm-3"
                                     onClick={() => formikProps.submitForm()}>Filtrar</Button>
@@ -152,20 +106,18 @@ export default function FiltroVentas() {
                                     className="btn btn-danger mb-2"
                                     onClick={() => {
                                         formikProps.setValues(valorInicial)
-                                        buscarVentaCF(valorInicial)
-                                        buscarVenta(valorInicial)                           
+                                        buscarPresupuesto(valorInicial)
                                     }}>Limpiar</Button>
                             </div>
                         </Form>
 
-                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} clientes={clientes} />
+                        <ListadoPresupuestos presupuestos={presupuesto} />
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}
                             onChange={(nuevaPagina) => {
                                 formikProps.values.pagina = nuevaPagina
-                                buscarVentaCF(formikProps.values)
-                                buscarVenta(formikProps.values)                              
+                                buscarPresupuesto(formikProps.values)
                             }}
                         />
                     </>
@@ -176,11 +128,10 @@ export default function FiltroVentas() {
     )
 }
 
-export interface filtroVentasProps {
+export interface filtroPresupuestosProps {
+    nombre?: string;
     productoId: number;
     fechaDeVenta: Date;
-    consumidor: boolean;
-    registrado: boolean
     pagina: number;
     recordsPorPagina: number;
 }

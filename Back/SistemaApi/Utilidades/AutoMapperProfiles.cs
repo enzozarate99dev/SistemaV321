@@ -23,7 +23,52 @@ namespace SistemaApi.Utilidades
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
 
             CreateMap<ClienteCreacionDTO, Cliente>();
-            CreateMap<Cliente, ClienteDTO>().ReverseMap();     
+            CreateMap<Cliente, ClienteDTO>().ReverseMap();
+
+            CreateMap<PresupuestoCreacionDTO, Presupuestos>()
+                .ForMember(x => x.PresupuestoProducto, o => o.MapFrom(MapearPresupuestoProducto));
+            CreateMap<Presupuestos, PresupuestosDTO>()
+                .ForMember(x => x.Productos, o => o.MapFrom(MapearPresupuestoProducto));
+        }
+
+        private List<ProductoDTO> MapearPresupuestoProducto(Presupuestos presupuestos, PresupuestosDTO presupuestosDTO)
+        {
+            var resultado = new List<ProductoDTO>();
+
+            if (presupuestos.PresupuestoProducto != null)
+            {
+                foreach (var producto in presupuestos.PresupuestoProducto)
+                {
+                    resultado.Add(new ProductoDTO()
+                    {
+                        Id = producto.Producto.Id,
+                        Nombre = producto.Producto.Nombre,
+                        Cantidad = producto.Unidades,
+                        Precio = producto.Producto.Precio,
+                        Categoria = producto.Producto.Categoria,
+                        Codigo = producto.Producto.Codigo,
+                        Descripcion = producto.Producto.Descripcion
+                    });
+                }
+            }
+
+            return resultado;
+        }
+
+        private List<PresupuestoProducto> MapearPresupuestoProducto(PresupuestoCreacionDTO presupuestoCreacionDTO,
+                Presupuestos presupuestos)
+        {
+            var resultado = new List<PresupuestoProducto>();
+
+            if (presupuestoCreacionDTO.ProductosIds == null) { return resultado; }
+
+
+            foreach (var tuple in presupuestoCreacionDTO.ProductosIds)
+            {
+                resultado.Add(new PresupuestoProducto() { ProductoId = tuple[0], Unidades = tuple[1] });
+            }
+
+            return resultado;
         }
 
         private List<ProductoDTO> MapearVentaCFProducto(VentaConsumidorFinal ventaConsumidorFinal, VentaConsumidorFinalDTO ventaConsumidorFinalDTO)

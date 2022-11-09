@@ -16,5 +16,6 @@ namespace SistemaApi.Entidades
         public string? Foto { get; set; }
         public List<VentaProducto> VentaProducto { get; set; }
         public List<VentaCFProducto> VentaCFProducto { get; set; }
+        public List<PresupuestoProducto> PresupuestoProducto { get; set; }
     }
 }

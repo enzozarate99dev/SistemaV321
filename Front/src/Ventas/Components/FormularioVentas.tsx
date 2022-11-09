@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 
 export default function FormularioVentas(props: formularioVentasProps) {
 
-    const [productos, setProductos] = useState([0])
+    const [productos, setProductos] = useState([props.modelo.productosIds.length])
 
     const onClickButton = () => {
         setProductos([...productos, productos.length])

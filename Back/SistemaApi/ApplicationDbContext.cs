@@ -20,6 +20,8 @@ namespace SistemaApi
                 });
             modelBuilder.Entity<VentaCFProducto>()
                 .HasKey(x => new { x.VentaCFId, x.ProductoId });
+            modelBuilder.Entity<PresupuestoProducto>()
+                .HasKey(x => new { x.PresupuestoId, x.ProductoId });
 
 
             base.OnModelCreating(modelBuilder);
@@ -30,5 +32,7 @@ namespace SistemaApi
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }
+        public DbSet<Presupuestos> Presupuestos { get; set; }
+        public DbSet<PresupuestoProducto> PresupuestoProducto { get; set; }
     }
 }

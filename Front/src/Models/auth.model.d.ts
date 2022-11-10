@@ -5,8 +5,10 @@ export interface claim{
 }
 
 export interface credencialesUsuario{
-    email: string;
-    password: string
+    nombre: string;
+    email?: string;
+    password: string;
+    role?: string;
 }
 
 export interface respuestaAutenticacion{

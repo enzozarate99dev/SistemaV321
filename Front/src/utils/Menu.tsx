@@ -76,7 +76,7 @@ export default function Menu() {
                 <Navbar.Brand href="/">Sistema</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Autorizado autorizado={
+                    <Autorizado role="admin" autorizado={
                         <>
                             <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
                                 <NavDropdown title="Productos" id="collasible-nav-dropdown">
@@ -95,6 +95,10 @@ export default function Menu() {
                                     <NavDropdown.Item href="/listadoPresupuestos">Gestionar presupuestos</NavDropdown.Item>
                                     <NavDropdown.Item href="/ventas/presupuesto">Generar presupuesto</NavDropdown.Item>
                                 </NavDropdown>
+                                <NavDropdown title="Usuarios" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item href="/listadoUsuarios">Gestionar usuarios</NavDropdown.Item>
+                                    <NavDropdown.Item href="/registro">Registrar usuario</NavDropdown.Item>
+                                </NavDropdown>
                             </Nav>
                             <div className="d-flex">
                                 <Button onClick={() => {
@@ -109,9 +113,6 @@ export default function Menu() {
                         <>
                             <Nav>
                                 <Nav.Link href="/login">Iniciar Sesion</Nav.Link>
-                                <Nav.Link eventKey={2} href="/registro">
-                                    Registrarse
-                                </Nav.Link>
                             </Nav>
                         </>
                     }

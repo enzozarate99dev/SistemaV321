@@ -1,6 +1,6 @@
 import { Link, useHistory } from "react-router-dom";
 import Verificar from "../../Generales/verificador";
-import { presupuestoModel } from "../../Models/presupuestos.model";
+import { modeloExcel, presupuestoModel } from "../../Models/presupuestos.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/presupuestos.services";
@@ -22,26 +22,50 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         }
     }
 
-    function crearModelo(valores: presupuestoModel){
-        const model = {
-            Id: valores.id,
+    function crearModelo(valores: presupuestoModel) {
+        var json: modeloExcel[] = []
+        json[0] = {
+            Id: valores.id.toString(),
             Nombre: valores.nombre,
-            Precio: valores.precioTotal,
-            Descuento: valores.descuento,
-            Fecha: formatDate(valores.fechaDeVenta.toString())
+            Precio: valores.precioTotal.toString(),
+            Descuento: valores.descuento.toString(),
+            Fecha: formatDate(valores.fechaDeVenta.toString()),
+            IdProducto: valores.productos[0].id.toString(),
+            NombreProducto: valores.productos[0].nombre,
+            PrecioUnitario: valores.productos[0].precio,
+            Cantidad: valores.productos[0].cantidad,
+            Codigo: valores.productos[0].codigo,
+            Categoria: valores.productos[0].categoria,
+            Descripcion: valores.productos[0].descripcion
         }
-        return model
+        for (let i = 1; i < valores.productos.length; i++) {
+            json[i] = {
+                Id: '',
+                Nombre: '',
+                Precio: '',
+                Descuento: '',
+                Fecha: '',
+                IdProducto: valores.productos[i].id.toString(),
+                NombreProducto: valores.productos[i].nombre,
+                PrecioUnitario: valores.productos[i].precio,
+                Cantidad: valores.productos[i].cantidad,
+                Codigo: valores.productos[i].codigo,
+                Categoria: valores.productos[i].categoria,
+                Descripcion: valores.productos[i].descripcion
+            }
+        }
+        return json
     }
 
+
     const handleExport = (id: number) => {
-        const json = []
         for (let i = 0; i < props.presupuestos!.length; i++) {
-            if (props.presupuestos![i].id == id) {           
-                json.push(crearModelo(props.presupuestos![i]))
+            if (props.presupuestos![i].id == id) {
+                const json = (crearModelo(props.presupuestos![i]))
                 var wb = XLSX.utils.book_new(),
                     ws = XLSX.utils.json_to_sheet(json)
                 XLSX.utils.book_append_sheet(wb, ws, "Archivo")
-                XLSX.writeFile(wb, "Excel.xlsx")
+                XLSX.writeFile(wb, `Presupuesto${props.presupuestos![i].nombre}.xlsx`)
                 return;
             }
         }
@@ -52,9 +76,8 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         return array[0]
     }
 
-    const botones = (urlDetalle: string, id: number) =>
+    const botones = (id: number) =>
         <>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-light" to={urlDetalle}>Detalle</Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-danger">
@@ -87,7 +110,7 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
                                 <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
                                 <td>{presupuesto.precioTotal}</td>
                                 <td>
-                                    {botones(`ventas/detalle/${presupuesto.id}`, presupuesto.id)}
+                                    {botones(presupuesto.id)}
                                 </td>
                             </tr>
                         ))}

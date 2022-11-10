@@ -15,11 +15,12 @@ export default function Login() {
     const history = useHistory()
 
     async function login(credenciales: credencialesUsuario) {
+        console.log(credenciales)
         try {
             const respuesta = await axios.post<respuestaAutenticacion>(`${urlCuentas}/login`, credenciales)
             guardarTokenLocalStorage(respuesta.data)
             actualizar(obtenerClaims())
-            history.push("/listadoProductos")
+            history.push("/")
             console.log(respuesta)
         } catch (error) {
             setErrores(error.response.data)
@@ -30,7 +31,7 @@ export default function Login() {
         <>
             <MostrarErrores errores={errores}/>
             <FormularioAuth
-                modelo={{ email: '', password: '' }}
+                modelo={{ nombre: '', password: '' }}
                 onSubmit={async valores => await login(valores)}
                 tipo="Login"
             />

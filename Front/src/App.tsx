@@ -14,6 +14,7 @@ function App() {
 
   useEffect(() => {
     setClaims(obtenerClaims())
+    console.log(claims)
   }, [])
 
   function actualizar(claims: claim[]) {

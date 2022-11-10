@@ -1,12 +1,11 @@
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import { credencialesUsuario } from "../../Models/auth.model";
-import * as Yup from 'yup'
-import FormGroupText from "../../utils/FormGroupText";
-import Button from "../../utils/Button";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import * as Yup from 'yup';
 import SvgComponent from "../../assets/Login-Icon";
-import UsernameIcon from "../../assets/Username-Icon";
 import PasswordIcon from "../../assets/PasswordIcon";
+import UsernameIcon from "../../assets/Username-Icon";
+import { credencialesUsuario } from "../../Models/auth.model";
+import Button from "../../utils/Button";
 
 
 
@@ -15,7 +14,7 @@ export default function FormularioAuth(props: formularioAuthProps) {
         <Formik initialValues={props.modelo}
             onSubmit={props.onSubmit}
             validationSchema={Yup.object({
-                email: Yup.string().required("Este campo es requerido").email("Introducir un email valido"),
+                nombre: Yup.string().required("Este campo es requerido"),
                 password: Yup.string().required("Este campo es requerido")
 
             })}>
@@ -30,7 +29,7 @@ export default function FormularioAuth(props: formularioAuthProps) {
                             <div className="input-group-text bg-info" style={{borderRadius:'20px', marginRight:'5px', marginLeft:'-5px'}}>
                                 <UsernameIcon/>
                             </div>
-                            <Field className="form-control bg-light" name="email" type="text" placeholder="Username" />
+                            <Field className="form-control bg-light" name="nombre" type="text" placeholder="Username" />
                         </div>
                         <div className="input-group mt-1">
                             <div className="input-group-text bg-info" style={{borderRadius:'20px', marginRight:'5px', marginLeft:'-5px'}}>

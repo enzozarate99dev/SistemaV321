@@ -77,7 +77,7 @@ export default function FiltroPresupuestos() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Filtrar Ventas</h3>
+            <h3 style={{ marginTop: '1rem' }}>Filtrar Presupuestos</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarPresupuesto(valores)

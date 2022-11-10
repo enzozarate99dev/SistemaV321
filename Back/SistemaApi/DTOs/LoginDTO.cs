@@ -2,11 +2,10 @@
 
 namespace SistemaApi.DTOs
 {
-    public class CredencialesUsuario
+    public class LoginDTO
     {
-        [EmailAddress]
         [Required]
-        public string Email { get; set; }
+        public string Nombre { get; set; }
         [Required]
         public string Password { get; set; }
     }

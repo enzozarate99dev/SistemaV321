@@ -14,3 +14,19 @@ export interface presupuestoCrear{
     productosIds: number[][];
     descuento: number;
 }
+
+export interface modeloExcel{
+    Id?: string;
+    Nombre?: string;
+    Precio?: string;
+    Descuento?: string;
+    Fecha?: string;
+    IdProducto?: string;
+    NombreProducto?: string;
+    PrecioUnitario?: number;
+    Cantidad?: number;
+    Codigo?:string;
+    Categoria?: string;
+    Descripcion?: string;
+}
+

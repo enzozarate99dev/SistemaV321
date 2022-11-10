@@ -1,5 +1,5 @@
 import Login from "../auth/Components/Login";
-import Registro from "../auth/Components/Registro";
+import Registro from "../Usuarios/Components/Registro";
 import CargarCliente from "../Clientes/Components/CargarCliente";
 import EditarCliente from "../Clientes/Components/EditarCliente";
 import FiltroClientes from "../Clientes/Components/FiltroClientes";
@@ -18,6 +18,7 @@ import EditarVenta from "../Ventas/Components/EditarVenta";
 import FiltroVentas from "../Ventas/Components/FiltroVentas";
 import Redirigir from "../Ventas/Components/Redirigir";
 import CargarVentaCF from "../VentasConsFinal/Components/CargarVentaCF";
+import ListadoUsuarios from "../Usuarios/Components/ListadoUsuarios";
 
 
 const rutas = [
@@ -42,8 +43,9 @@ const rutas = [
     {path: '/clientes/editar/:id(\\d+)', componente: EditarCliente, exact: true},
     {path: '/clientes/:id(\\d+)', componente: InfoCliente, exact: true},
 
-    {path: '/registro', componente: Registro, exact: true},
     {path: '/login', componente: Login, exact: true},
+    {path: '/registro', componente: Registro, exact: true},
+    {path: '/listadoUsuarios', componente: ListadoUsuarios, exact: true},
     
 
     {path: '*', componente: Redireccionar}

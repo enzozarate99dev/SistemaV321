@@ -1,0 +1,13 @@
+.row{
+    margin-top: 125px;
+}
+
+.bg{
+    background-image: url("../../assets/makers.jpg");
+    background-position: center center;
+}
+
+.bgColor{
+    background-color: rgb(179, 177, 177);
+}
+

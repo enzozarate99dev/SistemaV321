@@ -13,6 +13,8 @@ export default function FiltroProductos() {
 
     const [totalDePaginas, setTotalDePaginas] = useState(0);
     const [productos, setProductos] = useState<productoModel[]>()
+    const [mostrarFiltros, setMostrarFiltros] = useState(false)
+    
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -88,6 +90,9 @@ export default function FiltroProductos() {
                 {(formikProps) => (
                     <>
                         <Form>
+                            <Button style={{marginBottom:'1rem'}} onClick={() => { setMostrarFiltros(!mostrarFiltros)}}>Filtros</Button>
+                            
+                            {mostrarFiltros ? 
                             <div className="form-inline">
                                 <div className="form-group mb-2">
                                     <label htmlFor="nombre" className="sr-only">Nombre del producto</label>
@@ -121,6 +126,7 @@ export default function FiltroProductos() {
                                         buscarProducto(valorInicial)
                                     }}>Limpiar</Button>
                             </div>
+                            :null}
                         </Form>
 
                         <ListadoProductos productos={productos} />

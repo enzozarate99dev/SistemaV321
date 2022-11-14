@@ -35,10 +35,8 @@ export default function ListadoUsuarios() {
 
     }, [])
 
-    const botones = (urlEditar: string, urlDetalle: string, nombre: string) =>
+    const botones = (nombre: string) =>
         <>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-light" to={urlDetalle}>Detalle</Link>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-success" to={urlEditar}>Editar</Link>
             <Button
                 onClick={() => confirmar(() => borrar(nombre))}
                 className="btn btn-danger">
@@ -68,7 +66,7 @@ export default function ListadoUsuarios() {
                                 <td>{usuario.email}</td>
                                 <td>{usuario.role}</td>
                                 <td>
-                                    {botones(`ventas/editar/${usuario.userName}`, `ventas/detalle/${usuario.userName}`, usuario.userName)}
+                                    {botones(usuario.userName)}
                                 </td>
                             </tr>
                         ))}

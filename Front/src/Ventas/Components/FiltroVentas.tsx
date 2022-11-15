@@ -23,6 +23,7 @@ export default function FiltroVentas() {
     const [productos, setProductos] = useState<productoModel[]>([])
     const [ventas, setVentas] = useState<ventasModel[]>()
     const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
+    const [mostrarFiltros, setMostrarFiltros] = useState(false)
     const [clientes, setClientes] = useState<clienteModel[]>([])
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
@@ -41,7 +42,7 @@ export default function FiltroVentas() {
         res.then((resp: AxiosResponse<clienteModel[]>) => {
             setClientes(resp.data)
         })
-    },[])
+    }, [])
 
     useEffect(() => {
         const res = services.getProductos()
@@ -121,41 +122,44 @@ export default function FiltroVentas() {
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarVentaCF(valores)
-                buscarVenta(valores)              
+                buscarVenta(valores)
             }}>
                 {(formikProps) => (
                     <>
                         <Form>
-                            <div className="form-inline">
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <select className="form-control" {...formikProps.getFieldProps('productoId')}>
-                                        <option value="0">Seleccione un producto</option>
-                                        {productos.map(producto =>
-                                            <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
-                                    </select>
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
-                                </div>
-                                <div style={{marginLeft:'-10px'}} className="form-group mx-sm-3 mb-2">
-                                    <Field className="form-check-input" id="consumidor" name="consumidor" type="checkbox" />
-                                    <label htmlFor="consumidor">C. Final</label>
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <Field className="form-check-input" id="registrado" name="registrado" type="checkbox" />
-                                    <label htmlFor="registrado">Cliente Registrado</label>
-                                </div>
-                                <Button
-                                    className="btn btn-primary mb-2 mx-sm-3"
-                                    onClick={() => formikProps.submitForm()}>Filtrar</Button>
-                                <Button
-                                    className="btn btn-danger mb-2"
-                                    onClick={() => {
-                                        formikProps.setValues(valorInicial)
-                                        buscarVentaCF(valorInicial)
-                                        buscarVenta(valorInicial)                           
-                                    }}>Limpiar</Button>
-                            </div>
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+
+                            {mostrarFiltros ?
+                                <div className="form-inline">
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <select className="form-control" {...formikProps.getFieldProps('productoId')}>
+                                            <option value="0">Seleccione un producto</option>
+                                            {productos.map(producto =>
+                                                <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
+                                    </div>
+                                    <div style={{ marginLeft: '-10px' }} className="form-group mx-sm-3 mb-2">
+                                        <Field className="form-check-input" id="consumidor" name="consumidor" type="checkbox" />
+                                        <label htmlFor="consumidor">C. Final</label>
+                                    </div>
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <Field className="form-check-input" id="registrado" name="registrado" type="checkbox" />
+                                        <label htmlFor="registrado">Cliente Registrado</label>
+                                    </div>
+                                    <Button
+                                        className="btn btn-primary mb-2 mx-sm-3"
+                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
+                                    <Button
+                                        className="btn btn-danger mb-2"
+                                        onClick={() => {
+                                            formikProps.setValues(valorInicial)
+                                            buscarVentaCF(valorInicial)
+                                            buscarVenta(valorInicial)
+                                        }}>Limpiar</Button>
+                                </div>:null}
                         </Form>
 
                         <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} clientes={clientes} />
@@ -165,7 +169,7 @@ export default function FiltroVentas() {
                             onChange={(nuevaPagina) => {
                                 formikProps.values.pagina = nuevaPagina
                                 buscarVentaCF(formikProps.values)
-                                buscarVenta(formikProps.values)                              
+                                buscarVenta(formikProps.values)
                             }}
                         />
                     </>

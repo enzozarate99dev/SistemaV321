@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios"
-import { Form, Formik } from "formik"
+import { Field, Form, Formik } from "formik"
 import { useEffect, useState } from "react"
-import { Button } from "react-bootstrap"
+import Button from "../../utils/Button"
 import { Link, useHistory } from "react-router-dom"
 import { presupuestoCrear } from "../../Models/presupuestos.model"
 import { productoModel } from "../../Models/producto.model"
@@ -10,69 +10,89 @@ import FormGroupText from "../../utils/FormGroupText"
 import MostrarErrores from "../../utils/MostrarErrores"
 import * as services from "../../Ventas/Services/ventas.services"
 import * as presServices from "../Services/presupuestos.services"
+import * as prodServices from "../../Productos/Services/productos.services"
 import NuevoProductoPresupuesto from "./NuevoProductoPresupuesto"
+import * as Yup from "yup"
 
 export default function Presupuesto() {
 
+    const modelo: presupuestoProps = {
+        nombre: '',
+        descuento: 0
+    }
+
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
-    const [productos, setProductos] = useState([0])
     const [errores, setErrores] = useState<string[]>([]);
-    const [total, setTotal] = useState<number>(0)
-    const [valores, setValores] = useState<presupuestoProps>()
     const history = useHistory()
+
+    var valoresPrevs: valoresPrevProps[] = []
+    var productosArreglo: productoModel[] = []
 
     useEffect(() => {
         const res = services.getProductos()
         res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
-            console.log(respuesta.data.productos)
             setProductosDisp(respuesta.data.productos);
         })
     }, [])
 
-    const modelo: presupuestoProps = {
-        nombre: '',
-        productosIds: [],
-        cantidad: [],
-        descuento: 0
+
+    const modeloPrevs: valoresPrevProps = {
+        productosIds: 0,
+        cantidad: 0
     }
 
-    const onClickButton = () => {
-        setProductos([...productos, productos.length])
-    }
-
-    function calcularMonto(){
-        var tot: number = 0;
-        for(let i=0;i<valores!.productosIds.length;i++){
-            for(let j=0;j<productosDisp.length;j++){
-                if(valores!.productosIds[i]==productosDisp[j].id){
-                    tot = tot + (valores!.cantidad[i]*productosDisp[j].precio)
-                }
-            }      
+    function getProducto(id: number): productoModel {
+        var retorno: productoModel = {
+            id: 0,
+            nombre: "",
+            precio: 0,
+            cantidad: 0
         }
-        tot = tot - (tot*(valores!.descuento/100))
-        setTotal(tot)
+        for (let i = 0; i < productosDisp.length; i++) {
+            if (productosDisp[i].id == id) {
+                retorno = productosDisp[i]
+            }
+        }
+        return retorno
     }
 
-    async function convertir() {
+    async function agregar(valores: valoresPrevProps) {
+        valoresPrevs.push(valores)
+        productosArreglo.push(getProducto(valoresPrevs[valoresPrevs.length - 1].productosIds!)!)
+        productosArreglo[valoresPrevs.length - 1].cantidad = valores.cantidad
+
+        console.log(productosArreglo)
+    }
+
+    function sacarTotal(): number {
+        var total: number = 0
+        for (let i = 0; i < valoresPrevs.length; i++) {
+            total = total + (productosArreglo[i].precio * valoresPrevs[i].cantidad)
+        }
+        return total
+    }
+
+    async function convertir(valores: presupuestoProps) {
+        console.log(valores)
         var arraygeneral = []
-        for (let i = 0; i < valores!.productosIds.length; i++) {
-            arraygeneral[i] = [valores!.productosIds[i], valores!.cantidad[i]]
+        for (let i = 0; i < valoresPrevs.length; i++) {
+            arraygeneral[i] = [valoresPrevs[i].productosIds!, valoresPrevs[i].cantidad!]
         }
         var presupuesto: presupuestoCrear = {
-            nombre: valores!.nombre,
+            nombre: valores.nombre,
             productosIds: arraygeneral,
-            descuento: valores!.descuento
+            descuento: valores.descuento
         }
         crear(presupuesto)
     }
 
-    function crear(presupuesto: presupuestoCrear){
-        try{
+    function crear(presupuesto: presupuestoCrear) {
+        try {
             presServices.crear(presupuesto)
             history.push('/listadoPresupuestos')
             history.go(0)
         }
-        catch(error){
+        catch (error) {
             setErrores(error.response.data)
         }
     }
@@ -81,41 +101,90 @@ export default function Presupuesto() {
         <>
             <h3 style={{ marginTop: '1rem' }}>Generar Presupuesto</h3>
             <Formik initialValues={modelo} onSubmit={valores => {
-                setValores(valores)
-                calcularMonto()
-            }}>
+                convertir(valores)
+            }}
+            validationSchema={Yup.object({ nombre: Yup.string().required("Este campo es requerido") })}
+            >
                 {(formikProps) => (
                     <>
                         <Form>
-                            <FormGroupText campo="nombre" label="Nombre"/>
-                            {productos.map((producto, index) => <NuevoProductoPresupuesto formikProps={formikProps} productosDisp={productosDisp} index={index} />)}
-                            <Button onClick={onClickButton} className="btn btn-warning" style={{ marginRight: '1rem', marginTop: '1rem', marginBottom: '1rem' }} type="button">
-                                Añadir Producto
-                            </Button>
-                            <FormGroupText campo="descuento" label="% de descuento" />
-                            <Button onClick={() => formikProps.submitForm()} type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-                                Calcular monto
-                            </Button>
-                            {total!=0 ? <Button onClick={convertir} type="submit" style={{ marginTop: '1rem', marginBottom: '1rem', marginLeft:'1rem' }}>
+                            <FormGroupText campo="nombre" label="Nombre" />
+                            <Formik initialValues={modeloPrevs} onSubmit={valores => agregar(valores)} validationSchema={Yup.object({ cantidad: Yup.number().min(1) })}>
+                                {(formikProps2) => (
+                                    <>
+                                        <Form>
+                                            <NuevoProductoPresupuesto formikProps={formikProps2} productosDisp={productosDisp} />
+                                            <Button onClick={() => {
+                                                formikProps2.submitForm()
+                                            }} className="btn btn-warning" style={{ marginRight: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
+                                                Añadir Producto
+                                            </Button>
+                                            <table style={{ marginTop: '1rem' }} className='table'>
+                                                <thead className="table-dark">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Nombre</th>
+                                                        <th>Precio Unitario</th>
+                                                        <th>Unidades</th>
+                                                        <th>Subtotal</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {productosArreglo.map((producto) => (
+                                                        <tr key={producto.id}>
+                                                            <td>{producto.id}</td>
+                                                            <td>{producto.nombre}</td>
+                                                            <td>{producto.precio}</td>
+                                                            <td>{producto.cantidad}</td>
+                                                            <td>{producto.cantidad * producto.precio}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    ))}
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>${sacarTotal()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </Form>
+                                    </>
+                                )}
+                            </Formik>
+
+
+                            {/* <Button onClick={() => setDescuento(!descuento)}>Aplicar Descuento</Button> */}
+                            <div className="col-md-4">
+                                <div className="input-group has-validation">                                 
+                                    <FormGroupText style={{ width: '150px' }} campo="descuento" label="Descuento" />
+                                    <span style={{ height: '38px', marginTop: '32px' }} className="input-group-text" id="inputGroupPrepend">%</span>
+                                </div>
+                            </div>
+                            <Button onClick={() => formikProps.submitForm()} style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Crear Presupuesto
-                            </Button>: null}
+                            </Button>
                             <Link style={{ marginLeft: '1rem', marginTop: '1rem', marginBottom: '1rem' }} className="btn btn-secondary" to="/">
                                 Cancelar
                             </Link>
                         </Form>
-                        <MostrarErrores errores={errores}/>
+                        <MostrarErrores errores={errores} />
                     </>
                 )}
-
             </Formik>
-            <div>Total: ${total}</div>
         </>
     )
 }
 
 export interface presupuestoProps {
     nombre: string;
-    productosIds: number[];
-    cantidad: number[];
     descuento: number;
+}
+
+export interface valoresPrevProps {
+    productosIds: number
+    cantidad: number
 }

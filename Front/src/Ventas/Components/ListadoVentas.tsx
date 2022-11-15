@@ -48,7 +48,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
         <Verificar listado={props.ventas}>
             <div className='container'>
                 <table className='table'>
-                    <thead>
+                    <thead className="table-dark">
                         <tr>
                             <th>Nombre y Apellido</th>
                             <th>Total</th>

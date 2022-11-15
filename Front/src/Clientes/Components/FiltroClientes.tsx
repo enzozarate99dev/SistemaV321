@@ -14,6 +14,7 @@ export default function FiltroClientes() {
     const [clientes, setClientes] = useState<clienteModel[]>()
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
+    const [mostrarFiltros, setMostrarFiltros] = useState(false)
 
     const valorInicial: filtroClientesProps = {
         nombreYApellido: '',
@@ -45,22 +46,22 @@ export default function FiltroClientes() {
     function buscarCliente(valores: filtroClientesProps) {
         modificarURL(valores)
         const data = services.filtrar(valores)
-            data.then((respuesta: AxiosResponse<clienteModel[]>) => {
-                console.log(respuesta)
-                const totalDeRegistros = parseInt(
-                    respuesta.headers["cantidadtotalregistros"],
-                    10
-                );
-                setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
+        data.then((respuesta: AxiosResponse<clienteModel[]>) => {
+            console.log(respuesta)
+            const totalDeRegistros = parseInt(
+                respuesta.headers["cantidadtotalregistros"],
+                10
+            );
+            setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
 
-                setClientes(respuesta.data);
-            })
+            setClientes(respuesta.data);
+        })
     }
 
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Filtrar Clientes</h3>
+            <h3 style={{ marginTop: '1rem' }}>Filtrar Clientes</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarCliente(valores)
@@ -68,24 +69,27 @@ export default function FiltroClientes() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <div className="form-inline">
-                                <div className="form-group mb-2">
-                                    <label htmlFor="nombreYApellido" className="sr-only">Nombre y Apellido</label>
-                                    <input type="text" className="form-control"
-                                        id="nombreYApellido" placeholder="Nombre y Apellido"
-                                        {...formikProps.getFieldProps('nombreYApellido')}
-                                    />
-                                </div>
-                                <Button
-                                    className="btn btn-primary mb-2 mx-sm-3"
-                                    onClick={() => formikProps.submitForm()}>Filtrar</Button>
-                                <Button
-                                    className="btn btn-danger mb-2"
-                                    onClick={() => {
-                                        formikProps.setValues(valorInicial)
-                                        buscarCliente(valorInicial)
-                                    }}>Limpiar</Button>
-                            </div>
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+
+                            {mostrarFiltros ?
+                                <div className="form-inline">
+                                    <div className="form-group mb-2">
+                                        <label htmlFor="nombreYApellido" className="sr-only">Nombre y Apellido</label>
+                                        <input type="text" className="form-control"
+                                            id="nombreYApellido" placeholder="Nombre y Apellido"
+                                            {...formikProps.getFieldProps('nombreYApellido')}
+                                        />
+                                    </div>
+                                    <Button
+                                        className="btn btn-primary mb-2 mx-sm-3"
+                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
+                                    <Button
+                                        className="btn btn-danger mb-2"
+                                        onClick={() => {
+                                            formikProps.setValues(valorInicial)
+                                            buscarCliente(valorInicial)
+                                        }}>Limpiar</Button>
+                                </div>:null}
                         </Form>
 
                         <ListadoClientes clientes={clientes} />

@@ -24,7 +24,7 @@ export default function CargarProducto() {
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Cargar Producto</h3>
+            <h2 style={{marginTop:'1rem'}}>Añadir un producto</h2>
             <MostrarErrores errores={errores}/>
             <FormularioProductos modelo={{ nombre: '', precio: 0, cantidad: 0 }} onSubmit={async valores => {
                 await crear(valores)

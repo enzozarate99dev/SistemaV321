@@ -19,6 +19,7 @@ export default function FiltroPresupuestos() {
     const [totalDePaginas, setTotalDePaginas] = useState(0);
     const [productos, setProductos] = useState<productoModel[]>([])
     const [presupuesto, setPresupuesto] = useState<presupuestoModel[]>()
+    const [mostrarFiltros, setMostrarFiltros] = useState(false)
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -85,30 +86,33 @@ export default function FiltroPresupuestos() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <div className="form-inline">
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <FormGroupText campo="nombre" placeholder="Nombre" />
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <select className="form-control" {...formikProps.getFieldProps('productoId')}>
-                                        <option value="0">Seleccione un producto</option>
-                                        {productos.map(producto =>
-                                            <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
-                                    </select>
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
-                                </div>
-                                <Button
-                                    className="btn btn-primary mb-2 mx-sm-3"
-                                    onClick={() => formikProps.submitForm()}>Filtrar</Button>
-                                <Button
-                                    className="btn btn-danger mb-2"
-                                    onClick={() => {
-                                        formikProps.setValues(valorInicial)
-                                        buscarPresupuesto(valorInicial)
-                                    }}>Limpiar</Button>
-                            </div>
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+
+                            {mostrarFiltros ?
+                                <div className="form-inline">
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <FormGroupText campo="nombre" placeholder="Nombre" />
+                                    </div>
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <select className="form-control" {...formikProps.getFieldProps('productoId')}>
+                                            <option value="0">Seleccione un producto</option>
+                                            {productos.map(producto =>
+                                                <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
+                                    </div>
+                                    <Button
+                                        className="btn btn-primary mb-2 mx-sm-3"
+                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
+                                    <Button
+                                        className="btn btn-danger mb-2"
+                                        onClick={() => {
+                                            formikProps.setValues(valorInicial)
+                                            buscarPresupuesto(valorInicial)
+                                        }}>Limpiar</Button>
+                                </div>:null}
                         </Form>
 
                         <ListadoPresupuestos presupuestos={presupuesto} />

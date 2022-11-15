@@ -35,7 +35,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
         <Verificar listado={props.clientes}>
             <div className='container'>
                 <table className='table'>
-                    <thead>
+                    <thead className="table-dark">
                         <tr>
                             <th></th>
                             <th>#</th>

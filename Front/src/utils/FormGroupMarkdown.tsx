@@ -11,7 +11,7 @@ export default function FormGroupMarkdown(props: formGroupMarkdownProps) {
             <div>
                 <label>{props.label}</label>
                 <div>
-                    <Field name={props.campo} as="textarea" className="form-textarea" />
+                    <Field style={{width:'800px', height:'200px'}} name={props.campo} as="textarea" className="form-textarea" />
                 </div>
             </div>
         </div>

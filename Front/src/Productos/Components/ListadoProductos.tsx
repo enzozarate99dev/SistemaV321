@@ -49,8 +49,8 @@ export default function ListadoProductos(props: propsListadoProductos) {
                     {(formikProps) => (
                         <Form>
                             <Button style={{marginTop:'0.5rem'}} onClick={() => { setActualizarPrecios(!actualizarPrecios)}}>Actualizar Precios</Button>
-                            <table className='table table-dark-bordered'>
-                                <thead>
+                            <table style={{marginTop:'1rem'}} className='table'>
+                                <thead className="table-dark">
                                     <tr>
                                         <th></th>
                                         <th>#</th>
@@ -61,7 +61,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
                                         {actualizarPrecios ? <th>Actualizar</th>: null}                                       
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="">
                                     {props.productos?.map((producto) => (
                                         <tr key={producto.id}>
                                             <td>

@@ -93,7 +93,7 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         <Verificar listado={props.presupuestos}>
             <div className='container'>
                 <table className='table'>
-                    <thead>
+                    <thead className="table-dark">
                         <tr>
                             <th>Nombre y Apellido</th>
                             <th>Descuento aplicado</th>

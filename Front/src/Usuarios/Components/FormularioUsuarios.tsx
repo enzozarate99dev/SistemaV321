@@ -19,19 +19,32 @@ export default function FormularioUsuarios(props: formularioUsuariosProps) {
             })}
         >
             {(formikProps) => (
-                <Form>
-                    <FormGroupText campo="userName" label="Nombre de usuario" placeholder="Nombre de usuario" />
-                    <FormGroupText campo="email" label="Email" placeholder="Correo Electronico" />
-                    <FormGroupText campo="password" label="Contraseña" placeholder="Contraseña" />
-                    <FormGroupCheckbox campo="admin" label="Administrador"/>
-                    <FormGroupCheckbox campo="cajero" label="Cajero"/>
-                    <Button disabled={formikProps.isSubmitting} type="submit">
-                        Guardar
-                    </Button>
-                    <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/">
-                        Cancelar
-                    </Link>
+                <>
+                <h3>Registrar usuario</h3>
+                <Form style={{ marginTop: '-1px' }} className="row g-3 needs-validation">
+                    <div className="col-md-6">
+                        <FormGroupText campo="userName" label="Nombre de usuario" placeholder="Nombre de usuario" />
+                    </div>
+                    <div className="col-md-6">
+                        <FormGroupText campo="email" label="Email" placeholder="Correo Electronico" />
+                    </div>
+                    <div className="col-md-6">
+                        <FormGroupText campo="password" label="Contraseña" placeholder="Contraseña" />
+                    </div>
+                    <div className="col-md-8">
+                        <FormGroupCheckbox campo="admin" label="Administrador" />
+                        <FormGroupCheckbox campo="cajero" label="Cajero" />
+                    </div>
+                    <div className="col-md-12">
+                        <Button disabled={formikProps.isSubmitting} type="submit">
+                            Guardar
+                        </Button>
+                        <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/">
+                            Cancelar
+                        </Link>
+                    </div>
                 </Form>
+                </>
             )}
         </Formik>
     );

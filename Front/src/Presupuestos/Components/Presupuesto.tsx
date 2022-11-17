@@ -13,6 +13,7 @@ import * as presServices from "../Services/presupuestos.services"
 import * as prodServices from "../../Productos/Services/productos.services"
 import NuevoProductoPresupuesto from "./NuevoProductoPresupuesto"
 import * as Yup from "yup"
+import TrashIcon from "../../assets/TrashIcon"
 
 export default function Presupuesto() {
 
@@ -62,6 +63,18 @@ export default function Presupuesto() {
         productosArreglo[valoresPrevs.length - 1].cantidad = valores.cantidad
 
         console.log(productosArreglo)
+        console.log(valoresPrevs)
+    }
+
+    async function quitar(id:number) {
+        for(let i=0;i<productosArreglo.length;i++){
+            if(productosArreglo[i].id==id){
+                productosArreglo.splice(i,1)
+                valoresPrevs.splice(i,1)
+            }
+        }   
+        console.log(productosArreglo)
+        console.log(valoresPrevs)     
     }
 
     function sacarTotal(): number {
@@ -138,7 +151,7 @@ export default function Presupuesto() {
                                                             <td>{producto.precio}</td>
                                                             <td>{producto.cantidad}</td>
                                                             <td>{producto.cantidad * producto.precio}</td>
-                                                            <td></td>
+                                                            <td><Button className="btn btn-transparent" onClick={()=>quitar(producto.id)}><TrashIcon/></Button></td>
                                                         </tr>
                                                     ))}
                                                     <tr>

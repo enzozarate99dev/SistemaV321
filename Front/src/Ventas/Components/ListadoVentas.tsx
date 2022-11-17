@@ -6,8 +6,8 @@ import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/ventas.services";
 import { clienteModel } from "../../Models/clientes.model";
-import { useEffect, useState } from "react";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
+import TrashIcon from "../../assets/TrashIcon";
 
 
 export default function ListadoVentas(props: propsListadoVentas) {
@@ -36,14 +36,12 @@ export default function ListadoVentas(props: propsListadoVentas) {
             <Link style={{ marginRight: '1rem' }} className="btn btn-success" to={urlEditar}>Editar</Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
-                className="btn btn-danger">
-                Borrar
+                className="btn btn-transparent">
+                <TrashIcon />
             </Button>
         </>
 
-        
-
-    
+           
     return (
         <Verificar listado={props.ventas}>
             <div className='container'>

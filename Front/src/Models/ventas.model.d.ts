@@ -18,8 +18,6 @@ export interface listadoVentas{
 
 export interface ventasCrear{
     clienteId: number;
-    productosIds: number[];
-    cantidad: number[];
     efectivo: boolean;
     ctaCorriente: boolean;
     transferencia: boolean;

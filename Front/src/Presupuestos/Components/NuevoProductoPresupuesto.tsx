@@ -7,6 +7,7 @@ export default function NuevoProductoPresupuesto(props: propsNuevoProducto) {
     return (
         <div style={{marginTop:'-1px'}} className="row g-3">
             <div className="col md-4">
+                <label htmlFor="productosIds">Producto</label>
                 <select className="form-control" {...props.formikProps.getFieldProps(`productosIds`)}>
                     <option value="0">--Seleccione un producto--</option>
                     {props.productosDisp.map(producto =>
@@ -14,6 +15,7 @@ export default function NuevoProductoPresupuesto(props: propsNuevoProducto) {
                 </select>
             </div>
             <div className="col md-4">
+                <label htmlFor="cantidad">Cantidad de unidades</label>
                 <Field name='cantidad' className="form-control" />
             </div>
         </div>

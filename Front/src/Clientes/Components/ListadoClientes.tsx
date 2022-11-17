@@ -1,4 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
+import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
 import { clienteModel } from "../../Models/clientes.model";
 import Button from "../../utils/Button";
@@ -26,8 +27,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
             <Link style={{  marginRight: '1rem' }} className="btn btn-success" to={urlEditar}>Editar</Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
-                className="btn btn-danger">
-                Borrar
+                className="btn btn-transparent">
+                <TrashIcon />
             </Button>
         </>
 

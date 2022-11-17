@@ -1,7 +1,5 @@
 export interface ventasConsumidorFinalCrear{
     nombreCliente: string;
-    productosIds: number[];
-    cantidad: number[];
     efectivo: boolean;
     transferencia: boolean;
 }

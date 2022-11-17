@@ -22,28 +22,16 @@ export default function FormularioClientes(props: formularioClientesProps) {
                 <Form style={{ marginTop: '-10px' }} className="row g-3 needs-validation" noValidate>
                     <div className="col-md-6">
                         <FormGroupText campo="nombreYApellido" label="Nombre Y Apellido" placeholder="Nombre del cliente" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-md-6">
                         <FormGroupText campo="email" label="Email" placeholder="Correo Electronico" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
 
                     <div className="col-md-6">
                         <FormGroupText campo="telefono" label="Telefono" placeholder="Telefono" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-md-6">
                         <FormGroupText campo="domicilio" label="Domicilio" placeholder="Domicilio" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-8">
                         <Button disabled={formikProps.isSubmitting} type="submit">

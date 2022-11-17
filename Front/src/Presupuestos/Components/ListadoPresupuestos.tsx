@@ -5,6 +5,7 @@ import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/presupuestos.services";
 import * as XLSX from "xlsx"
+import TrashIcon from "../../assets/TrashIcon";
 
 
 export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
@@ -80,8 +81,8 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         <>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
-                className="btn btn-danger">
-                Borrar
+                className="btn btn-transparent">
+                <TrashIcon />
             </Button>
             <Button style={{ marginRight: '1rem', marginLeft: '1rem' }} className="btn btn-info" onClick={() => handleExport(id)}>Exportar</Button>
         </>

@@ -66,6 +66,22 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Presupuestos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
+                    Descuento = table.Column<double>(type: "float", nullable: false),
+                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Presupuestos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Productos",
                 columns: table => new
                 {
@@ -230,6 +246,31 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PresupuestoProducto",
+                columns: table => new
+                {
+                    PresupuestoId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Unidades = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PresupuestoProducto", x => new { x.PresupuestoId, x.ProductoId });
+                    table.ForeignKey(
+                        name: "FK_PresupuestoProducto_Presupuestos_PresupuestoId",
+                        column: x => x.PresupuestoId,
+                        principalTable: "Presupuestos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PresupuestoProducto_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "VentaCFProducto",
                 columns: table => new
                 {
@@ -319,6 +360,11 @@ namespace SistemaApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PresupuestoProducto_ProductoId",
+                table: "PresupuestoProducto",
+                column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VentaCFProducto_ProductoId",
                 table: "VentaCFProducto",
                 column: "ProductoId");
@@ -352,6 +398,9 @@ namespace SistemaApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "PresupuestoProducto");
+
+            migrationBuilder.DropTable(
                 name: "VentaCFProducto");
 
             migrationBuilder.DropTable(
@@ -362,6 +411,9 @@ namespace SistemaApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Presupuestos");
 
             migrationBuilder.DropTable(
                 name: "VentaConsumidorFinal");

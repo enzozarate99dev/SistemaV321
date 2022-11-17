@@ -1,41 +1,35 @@
 import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
-import * as Yup from "yup";
+import { Link, useHistory } from "react-router-dom";
 import TrashIcon from "../../assets/TrashIcon";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
+import { ventasPostGetModel } from "../../Models/ventas.model";
+import { nuevoVentasCFModel, ventasConsumidorFinalCrear } from "../../Models/ventasCf.model";
 import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
 import { valoresPrevProps } from "../../Presupuestos/Components/Presupuesto";
 import Button from "../../utils/Button";
 import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
+import FormGroupText from "../../utils/FormGroupText";
 import MostrarErrores from "../../utils/MostrarErrores";
-import * as services from "../Services/ventas.services";
+import * as services from "../../Ventas/Services/ventas.services";
+import * as servicesCF from "../Services/consumidorFinal.services";
+import * as Yup from "yup"
 
+export default function ConsumidorFinal() {
 
-export default function EditorVentas() {
-
-    const [errores, setErrores] = useState<string[]>([])
-    const { id }: any = useParams()
-    const history = useHistory()
-    const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
-    const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
-    const [clienteId, setClienteId] = useState<number>()
-    /* var valoresPrevs: valoresPrevProps[] = [] */
-    /* var productosArreglo: productoModel[] = [] */
-
-    const modeloPrevs: valoresPrevProps = {
-        productosIds: 0,
-        cantidad: 0
-    }
-
-    const modelo: ventasCrear = {
-        clienteId: 0,
+    const modelo: ventasConsumidorFinalCrear = {
+        nombreCliente: '',
         efectivo: false,
-        ctaCorriente: false,
         transferencia: false
     }
+
+    const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
+    const [errores, setErrores] = useState<string[]>([]);
+    const history = useHistory()
+
+    var valoresPrevs: valoresPrevProps[] = []
+    var productosArreglo: productoModel[] = []
 
     useEffect(() => {
         const res = services.getProductos()
@@ -44,7 +38,13 @@ export default function EditorVentas() {
         })
     }, [])
 
-    function getProducto(valores:valoresPrevProps): productoModel {
+
+    const modeloPrevs: valoresPrevProps = {
+        productosIds: 0,
+        cantidad: 0
+    }
+
+    function getProducto(id: number): productoModel {
         var retorno: productoModel = {
             id: 0,
             nombre: "",
@@ -52,89 +52,81 @@ export default function EditorVentas() {
             cantidad: 0
         }
         for (let i = 0; i < productosDisp.length; i++) {
-            if (productosDisp[i].id == valores.productosIds) {
+            if (productosDisp[i].id == id) {
                 retorno = productosDisp[i]
             }
         }
-        retorno.cantidad = valores.cantidad
         return retorno
     }
 
     async function agregar(valores: valoresPrevProps) {
-        const prod = getProducto(valores)
-        setProductosArreglo([...productosArreglo, prod])
+        valoresPrevs.push(valores)
+        productosArreglo.push(getProducto(valoresPrevs[valoresPrevs.length - 1].productosIds!)!)
+        productosArreglo[valoresPrevs.length - 1].cantidad = valores.cantidad
+
         console.log(productosArreglo)
+        console.log(valoresPrevs)
     }
 
     async function quitar(id: number) {
         for (let i = 0; i < productosArreglo.length; i++) {
             if (productosArreglo[i].id == id) {
                 productosArreglo.splice(i, 1)
+                valoresPrevs.splice(i, 1)
             }
         }
+        console.log(productosArreglo)
+        console.log(valoresPrevs)
     }
-
-    useEffect(() => {
-        const res = services.getVenta(id)
-        res.then((respuesta: AxiosResponse<ventasModel>) => {
-            console.log(respuesta.data)
-            /* respuesta.data.productos.map((producto) => productosArreglo.push(producto)) */
-            setProductosArreglo(respuesta.data.productos)
-            setClienteId(respuesta.data.clienteId)
-            console.log(productosArreglo)
-        })
-    }, [id])
 
     function sacarTotal(): number {
         var total: number = 0
-        for (let i = 0; i < productosArreglo.length; i++) {
-            total = total + (productosArreglo[i].precio * productosArreglo[i].cantidad)
+        for (let i = 0; i < valoresPrevs.length; i++) {
+            total = total + (productosArreglo[i].precio * valoresPrevs[i].cantidad)
         }
         return total
     }
 
-    async function convertir(valores: ventasCrear) {
-        console.log(productosArreglo)
+    async function convertir(valores: ventasConsumidorFinalCrear) {
+        console.log(valores)
         var arraygeneral = []
-        for (let i = 0; i < productosArreglo.length; i++) {
-            arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!]
+        for (let i = 0; i < valoresPrevs.length; i++) {
+            arraygeneral[i] = [valoresPrevs[i].productosIds!, valoresPrevs[i].cantidad!]
         }
         var fDePago = ''
         if (valores.efectivo) {
             fDePago = "Efectivo"
         }
-        if (valores.ctaCorriente) {
-            fDePago = "Cuenta Corriente"
-        }
         if (valores.transferencia) {
             fDePago = "Transferencia"
         }
-        var venta: nuevoVentasModel = {
-            clienteId: clienteId!,
+        var venta: nuevoVentasCFModel = {
+            nombreCliente: valores.nombreCliente,
             productosIds: arraygeneral,
             formaDePago: fDePago
         }
-        console.log(venta)
-        editar(venta)
+        crear(venta)
     }
 
-    async function editar(ventaEditar: nuevoVentasModel) {
+    async function crear(venta: nuevoVentasCFModel) {
         try {
-            services.editar(ventaEditar, id)
+            servicesCF.crear(venta)
             history.push('/listadoVentas')
+            history.go(0)
         }
         catch (error) {
-            setErrores(error.response.data)
+            setErrores(error.response.data);
         }
     }
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Editar Venta</h3>
+            <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
                 {(formikProps) => (
                     <>
                         <Form>
+                            <FormGroupText campo="nombreCliente" label="Nombre del cliente"/>
                             <Formik initialValues={modeloPrevs} onSubmit={valores => agregar(valores)} validationSchema={Yup.object({ cantidad: Yup.number().min(1) })}>
                                 {(formikProps2) => (
                                     <>
@@ -157,7 +149,7 @@ export default function EditorVentas() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {productosArreglo.map((producto,index) => (
+                                                    {productosArreglo.map((producto) => (
                                                         <tr key={producto.id}>
                                                             <td>{producto.id}</td>
                                                             <td>{producto.nombre}</td>
@@ -187,9 +179,8 @@ export default function EditorVentas() {
                             <div className="col-md-8">
                                 <FormGroupCheckbox campo="efectivo" label="Efectivo" />
                                 <FormGroupCheckbox campo="transferencia" label="Transferencia" />
-                                <FormGroupCheckbox campo="ctaCorriente" label="Cuenta Corriente" />
                             </div>
-                            <Button /* onClick={() => formikProps.submitForm()} */ type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                            <Button onClick={() => formikProps.submitForm()} type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
                             </Button>
                             <Link style={{ marginLeft: '1rem', marginTop: '1rem', marginBottom: '1rem' }} className="btn btn-secondary" to="/">
@@ -200,6 +191,5 @@ export default function EditorVentas() {
                     </>
                 )}
             </Formik>
-        </>
-    );
+        </>);
 }

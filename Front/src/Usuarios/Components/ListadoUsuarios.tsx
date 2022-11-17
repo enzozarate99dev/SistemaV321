@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import * as services from "../Services/usuarios.services"
 import { usuariosModel } from "../../Models/usuarios.model";
+import TrashIcon from "../../assets/TrashIcon";
 
 
 export default function ListadoUsuarios() {
@@ -39,8 +40,8 @@ export default function ListadoUsuarios() {
         <>
             <Button
                 onClick={() => confirmar(() => borrar(nombre))}
-                className="btn btn-danger">
-                Borrar
+                className="btn btn-transparent">
+                <TrashIcon />
             </Button>
         </>
 

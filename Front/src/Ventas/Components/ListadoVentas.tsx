@@ -1,23 +1,44 @@
 import { Link, useHistory } from "react-router-dom";
-import { AxiosResponse } from "axios";
+import EditIcon from "../../assets/EditIcon";
+import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
+import { clienteModel } from "../../Models/clientes.model";
 import { ventasModel } from "../../Models/ventas.model";
+import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
+import * as servicesCF from "../../VentasConsFinal/Services/consumidorFinal.services";
 import * as services from "../Services/ventas.services";
-import { clienteModel } from "../../Models/clientes.model";
-import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
-import TrashIcon from "../../assets/TrashIcon";
+import * as serClientes from "../../Clientes/Services/clientes.services"
+import { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
 
 
 export default function ListadoVentas(props: propsListadoVentas) {
 
     const history = useHistory()
-    
+    const [clientes, setClientes] = useState<clienteModel[]>([])
 
+    useEffect(() => {
+        const res = serClientes.getTodosLosClientes()
+        res.then((resp: AxiosResponse<clienteModel[]>) => {
+            setClientes(resp.data)
+        })
+    }, [])
+    
     async function borrar(id: number) {
         try {
             services.borrar(id)
+            history.go(0)
+        }
+        catch (error) {
+            console.log(error.response.data)
+        }
+    }
+
+    async function borrarCF(id: number) {
+        try {
+            servicesCF.borrar(id)
             history.go(0)
         }
         catch (error) {
@@ -32,8 +53,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
     const botones = (urlEditar: string, urlDetalle: string, id: number) =>
         <>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-light" to={urlDetalle}>Detalle</Link>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-success" to={urlEditar}>Editar</Link>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-info" to={urlDetalle}>Detalle</Link>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon /></Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
@@ -41,10 +62,21 @@ export default function ListadoVentas(props: propsListadoVentas) {
             </Button>
         </>
 
-           
+    const botonesCF = (urlEditar: string, urlDetalle: string, id: number) =>
+        <>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-info" to={urlDetalle}>Detalle</Link>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon /></Link>
+            <Button
+                onClick={() => confirmar(() => borrarCF(id))}
+                className="btn btn-transparent">
+                <TrashIcon />
+            </Button>
+        </>
+
+
     return (
-        <Verificar listado={props.ventas}>
-            <div className='container'>
+        <>
+            <Verificar listado={props.ventas}>
                 <table className='table'>
                     <thead className="table-dark">
                         <tr>
@@ -58,7 +90,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     <tbody>
                         {props.ventas?.map((venta) => (
                             <tr key={venta.id}>
-                                <td>{props.clientes![venta.clienteId - 1].nombreYApellido!}</td>
+                                <td>{clientes[venta.clienteId - 1].nombreYApellido!}</td>
                                 <td>{venta.precioTotal}</td>
                                 <td>{venta.formaDePago}</td>
                                 <td>{formatDate(venta.fechaDeVenta.toString())}</td>
@@ -74,19 +106,18 @@ export default function ListadoVentas(props: propsListadoVentas) {
                                 <td>{ventacf.formaDePago}</td>
                                 <td>{formatDate(ventacf.fechaDeVenta.toString())}</td>
                                 <td>
-                                    {botones(`ventas/editar/${ventacf.id}`, `ventas/detalle/${ventacf.id}`, ventacf.id)}
+                                    {botonesCF(`ventas/editar/${ventacf.id}`, `ventasConsumidorFinal/${ventacf.id}`, ventacf.id)}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-            </div>
-        </Verificar>
+            </Verificar>
+        </>
     )
 }
 
 interface propsListadoVentas {
     ventas?: ventasModel[];
     ventasConsFinal?: ventasConsumidorFinalModel[];
-    clientes?: clienteModel[]
 }

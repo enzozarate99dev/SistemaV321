@@ -23,12 +23,11 @@ export default function Ventas() {
     }
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
+    const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
     const history = useHistory()
     const { id }: any = useParams()
 
-    var valoresPrevs: valoresPrevProps[] = []
-    var productosArreglo: productoModel[] = []
 
     useEffect(() => {
         const res = services.getProductos()
@@ -43,7 +42,7 @@ export default function Ventas() {
         cantidad: 0
     }
 
-    function getProducto(id: number): productoModel {
+    function getProducto(valores: valoresPrevProps): productoModel {
         var retorno: productoModel = {
             id: 0,
             nombre: "",
@@ -51,46 +50,36 @@ export default function Ventas() {
             cantidad: 0
         }
         for (let i = 0; i < productosDisp.length; i++) {
-            if (productosDisp[i].id == id) {
+            if (productosDisp[i].id == valores.productosIds) {
                 retorno = productosDisp[i]
             }
         }
+        retorno.cantidad = valores.cantidad
         return retorno
     }
 
     async function agregar(valores: valoresPrevProps) {
-        valoresPrevs.push(valores)
-        productosArreglo.push(getProducto(valoresPrevs[valoresPrevs.length - 1].productosIds!)!)
-        productosArreglo[valoresPrevs.length - 1].cantidad = valores.cantidad
-
-        console.log(productosArreglo)
-        console.log(valoresPrevs)
+        const obj = getProducto(valores)
+        setProductosArreglo([...productosArreglo,obj])
     }
 
     async function quitar(id: number) {
-        for (let i = 0; i < productosArreglo.length; i++) {
-            if (productosArreglo[i].id == id) {
-                productosArreglo.splice(i, 1)
-                valoresPrevs.splice(i, 1)
-            }
-        }
-        console.log(productosArreglo)
-        console.log(valoresPrevs)
+        const newProds = productosArreglo.filter(prod => prod.id !== id)
+        setProductosArreglo(newProds)
     }
 
     function sacarTotal(): number {
         var total: number = 0
-        for (let i = 0; i < valoresPrevs.length; i++) {
-            total = total + (productosArreglo[i].precio * valoresPrevs[i].cantidad)
+        for (let i = 0; i < productosArreglo.length; i++) {
+            total = total + (productosArreglo[i].precio * productosArreglo[i].cantidad)
         }
         return total
     }
 
     async function convertir(valores: ventasCrear) {
-        console.log(valores)
         var arraygeneral = []
-        for (let i = 0; i < valoresPrevs.length; i++) {
-            arraygeneral[i] = [valoresPrevs[i].productosIds!, valoresPrevs[i].cantidad!]
+        for (let i = 0; i < productosArreglo.length; i++) {
+            arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!]
         }
         var fDePago = ''
         if (valores.efectivo) {

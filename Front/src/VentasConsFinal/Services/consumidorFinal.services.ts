@@ -11,3 +11,12 @@ export async function filtrar(filtro: filtroVentasProps){
     const res = axios.get(`${urlConsumidoFinal}/filtrar`, { params: filtro })
     return res
 }
+
+export async function getVenta(id: any){
+    const res = axios.get(`${urlConsumidoFinal}/${id}`)
+    return res
+}
+
+export async function borrar(id: number){
+    await axios.delete(`${urlConsumidoFinal}/${id}`)
+}

@@ -1,11 +1,9 @@
 import axios from "axios"
 import { urlCuentas } from "../../Generales/endpoints"
-import { respuestaAutenticacion } from "../../Models/auth.model"
-import { usuariosCrear, usuariosEnviar, usuariosModel } from "../../Models/usuarios.model"
+import { usuariosEnviar, usuariosModel } from "../../Models/usuarios.model"
 
 export async function registrar(credenciales: usuariosEnviar){
-    const res = await axios.post<respuestaAutenticacion>(`${urlCuentas}/crear`, credenciales)
-    return res
+    await axios.post(`${urlCuentas}/crear`, credenciales)
 }
 
 export async function getUsuarios(){

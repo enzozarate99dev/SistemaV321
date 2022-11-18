@@ -21,24 +21,34 @@ function App() {
     setClaims(claims)
   }
 
+  function esAdmin() {
+    return claims.findIndex(claim => claim.nombre === 'role' && claim.valor === 'admin') > -1;
+  }
+
+  function esCajero() {
+    return claims.findIndex(claim => claim.nombre === 'role' && claim.valor === 'cajero') > -1;
+  }
+
 
   return (
     <>
 
-        <BrowserRouter>
-          <AutenticacionContext.Provider value={{ claims, actualizar }}>
-            <Menu />
-            <div className="container">
-              <Switch>
-                {rutas.map(ruta =>
-                  <Route key={ruta.path} path={ruta.path}
-                    exact={ruta.exact}>
-                    <ruta.componente />
-                  </Route>)}
-              </Switch>
-            </div>
-          </AutenticacionContext.Provider>
-        </BrowserRouter>
+      <BrowserRouter>
+        <AutenticacionContext.Provider value={{ claims, actualizar }}>
+          <Menu />
+          <div className="container">
+            <Switch>
+              {rutas.map(ruta =>
+                <Route key={ruta.path} path={ruta.path}
+                  exact={ruta.exact}>
+                  {ruta.esCajero && !esCajero() ? <>
+                    No tiene permiso para acceder a este componente
+                  </> : <ruta.componente />}
+                </Route>)}
+            </Switch>
+          </div>
+        </AutenticacionContext.Provider>
+      </BrowserRouter>
 
     </>
   );

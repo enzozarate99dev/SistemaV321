@@ -58,7 +58,6 @@ export default function FiltroClientes() {
         })
     }
 
-
     return (
         <>
             <h3 style={{ marginTop: '1rem' }}>Filtrar Clientes</h3>
@@ -69,7 +68,7 @@ export default function FiltroClientes() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+                            <Button style={{ marginBottom: '1rem'}} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
 
                             {mostrarFiltros ?
                                 <div className="form-inline">
@@ -89,7 +88,7 @@ export default function FiltroClientes() {
                                             formikProps.setValues(valorInicial)
                                             buscarCliente(valorInicial)
                                         }}>Limpiar</Button>
-                                </div>:null}
+                                </div> : null}
                         </Form>
 
                         <ListadoClientes clientes={clientes} />

@@ -6,7 +6,7 @@ export interface usuariosModel{
 }
 
 export interface usuariosCrear{
-    userName: string;
+    nombre: string;
     email: string;
     admin: boolean;
     cajero: boolean;
@@ -14,7 +14,7 @@ export interface usuariosCrear{
 }
 
 export interface usuariosEnviar{
-    userName: string;
+    nombre: string;
     email: string;
     role: string;
     password: string;

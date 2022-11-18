@@ -1,6 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
 import { actualizar, productoModel } from "../../Models/producto.model";
@@ -36,7 +37,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
 
     const botones = (urlEditar: string, id: number) =>
         <>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-success" to={urlEditar}>Editar</Link>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon/></Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
@@ -53,26 +54,26 @@ export default function ListadoProductos(props: propsListadoProductos) {
                             <table style={{marginTop:'1rem'}} className='table'>
                                 <thead className="table-dark">
                                     <tr>
-                                        <th></th>
                                         <th>#</th>
                                         <th>Nombre</th>
                                         <th>Precio</th>
                                         <th>Unidades</th>
                                         <th>Imagen</th>
+                                        <th></th>
                                         {actualizarPrecios ? <th>Actualizar</th>: null}                                       
                                     </tr>
                                 </thead>
                                 <tbody className="">
                                     {props.productos?.map((producto) => (
                                         <tr key={producto.id}>
-                                            <td>
-                                                {botones(`productos/editar/${producto.id}`, producto.id)}
-                                            </td>
                                             <td>{producto.id}</td>
                                             <td>{producto.nombre}</td>
                                             <td>{producto.precio}</td>
                                             <td>{producto.cantidad}</td>
                                             <td><img width="50" height="50" src={producto.foto} alt="Poster" /></td>
+                                            <td>
+                                                {botones(`productos/editar/${producto.id}`, producto.id)}
+                                            </td>
                                             {actualizarPrecios ? <td><Field style={{ marginLeft: "30px" }} name="ids" id="ids" value={producto.id.toString()} type="checkbox" /></td>: null}                                             
                                         </tr>
                                     ))}

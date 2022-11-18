@@ -14,7 +14,7 @@ export default function FiltroProductos() {
     const [totalDePaginas, setTotalDePaginas] = useState(0);
     const [productos, setProductos] = useState<productoModel[]>()
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
-    
+
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -67,16 +67,16 @@ export default function FiltroProductos() {
     function buscarProducto(valores: filtroVentasProps) {
         modificarURL(valores)
         const response = services.filtrar(valores)
-            response.then((respuesta: AxiosResponse<productoModel[]>) => {
-                console.log(respuesta.data)
-                const totalDeRegistros = parseInt(
-                    respuesta.headers["cantidadtotalregistros"],
-                    10
-                );
-                setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
+        response.then((respuesta: AxiosResponse<productoModel[]>) => {
+            console.log(respuesta.data)
+            const totalDeRegistros = parseInt(
+                respuesta.headers["cantidadtotalregistros"],
+                10
+            );
+            setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
 
-                setProductos(respuesta.data);
-            })
+            setProductos(respuesta.data);
+        })
     }
 
 
@@ -90,43 +90,43 @@ export default function FiltroProductos() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <Button style={{marginBottom:'1rem'}} onClick={() => { setMostrarFiltros(!mostrarFiltros)}}>Filtros</Button>
-                            
-                            {mostrarFiltros ? 
-                            <div className="form-inline">
-                                <div className="form-group mb-2">
-                                    <label htmlFor="nombre" className="sr-only">Nombre del producto</label>
-                                    <input type="text" className="form-control"
-                                        id="nombre" placeholder="Nombre del producto"
-                                        {...formikProps.getFieldProps('nombre')}
-                                    />
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+
+                            {mostrarFiltros ?
+                                <div className="form-inline">
+                                    <div className="form-group mb-2">
+                                        <label htmlFor="nombre" className="sr-only">Nombre del producto</label>
+                                        <input type="text" className="form-control"
+                                            id="nombre" placeholder="Nombre del producto"
+                                            {...formikProps.getFieldProps('nombre')}
+                                        />
+                                    </div>
+                                    <div className="form-group mb-2">
+                                        <label htmlFor="precio" className="sr-only">Precio maximo</label>
+                                        <input style={{ marginLeft: '1rem' }} type="text" className="form-control"
+                                            id="precio" placeholder="Precio maximo"
+                                            {...formikProps.getFieldProps('precio')}
+                                        />
+                                    </div>
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <Field className="form-check-input" id="stockDisponible" name="stockDisponible" type="checkbox" />
+                                        <label className="form-check-label" htmlFor="stockDisponible">Stock Disponible</label>
+                                    </div>
+                                    <div className="form-group mx-sm-3 mb-2">
+                                        <Field className="form-check-input" id="sinStock" name="sinStock" type="checkbox" />
+                                        <label className="form-check-label" htmlFor="sinStock">Sin Stock</label>
+                                    </div>
+                                    <Button
+                                        className="btn btn-primary mb-2 mx-sm-3"
+                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
+                                    <Button
+                                        className="btn btn-danger mb-2"
+                                        onClick={() => {
+                                            formikProps.setValues(valorInicial)
+                                            buscarProducto(valorInicial)
+                                        }}>Limpiar</Button>
                                 </div>
-                                <div className="form-group mb-2">
-                                    <label htmlFor="precio" className="sr-only">Precio maximo</label>
-                                    <input style={{ marginLeft: '1rem' }} type="text" className="form-control"
-                                        id="precio" placeholder="Precio maximo"
-                                        {...formikProps.getFieldProps('precio')}
-                                    />
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <Field className="form-check-input" id="stockDisponible" name="stockDisponible" type="checkbox" />
-                                    <label className="form-check-label" htmlFor="stockDisponible">Stock Disponible</label>
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                                    <Field className="form-check-input" id="sinStock" name="sinStock" type="checkbox" />
-                                    <label className="form-check-label" htmlFor="sinStock">Sin Stock</label>
-                                </div>
-                                <Button
-                                    className="btn btn-primary mb-2 mx-sm-3"
-                                    onClick={() => formikProps.submitForm()}>Filtrar</Button>
-                                <Button
-                                    className="btn btn-danger mb-2"
-                                    onClick={() => {
-                                        formikProps.setValues(valorInicial)
-                                        buscarProducto(valorInicial)
-                                    }}>Limpiar</Button>
-                            </div>
-                            :null}
+                                : null}
                         </Form>
 
                         <ListadoProductos productos={productos} />

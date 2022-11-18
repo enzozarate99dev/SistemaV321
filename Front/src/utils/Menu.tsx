@@ -50,7 +50,6 @@ export default function Menu() {
                         />
                         <Autorizado role="admin" autorizado={
                             <>
-
                                 <NavDropdown title="Usuarios" id="collasible-nav-dropdown">
                                     <NavDropdown.Item href="/listadoUsuarios">Gestionar usuarios</NavDropdown.Item>
                                     <NavDropdown.Item href="/registro">Registrar usuario</NavDropdown.Item>
@@ -69,13 +68,6 @@ export default function Menu() {
                                 history.go(0)
                             }} style={{color:'black'}}>Log out</a></NavDropdown.Item>
                             </NavDropdown>
-
-                            {/* <Button onClick={() => {
-                                logout()
-                                actualizar([])
-                                history.push('/')
-                                history.go(0)
-                            }} className="nav-link btn btn-secondary">Log out</Button> */}
                         </div></>}
 
                         noAutorizado={

@@ -1,15 +1,13 @@
-import { Link, useHistory } from "react-router-dom";
 import { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import EditIcon from "../../assets/EditIcon";
+import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
-import { ventasModel } from "../../Models/ventas.model";
+import { usuariosModel } from "../../Models/usuarios.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
-import { clienteModel } from "../../Models/clientes.model";
-import { useEffect, useState } from "react";
-import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
-import * as services from "../Services/usuarios.services"
-import { usuariosModel } from "../../Models/usuarios.model";
-import TrashIcon from "../../assets/TrashIcon";
+import * as services from "../Services/usuarios.services";
 
 
 export default function ListadoUsuarios() {
@@ -28,6 +26,10 @@ export default function ListadoUsuarios() {
         }
     }
 
+    async function editar(nombre: string){
+
+    }
+
     useEffect(() => {
         const res = services.getUsuarios()
         res.then((respuesta: AxiosResponse<usuariosModel[]>) => {
@@ -38,6 +40,12 @@ export default function ListadoUsuarios() {
 
     const botones = (nombre: string) =>
         <>
+            <Button
+                style={{ marginRight: '1rem' }}
+                onClick={() => confirmar(() => editar(nombre))}
+                className="btn btn-transparent">
+                <EditIcon />
+            </Button>
             <Button
                 onClick={() => confirmar(() => borrar(nombre))}
                 className="btn btn-transparent">

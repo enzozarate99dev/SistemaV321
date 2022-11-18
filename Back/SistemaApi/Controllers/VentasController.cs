@@ -140,14 +140,36 @@ namespace SistemaApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] VentaCreacionDTO ventaCreacionDTO)
         {
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
+            var venta = await context.Ventas.Include(x=> x.VentaProducto).FirstOrDefaultAsync(x => x.Id == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == ventaCreacionDTO.ClienteId);
+            double total = 0;
 
             if (venta == null)
             {
                 return NotFound();
             }
 
+            foreach (var tuple in ventaCreacionDTO.ProductosIds)
+            {
+                var idP = tuple[0];
+                var cantidad = tuple[1];
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == idP);
+                producto.Cantidad = producto.Cantidad - cantidad;
+                total = total + (producto.Precio * cantidad);
+            }
+
             venta = mapper.Map(ventaCreacionDTO, venta);
+            venta.PrecioTotal = total;
+            if (venta.FormaDePago == "Cuenta Corriente")
+            {
+                venta.Adeudada = total;
+                cliente.Deuda += total;
+            }
+            else
+            {
+                venta.Adeudada = 0;
+                cliente.Deuda += 0;
+            }
             await context.SaveChangesAsync();
             return NoContent();
         }

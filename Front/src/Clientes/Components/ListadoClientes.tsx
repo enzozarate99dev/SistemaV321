@@ -1,4 +1,5 @@
 import { Link, useHistory } from "react-router-dom";
+import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
 import { clienteModel } from "../../Models/clientes.model";
@@ -23,8 +24,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
     const botones = (urlEditar: string, id: number, urlInfo: string) =>
         <>
-            <Link style={{  marginRight: '1rem' }} className="btn btn-light" to={urlInfo}>Informacion</Link>
-            <Link style={{  marginRight: '1rem' }} className="btn btn-success" to={urlEditar}>Editar</Link>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-info" to={urlInfo}>Informacion</Link>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon /></Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
@@ -34,30 +35,30 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
     return (
         <Verificar listado={props.clientes}>
-            <div className='container'>
-                <table className='table'>
-                    <thead className="table-dark">
-                        <tr>
-                            <th></th>
-                            <th>#</th>
-                            <th>Nombre y Apellido</th>
-                            <th>Deuda Total</th>
+            <table className='table'>
+                <thead className="table-dark">
+                    <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>Nombre y Apellido</th>
+                        <th>Deuda Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {props.clientes?.map((cliente) => (
+                        <tr key={cliente.id}>
+                            <td></td>
+                            <td>{cliente.id}</td>
+                            <td>{cliente.nombreYApellido}</td>
+                            <td>{cliente.deuda}</td>
+                            <td>
+                                {botones(`clientes/editar/${cliente.id}`, cliente.id, `clientes/${cliente.id}`)}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {props.clientes?.map((cliente) => (
-                            <tr key={cliente.id}>
-                                <td>
-                                    {botones(`clientes/editar/${cliente.id}`, cliente.id, `clientes/${cliente.id}`)}
-                                </td>
-                                <td>{cliente.id}</td>
-                                <td>{cliente.nombreYApellido}</td>
-                                <td>{cliente.deuda}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>           
+                    ))}
+                </tbody>
+            </table>
         </Verificar>
     )
 }

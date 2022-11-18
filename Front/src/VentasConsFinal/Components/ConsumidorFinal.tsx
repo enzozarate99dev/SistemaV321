@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import * as Yup from "yup";
 import TrashIcon from "../../assets/TrashIcon";
 import { productoModel } from "../../Models/producto.model";
 import { ventasPostGetModel } from "../../Models/ventas.model";
@@ -14,7 +15,6 @@ import FormGroupText from "../../utils/FormGroupText";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../../Ventas/Services/ventas.services";
 import * as servicesCF from "../Services/consumidorFinal.services";
-import * as Yup from "yup"
 
 export default function ConsumidorFinal() {
 
@@ -25,11 +25,9 @@ export default function ConsumidorFinal() {
     }
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
+    const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
     const history = useHistory()
-
-    var valoresPrevs: valoresPrevProps[] = []
-    var productosArreglo: productoModel[] = []
 
     useEffect(() => {
         const res = services.getProductos()
@@ -44,7 +42,7 @@ export default function ConsumidorFinal() {
         cantidad: 0
     }
 
-    function getProducto(id: number): productoModel {
+    function getProducto(valores: valoresPrevProps): productoModel {
         var retorno: productoModel = {
             id: 0,
             nombre: "",
@@ -52,46 +50,36 @@ export default function ConsumidorFinal() {
             cantidad: 0
         }
         for (let i = 0; i < productosDisp.length; i++) {
-            if (productosDisp[i].id == id) {
+            if (productosDisp[i].id == valores.productosIds) {
                 retorno = productosDisp[i]
             }
         }
+        retorno.cantidad = valores.cantidad
         return retorno
     }
 
     async function agregar(valores: valoresPrevProps) {
-        valoresPrevs.push(valores)
-        productosArreglo.push(getProducto(valoresPrevs[valoresPrevs.length - 1].productosIds!)!)
-        productosArreglo[valoresPrevs.length - 1].cantidad = valores.cantidad
-
-        console.log(productosArreglo)
-        console.log(valoresPrevs)
+        const obj = getProducto(valores)
+        setProductosArreglo([...productosArreglo, obj])
     }
 
     async function quitar(id: number) {
-        for (let i = 0; i < productosArreglo.length; i++) {
-            if (productosArreglo[i].id == id) {
-                productosArreglo.splice(i, 1)
-                valoresPrevs.splice(i, 1)
-            }
-        }
-        console.log(productosArreglo)
-        console.log(valoresPrevs)
+        const newProds = productosArreglo.filter(prod => prod.id !== id)
+        setProductosArreglo(newProds)
     }
 
     function sacarTotal(): number {
         var total: number = 0
-        for (let i = 0; i < valoresPrevs.length; i++) {
-            total = total + (productosArreglo[i].precio * valoresPrevs[i].cantidad)
+        for (let i = 0; i < productosArreglo.length; i++) {
+            total = total + (productosArreglo[i].precio * productosArreglo[i].cantidad)
         }
         return total
     }
 
     async function convertir(valores: ventasConsumidorFinalCrear) {
-        console.log(valores)
         var arraygeneral = []
-        for (let i = 0; i < valoresPrevs.length; i++) {
-            arraygeneral[i] = [valoresPrevs[i].productosIds!, valoresPrevs[i].cantidad!]
+        for (let i = 0; i < productosArreglo.length; i++) {
+            arraygeneral[i] = [productosArreglo[i].id, productosArreglo[i].cantidad]
         }
         var fDePago = ''
         if (valores.efectivo) {

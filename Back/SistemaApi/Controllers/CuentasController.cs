@@ -48,13 +48,13 @@ namespace SistemaApi.Controllers
         public async Task<ActionResult<RespuestaAutenticacion>> Crear([FromBody] RegistroCreacionDTO credenciales)
         {
             var usuarios = new IdentityUser { UserName = credenciales.Nombre, Email = credenciales.Email };
-            var resultado = await userManager.CreateAsync(usuarios, credenciales.Password);      
+            var resultado = await userManager.CreateAsync(usuarios, credenciales.Password);
             if (resultado.Succeeded)
             {
                 await roleManager.CreateAsync(new IdentityRole(credenciales.Role));
                 var user = await userManager.FindByEmailAsync(credenciales.Email);
                 await userManager.AddToRoleAsync(user, credenciales.Role);
-                return await ConstruirToken(credenciales);
+                return NoContent();
             }
             else
             {
@@ -77,10 +77,10 @@ namespace SistemaApi.Controllers
             }
         }
 
-        /*[HttpDelete("{nombre:string}")]
-        public async Task<ActionResult> Delete(string nombre)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(string id)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == nombre);
+            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == id);
             var userRol = await context.UserRoles.FirstOrDefaultAsync(x => x.UserId == user.Id);
 
             if (user == null)
@@ -92,21 +92,21 @@ namespace SistemaApi.Controllers
             context.Remove(userRol);
             await context.SaveChangesAsync();
             return NoContent();
-        }*/
+        }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete()
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(string id)
         {
-            var users = await context.Users.ToListAsync();
-            var userRol = await context.Users.ToListAsync();
-            foreach(var user in users)
+            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == id);
+            var userRol = await context.UserRoles.FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+            if (user == null)
             {
-                context.Remove(user);
+                return NotFound();
             }
-            foreach(var userRo in userRol)
-            {
-                context.Remove(userRo);
-            }
+
+            context.Remove(user);
+            context.Remove(userRol);
             await context.SaveChangesAsync();
             return NoContent();
         }
@@ -124,34 +124,6 @@ namespace SistemaApi.Controllers
             
             var claimsDB = await userManager.GetClaimsAsync(usuario);
          
-            claims.AddRange(claimsDB);
-
-            var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));
-            var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
-
-            var expiracion = DateTime.UtcNow.AddYears(1);
-
-            var token = new JwtSecurityToken(issuer: null, audience: null, claims: claims, expires: expiracion, signingCredentials: creds);
-
-            return new RespuestaAutenticacion()
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Expiracion = expiracion
-            };
-        }
-
-        private async Task<RespuestaAutenticacion> ConstruirToken(RegistroCreacionDTO credenciales)
-        {
-            var claims = new List<Claim>()
-            {
-                new Claim("email",credenciales.Email),
-                new Claim("nombre", credenciales.Nombre),
-                new Claim("role", credenciales.Role)
-            };
-
-            var usuario = await userManager.FindByEmailAsync(credenciales.Email);
-            var claimsDB = await userManager.GetClaimsAsync(usuario);
-
             claims.AddRange(claimsDB);
 
             var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));

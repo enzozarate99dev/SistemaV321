@@ -94,5 +94,20 @@ namespace SistemaApi.Controllers
             await context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var venta = await context.VentaConsumidorFinal.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(venta);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

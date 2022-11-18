@@ -4,17 +4,13 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { productoModel } from "../../Models/producto.model";
 import { ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
+import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import Button from "../../utils/Button";
 import FormGroupFecha from "../../utils/FormGroupFecha";
 import Paginacion from "../../utils/Paginacion";
+import * as servicesCF from '../../VentasConsFinal/Services/consumidorFinal.services';
 import * as services from '../Services/ventas.services';
-import * as servicesCF from '../../VentasConsFinal/Services/consumidorFinal.services'
 import ListadoVentas from "./ListadoVentas";
-import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
-import { clienteModel } from "../../Models/clientes.model";
-import * as serClientes from "../../Clientes/Services/clientes.services"
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
-import { boolean } from "yup";
 
 
 export default function FiltroVentas() {
@@ -24,7 +20,6 @@ export default function FiltroVentas() {
     const [ventas, setVentas] = useState<ventasModel[]>()
     const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
-    const [clientes, setClientes] = useState<clienteModel[]>([])
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -36,13 +31,6 @@ export default function FiltroVentas() {
         pagina: 1,
         recordsPorPagina: 10
     }
-
-    useEffect(() => {
-        const res = serClientes.getTodosLosClientes()
-        res.then((resp: AxiosResponse<clienteModel[]>) => {
-            setClientes(resp.data)
-        })
-    }, [])
 
     useEffect(() => {
         const res = services.getProductos()
@@ -86,22 +74,17 @@ export default function FiltroVentas() {
         history.push(`/listadoVentas?${queryStrings.join('&')}`)
     }
 
-    function buscarVentaCF(valores: filtroVentasProps) {
-        console.log(valores)
+    async function buscarVentaCF(valores: filtroVentasProps) {
         modificarURL(valores)
         const res = servicesCF.filtrar(valores)
         res.then((respuesta: AxiosResponse<ventasConsumidorFinalModel[]>) => {
             const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10)
             setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-            console.log(respuesta.data)
             setVentasCF(respuesta.data)
-            console.log(ventasCF)
         })
-        console.log(ventasCF)
     }
 
-    function buscarVenta(valores: filtroVentasProps) {
-        console.log(valores)
+    async function buscarVenta(valores: filtroVentasProps) {
         modificarURL(valores)
         const res = services.filtrar(valores)
         res.then((respuesta: AxiosResponse<ventasModel[]>) => {
@@ -112,7 +95,6 @@ export default function FiltroVentas() {
             setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
             setVentas(respuesta.data);
         })
-        console.log(ventas)
     }
 
 
@@ -162,7 +144,7 @@ export default function FiltroVentas() {
                                 </div>:null}
                         </Form>
 
-                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} clientes={clientes} />
+                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF}/>
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

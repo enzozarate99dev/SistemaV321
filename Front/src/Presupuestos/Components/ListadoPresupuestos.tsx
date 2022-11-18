@@ -1,17 +1,16 @@
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import * as XLSX from "xlsx";
+import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
 import { modeloExcel, presupuestoModel } from "../../Models/presupuestos.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/presupuestos.services";
-import * as XLSX from "xlsx"
-import TrashIcon from "../../assets/TrashIcon";
 
 
 export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
 
     const history = useHistory()
-
 
     async function borrar(id: number) {
         try {
@@ -88,36 +87,32 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         </>
 
 
-
-
     return (
         <Verificar listado={props.presupuestos}>
-            <div className='container'>
-                <table className='table'>
-                    <thead className="table-dark">
-                        <tr>
-                            <th>Nombre y Apellido</th>
-                            <th>Descuento aplicado</th>
-                            <th>Fecha</th>
-                            <th>Total</th>
-                            <th></th>
+            <table className='table'>
+                <thead className="table-dark">
+                    <tr>
+                        <th>Nombre y Apellido</th>
+                        <th>Descuento aplicado</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {props.presupuestos?.map((presupuesto) => (
+                        <tr key={presupuesto.id}>
+                            <td>{presupuesto.nombre}</td>
+                            <td>{presupuesto.descuento}</td>
+                            <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
+                            <td>{presupuesto.precioTotal}</td>
+                            <td>
+                                {botones(presupuesto.id)}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {props.presupuestos?.map((presupuesto) => (
-                            <tr key={presupuesto.id}>
-                                <td>{presupuesto.nombre}</td>
-                                <td>{presupuesto.descuento}</td>
-                                <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
-                                <td>{presupuesto.precioTotal}</td>
-                                <td>
-                                    {botones(presupuesto.id)}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                    ))}
+                </tbody>
+            </table>
         </Verificar>
     )
 }

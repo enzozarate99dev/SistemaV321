@@ -1,19 +1,18 @@
 import { AxiosResponse } from "axios"
-import { Field, Form, Formik } from "formik"
+import { Form, Formik } from "formik"
 import { useEffect, useState } from "react"
-import Button from "../../utils/Button"
 import { Link, useHistory } from "react-router-dom"
+import * as Yup from "yup"
+import TrashIcon from "../../assets/TrashIcon"
 import { presupuestoCrear } from "../../Models/presupuestos.model"
 import { productoModel } from "../../Models/producto.model"
 import { ventasPostGetModel } from "../../Models/ventas.model"
+import Button from "../../utils/Button"
 import FormGroupText from "../../utils/FormGroupText"
 import MostrarErrores from "../../utils/MostrarErrores"
 import * as services from "../../Ventas/Services/ventas.services"
 import * as presServices from "../Services/presupuestos.services"
-import * as prodServices from "../../Productos/Services/productos.services"
 import NuevoProductoPresupuesto from "./NuevoProductoPresupuesto"
-import * as Yup from "yup"
-import TrashIcon from "../../assets/TrashIcon"
 
 export default function Presupuesto() {
 
@@ -23,11 +22,9 @@ export default function Presupuesto() {
     }
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
+    const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
     const history = useHistory()
-
-    var valoresPrevs: valoresPrevProps[] = []
-    var productosArreglo: productoModel[] = []
 
     useEffect(() => {
         const res = services.getProductos()
@@ -42,7 +39,7 @@ export default function Presupuesto() {
         cantidad: 0
     }
 
-    function getProducto(id: number): productoModel {
+    function getProducto(valores: valoresPrevProps): productoModel {
         var retorno: productoModel = {
             id: 0,
             nombre: "",
@@ -50,46 +47,36 @@ export default function Presupuesto() {
             cantidad: 0
         }
         for (let i = 0; i < productosDisp.length; i++) {
-            if (productosDisp[i].id == id) {
+            if (productosDisp[i].id == valores.productosIds) {
                 retorno = productosDisp[i]
             }
         }
+        retorno.cantidad = valores.cantidad
         return retorno
     }
 
     async function agregar(valores: valoresPrevProps) {
-        valoresPrevs.push(valores)
-        productosArreglo.push(getProducto(valoresPrevs[valoresPrevs.length - 1].productosIds!)!)
-        productosArreglo[valoresPrevs.length - 1].cantidad = valores.cantidad
-
-        console.log(productosArreglo)
-        console.log(valoresPrevs)
+        const arr=getProducto(valores)
+        setProductosArreglo([...productosArreglo,arr])
     }
 
-    async function quitar(id:number) {
-        for(let i=0;i<productosArreglo.length;i++){
-            if(productosArreglo[i].id==id){
-                productosArreglo.splice(i,1)
-                valoresPrevs.splice(i,1)
-            }
-        }   
-        console.log(productosArreglo)
-        console.log(valoresPrevs)     
+    async function quitar(id: number) {
+        const newProds = productosArreglo.filter(prod => prod.id !== id)
+        setProductosArreglo(newProds)
     }
 
     function sacarTotal(): number {
         var total: number = 0
-        for (let i = 0; i < valoresPrevs.length; i++) {
-            total = total + (productosArreglo[i].precio * valoresPrevs[i].cantidad)
+        for (let i = 0; i < productosArreglo.length; i++) {
+            total = total + (productosArreglo[i].precio * productosArreglo[i].cantidad)
         }
         return total
     }
 
     async function convertir(valores: presupuestoProps) {
-        console.log(valores)
         var arraygeneral = []
-        for (let i = 0; i < valoresPrevs.length; i++) {
-            arraygeneral[i] = [valoresPrevs[i].productosIds!, valoresPrevs[i].cantidad!]
+        for (let i = 0; i < productosArreglo.length; i++) {
+            arraygeneral[i] = [productosArreglo[i].id, productosArreglo[i].cantidad!]
         }
         var presupuesto: presupuestoCrear = {
             nombre: valores.nombre,
@@ -100,10 +87,10 @@ export default function Presupuesto() {
     }
 
     function crear(presupuesto: presupuestoCrear) {
+        console.log(presupuesto)
         try {
             presServices.crear(presupuesto)
             history.push('/listadoPresupuestos')
-            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data)

@@ -1,6 +1,6 @@
 ﻿using SistemaApi.Utilidades;
 using Microsoft.AspNetCore.Mvc;
-
+using SistemaApi.Entidades;
 
 namespace SistemaApi.DTOs
 {

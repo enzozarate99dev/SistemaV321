@@ -137,7 +137,7 @@ namespace SistemaApi.Controllers
             return new VentasPostGetDTO() { Productos = productosDTO };
         }
 
-        [HttpPut("{id:int}")]
+        /*[HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] VentaCreacionDTO ventaCreacionDTO)
         {
             var venta = await context.Ventas.Include(x=> x.VentaProducto).FirstOrDefaultAsync(x => x.Id == id);
@@ -147,6 +147,25 @@ namespace SistemaApi.Controllers
             if (venta == null)
             {
                 return NotFound();
+            }
+
+            
+            if(ventaCreacionDTO.ProductosIds.Count == 0)
+            {
+                return BadRequest("Ingresar al menos un producto");
+            }
+            foreach (var tuple in ventaCreacionDTO.ProductosIds)
+            {
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                if (tuple[1] > producto.Cantidad)
+                {
+                    return BadRequest("No hay suficientes unidades del producto");
+                }
+            }
+
+            if (venta.FormaDePago == "Cuenta Corriente")
+            {
+                cliente.Deuda -= venta.Adeudada;
             }
 
             foreach (var tuple in ventaCreacionDTO.ProductosIds)
@@ -168,11 +187,10 @@ namespace SistemaApi.Controllers
             else
             {
                 venta.Adeudada = 0;
-                cliente.Deuda += 0;
             }
             await context.SaveChangesAsync();
             return NoContent();
-        }
+        }*/
 
         [HttpPut("cancelar/{id:int}")]
         public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)

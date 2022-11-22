@@ -6,7 +6,7 @@ export interface ventasConsumidorFinalCrear{
 
 export interface ventasConsumidorFinalModel{
     id: number;
-    nombreCliente: number;
+    nombreCliente: string;
     productos: productoModel[],
     precioTotal?: number;
     fechaDeVenta: Date;

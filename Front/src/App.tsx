@@ -32,7 +32,6 @@ function App() {
 
   return (
     <>
-
       <BrowserRouter>
         <AutenticacionContext.Provider value={{ claims, actualizar }}>
           <Menu />
@@ -41,15 +40,12 @@ function App() {
               {rutas.map(ruta =>
                 <Route key={ruta.path} path={ruta.path}
                   exact={ruta.exact}>
-                  {ruta.esCajero && !esCajero() ? <>
-                    No tiene permiso para acceder a este componente
-                  </> : <ruta.componente />}
+                  {ruta.esCajero && (!esCajero() && !esAdmin()) ? <>No tienes permiso</> : <>{ruta.esAdmin && !esAdmin() ? <>No tienes permiso</> : <ruta.componente/>}</>}                 
                 </Route>)}
             </Switch>
           </div>
         </AutenticacionContext.Provider>
       </BrowserRouter>
-
     </>
   );
 }

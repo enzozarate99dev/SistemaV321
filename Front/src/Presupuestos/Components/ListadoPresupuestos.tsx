@@ -1,5 +1,6 @@
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import * as XLSX from "xlsx";
+import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
 import { modeloExcel, presupuestoModel } from "../../Models/presupuestos.model";
@@ -76,14 +77,15 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         return array[0]
     }
 
-    const botones = (id: number) =>
+    const botones = (id: number, urlEditar: string) =>
         <>
+            <Button style={{ marginRight: '1rem', marginLeft: '1rem' }} className="btn btn-info" onClick={() => handleExport(id)}>Exportar</Button>
+            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon /></Link>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
                 <TrashIcon />
             </Button>
-            <Button style={{ marginRight: '1rem', marginLeft: '1rem' }} className="btn btn-info" onClick={() => handleExport(id)}>Exportar</Button>
         </>
 
 
@@ -107,7 +109,7 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
                             <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
                             <td>{presupuesto.precioTotal}</td>
                             <td>
-                                {botones(presupuesto.id)}
+                                {botones(presupuesto.id, `presupuesto/editar/${presupuesto.id}`)}
                             </td>
                         </tr>
                     ))}

@@ -20,3 +20,7 @@ export async function getVenta(id: any){
 export async function borrar(id: number){
     await axios.delete(`${urlConsumidoFinal}/${id}`)
 }
+
+export async function editar(valores:nuevoVentasCFModel, id: any){
+    await axios.put(`${urlConsumidoFinal}/${id}`, valores)
+}

@@ -1,18 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Link, NavLink, useHistory } from "react-router-dom";
-import UserIcon from "../assets/UserIcon";
+import { useHistory } from "react-router-dom";
+import LogOut from "../assets/LogOut";
 import AutenticacionContext from "../auth/AutenticacionContext";
 import Autorizado from "../auth/Autorizado";
 import { logout } from "../auth/handlerJWT";
-import Button from "./Button";
-import './menu.css'
-import { ReactComponent as UserNBIcon } from "../assets/userNavBar.svg"
-import { ReactElement } from "react-markdown/lib/react-markdown";
-import LogOut from "../assets/LogOut";
+import './menu.css';
 
 
 export default function Menu() {
@@ -37,6 +33,10 @@ export default function Menu() {
                             <NavDropdown title="Clientes" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoClientes">Gestionar clientes</NavDropdown.Item>
                                 <NavDropdown.Item href="/clientes">Cargar cliente</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Proveedores" id="collasible-nav-dropdown">
+                                <NavDropdown.Item href="/listadoProveedores">Gestionar proveedores</NavDropdown.Item>
+                                <NavDropdown.Item href="/proveedores">Cargar proveedor</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Ventas" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>

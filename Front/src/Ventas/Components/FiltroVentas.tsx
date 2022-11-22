@@ -9,8 +9,10 @@ import Button from "../../utils/Button";
 import FormGroupFecha from "../../utils/FormGroupFecha";
 import Paginacion from "../../utils/Paginacion";
 import * as servicesCF from '../../VentasConsFinal/Services/consumidorFinal.services';
+import * as serClientes from "../../Clientes/Services/clientes.services";
 import * as services from '../Services/ventas.services';
 import ListadoVentas from "./ListadoVentas";
+import { clienteModel } from "../../Models/clientes.model";
 
 
 export default function FiltroVentas() {
@@ -20,6 +22,7 @@ export default function FiltroVentas() {
     const [ventas, setVentas] = useState<ventasModel[]>()
     const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
+    const [clientes,setClientes] = useState<clienteModel[]>([])
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -31,6 +34,13 @@ export default function FiltroVentas() {
         pagina: 1,
         recordsPorPagina: 10
     }
+
+    useEffect(()=>{
+        const res = serClientes.getTodosLosClientes()
+        res.then((resp: AxiosResponse<clienteModel[]>)=>{
+            setClientes(resp.data)
+        })
+    },[])
 
     useEffect(() => {
         const res = services.getProductos()
@@ -144,7 +154,7 @@ export default function FiltroVentas() {
                                 </div>:null}
                         </Form>
 
-                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF}/>
+                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} clientes= {clientes}/>
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

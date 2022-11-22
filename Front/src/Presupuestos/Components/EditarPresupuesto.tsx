@@ -4,41 +4,34 @@ import { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import TrashIcon from "../../assets/TrashIcon";
+import { presupuestoCrear, presupuestoCrearPrev, presupuestoModel } from "../../Models/presupuestos.model";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
-import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
-import { valoresPrevProps } from "../../Presupuestos/Components/Presupuesto";
+import { ventasPostGetModel } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
+import FormGroupText from "../../utils/FormGroupText";
 import MostrarErrores from "../../utils/MostrarErrores";
-import * as services from "../Services/ventas.services";
+import * as servicesV from "../../Ventas/Services/ventas.services";
+import * as services from "../Services/presupuestos.services";
+import NuevoProductoPresupuesto from "./NuevoProductoPresupuesto";
+import { valoresPrevProps } from "./Presupuesto";
 
 
-export default function EditorVentas() {
+export default function EditarPresupuesto() {
 
     const [errores, setErrores] = useState<string[]>([])
     const { id }: any = useParams()
     const history = useHistory()
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
     const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
-    const [clienteId, setClienteId] = useState<number>()
-    /* var valoresPrevs: valoresPrevProps[] = [] */
-    /* var productosArreglo: productoModel[] = [] */
+    const [modelo, setModelo] = useState<presupuestoCrearPrev>()
 
     const modeloPrevs: valoresPrevProps = {
         productosIds: 0,
         cantidad: 0
     }
 
-    const modelo: ventasCrear = {
-        clienteId: 0,
-        efectivo: false,
-        ctaCorriente: false,
-        transferencia: false
-    }
-
     useEffect(() => {
-        const res = services.getProductos()
+        const res = servicesV.getProductos()
         res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
             setProductosDisp(respuesta.data.productos);
         })
@@ -67,21 +60,19 @@ export default function EditorVentas() {
     }
 
     async function quitar(id: number) {
-        for (let i = 0; i < productosArreglo.length; i++) {
-            if (productosArreglo[i].id == id) {
-                productosArreglo.splice(i, 1)
-            }
-        }
+        const newProds = productosArreglo.filter(prod => prod.id !== id)
+        setProductosArreglo(newProds)
     }
 
     useEffect(() => {
-        const res = services.getVenta(id)
-        res.then((respuesta: AxiosResponse<ventasModel>) => {
-            console.log(respuesta.data)
-            /* respuesta.data.productos.map((producto) => productosArreglo.push(producto)) */
+        const res = services.getPresupuesto(id)
+        res.then((respuesta: AxiosResponse<presupuestoModel>) => {
             setProductosArreglo(respuesta.data.productos)
-            setClienteId(respuesta.data.clienteId)
-            console.log(productosArreglo)
+            const modelo: presupuestoCrearPrev = {
+                nombre: respuesta.data.nombre,
+                descuento: respuesta.data.descuento
+            }
+            setModelo(modelo)
         })
     }, [id])
 
@@ -93,35 +84,24 @@ export default function EditorVentas() {
         return total
     }
 
-    async function convertir(valores: ventasCrear) {
-        console.log(productosArreglo)
+    async function convertir(valores: presupuestoCrearPrev) {
         var arraygeneral = []
         for (let i = 0; i < productosArreglo.length; i++) {
             arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!]
         }
-        var fDePago = ''
-        if (valores.efectivo) {
-            fDePago = "Efectivo"
-        }
-        if (valores.ctaCorriente) {
-            fDePago = "Cuenta Corriente"
-        }
-        if (valores.transferencia) {
-            fDePago = "Transferencia"
-        }
-        var venta: nuevoVentasModel = {
-            clienteId: clienteId!,
+        var presupuesto: presupuestoCrear = {
+            nombre: valores.nombre,
             productosIds: arraygeneral,
-            formaDePago: fDePago
+            descuento: valores.descuento
         }
-        console.log(venta)
-        editar(venta)
+        editar(presupuesto)
     }
 
-    async function editar(ventaEditar: nuevoVentasModel) {
+    async function editar(presupuesto: presupuestoCrear) {
+        console.log(presupuesto)
         try {
-            services.editar(ventaEditar, id)
-            history.push('/listadoVentas')
+            services.editar(id, presupuesto)
+            history.push('/listadoPresupuestos')
         }
         catch (error) {
             setErrores(error.response.data)
@@ -130,11 +110,12 @@ export default function EditorVentas() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Editar Venta</h3>
-            <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
+            <h3 style={{ marginTop: '1rem' }}>Editar Presupuesto</h3>
+            {modelo ? <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
                 {(formikProps) => (
                     <>
                         <Form>
+                            <FormGroupText campo="nombre" label="Nombre"/>
                             <Formik initialValues={modeloPrevs} onSubmit={valores => agregar(valores)} validationSchema={Yup.object({ cantidad: Yup.number().min(1) })}>
                                 {(formikProps2) => (
                                     <>
@@ -182,12 +163,8 @@ export default function EditorVentas() {
                                 )}
                             </Formik>
 
-
-                            {/* <Button onClick={() => setDescuento(!descuento)}>Aplicar Descuento</Button> */}
                             <div className="col-md-8">
-                                <FormGroupCheckbox campo="efectivo" label="Efectivo" />
-                                <FormGroupCheckbox campo="transferencia" label="Transferencia" />
-                                <FormGroupCheckbox campo="ctaCorriente" label="Cuenta Corriente" />
+                                <FormGroupText campo="descuento" label="Descuento"/>
                             </div>
                             <Button /* onClick={() => formikProps.submitForm()} */ type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
@@ -199,7 +176,7 @@ export default function EditorVentas() {
                         <MostrarErrores errores={errores} />
                     </>
                 )}
-            </Formik>
+            </Formik>: null}
         </>
     );
 }

@@ -95,6 +95,41 @@ namespace SistemaApi.Controllers
             return NoContent();
         }
 
+        /*[HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] VentaCreacionCFDTO ventaCreacioncfDTO)
+        {
+            var venta = await context.VentaConsumidorFinal.Include(x => x.VentaCFProducto).FirstOrDefaultAsync(x => x.Id == id);
+            double total = 0;
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+            foreach (var tuple in ventaCreacioncfDTO.ProductosIds)
+            {
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                if (tuple[1] > producto.Cantidad)
+                {
+                    return BadRequest("No hay suficientes unidades del producto");
+                }
+            }
+
+            foreach (var tuple in ventaCreacioncfDTO.ProductosIds)
+            {
+                var idP = tuple[0];
+                var cantidad = tuple[1];
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == idP);
+                producto.Cantidad = producto.Cantidad - cantidad;
+                total = total + (producto.Precio * cantidad);
+            }
+
+            venta = mapper.Map(ventaCreacioncfDTO, venta);
+            venta.PrecioTotal = total;
+
+            await context.SaveChangesAsync();
+            return NoContent();
+        }*/
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {

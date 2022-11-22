@@ -252,6 +252,48 @@ namespace SistemaApi.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("FechaDeCompra")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("PrecioTotal")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("Compras");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.CompraProducto", b =>
+                {
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompraId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Unidades")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductoId", "CompraId");
+
+                    b.HasIndex("CompraId");
+
+                    b.ToTable("CompraProductos");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.Property<int>("PresupuestoId")
@@ -333,6 +375,35 @@ namespace SistemaApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Productos");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Proveedor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Proveedores");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
@@ -480,6 +551,37 @@ namespace SistemaApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Proveedor", "Proveedor")
+                        .WithMany("Compras")
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("Compra1");
+
+                    b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.CompraProducto", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Compra", "Compra")
+                        .WithMany("CompraProducto")
+                        .HasForeignKey("CompraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaApi.Entidades.Producto", "Producto")
+                        .WithMany("CompraProducto")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Compra");
+
+                    b.Navigation("Producto");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Presupuestos", "Presupuesto")
@@ -554,6 +656,11 @@ namespace SistemaApi.Migrations
                     b.Navigation("Ventas");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
+                {
+                    b.Navigation("CompraProducto");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>
                 {
                     b.Navigation("PresupuestoProducto");
@@ -561,11 +668,18 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Producto", b =>
                 {
+                    b.Navigation("CompraProducto");
+
                     b.Navigation("PresupuestoProducto");
 
                     b.Navigation("VentaCFProducto");
 
                     b.Navigation("VentaProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Proveedor", b =>
+                {
+                    b.Navigation("Compras");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>

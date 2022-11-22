@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SistemaApi.Controllers;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
 
@@ -25,10 +26,58 @@ namespace SistemaApi.Utilidades
             CreateMap<ClienteCreacionDTO, Cliente>();
             CreateMap<Cliente, ClienteDTO>().ReverseMap();
 
+            CreateMap<ProveedorCreacionDTO, Proveedor>();
+            CreateMap<Proveedor, ProveedorDTO>().ReverseMap();
+
+            CreateMap<CompraCreacionDTO, Compra>()
+                .ForMember(x => x.CompraProducto, o => o.MapFrom(MapearCompraProducto));
+            CreateMap<Compra, CompraDTO>()
+                .ForMember(x => x.Productos, o => o.MapFrom(MapearCompraProducto));
+
             CreateMap<PresupuestoCreacionDTO, Presupuestos>()
                 .ForMember(x => x.PresupuestoProducto, o => o.MapFrom(MapearPresupuestoProducto));
             CreateMap<Presupuestos, PresupuestosDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearPresupuestoProducto));
+        }
+
+        private List<ProductoDTO> MapearCompraProducto(Compra compra, CompraDTO compraDTO)
+        {
+            var resultado = new List<ProductoDTO>();
+
+            if (compra.CompraProducto != null)
+            {
+                foreach (var producto in compra.CompraProducto)
+                {
+                    resultado.Add(new ProductoDTO()
+                    {
+                        Id = producto.Producto.Id,
+                        Nombre = producto.Producto.Nombre,
+                        Cantidad = producto.Unidades,
+                        Precio = producto.Producto.Precio,
+                        Categoria = producto.Producto.Categoria,
+                        Codigo = producto.Producto.Codigo,
+                        Descripcion = producto.Producto.Descripcion
+                    });
+                }
+            }
+
+            return resultado;
+        }
+
+        private List<CompraProducto> MapearCompraProducto(CompraCreacionDTO compraCreacionDTO,
+                Compra compras)
+        {
+            var resultado = new List<CompraProducto>();
+
+            if (compraCreacionDTO.ProductosIds == null) { return resultado; }
+
+
+            foreach (var tuple in compraCreacionDTO.ProductosIds)
+            {
+                resultado.Add(new CompraProducto() { ProductoId = tuple[0], Unidades = tuple[1] });
+            }
+
+            return resultado;
         }
 
         private List<ProductoDTO> MapearPresupuestoProducto(Presupuestos presupuestos, PresupuestosDTO presupuestosDTO)

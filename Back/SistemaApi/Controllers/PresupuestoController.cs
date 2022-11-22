@@ -49,6 +49,17 @@ namespace SistemaApi.Controllers
             return resultado;
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<PresupuestosDTO>> Get(int id)
+        {
+            var presupuesto = await context.Presupuestos.Include(x => x.PresupuestoProducto).ThenInclude(x => x.Producto).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (presupuesto == null) { return NotFound(); }
+
+            var dto = mapper.Map<PresupuestosDTO>(presupuesto);
+            return dto;
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] PresupuestoCreacionDTO presupuestoCreacionDTO)
         {
@@ -79,6 +90,46 @@ namespace SistemaApi.Controllers
             presupuesto.PrecioTotal = total;
             presupuesto.FechaDeVenta = DateTime.Now;
             context.Add(presupuesto);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromBody] PresupuestoCreacionDTO presupuestoCreacionDTO)
+        {
+            var presupuesto = await context.Presupuestos.Include(x => x.PresupuestoProducto).FirstOrDefaultAsync(x => x.Id == id);
+            double total = 0;
+
+            if (presupuesto == null)
+            {
+                return NotFound();
+            }
+            if (presupuestoCreacionDTO.ProductosIds.Count == 0)
+            {
+                return BadRequest("Ingresar al menos un producto");
+            }
+            foreach (var tuple in presupuestoCreacionDTO.ProductosIds)
+            {
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                if (tuple[1] > producto.Cantidad)
+                {
+                    return BadRequest("No hay suficientes unidades del producto");
+                }
+            }
+
+            foreach (var tuple in presupuestoCreacionDTO.ProductosIds)
+            {
+                var idP = tuple[0];
+                var cantidad = tuple[1];
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == idP);
+                producto.Cantidad = producto.Cantidad - cantidad;
+                total = total + (producto.Precio * cantidad);
+            }
+            total = total - (total * (presupuestoCreacionDTO.Descuento / 100));
+
+            presupuesto = mapper.Map(presupuestoCreacionDTO, presupuesto);
+            presupuesto.PrecioTotal = total;
+
             await context.SaveChangesAsync();
             return NoContent();
         }

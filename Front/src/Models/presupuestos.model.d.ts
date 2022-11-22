@@ -15,6 +15,11 @@ export interface presupuestoCrear{
     descuento: number;
 }
 
+export interface presupuestoCrearPrev{
+    nombre: string,
+    descuento: number
+}
+
 export interface modeloExcel{
     Id?: string;
     Nombre?: string;

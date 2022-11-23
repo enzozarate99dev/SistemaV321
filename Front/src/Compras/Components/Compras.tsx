@@ -1,38 +1,49 @@
 import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import Popup from "reactjs-popup";
 import * as Yup from 'yup';
 import TrashIcon from "../../assets/TrashIcon";
+import { comprasCrear, comprasCrearPrev } from "../../Models/compras.model";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../../Models/ventas.model";
+import { proveedoresModel } from "../../Models/proveedores.model";
+import { ventasPostGetModel } from "../../Models/ventas.model";
 import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
 import { valoresPrevProps } from "../../Presupuestos/Components/Presupuesto";
+import CargarProducto from "../../Productos/Components/CargarProducto";
+import * as provServices from "../../Proveedores/Services/proveedores.services";
 import Button from "../../utils/Button";
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
 import MostrarErrores from "../../utils/MostrarErrores";
-import * as services from "../Services/ventas.services";
+import * as ventasServices from "../../Ventas/Services/ventas.services";
+import * as services from "../Services/compras.services";
+import "./modal.css"
+import useModal from "./useModal";
 
-export default function Ventas() {
+export default function Compras() {
 
-    const modelo: ventasCrear = {
-        clienteId: 0,
-        efectivo: false,
-        ctaCorriente: false,
-        transferencia: false
+    const modelo: comprasCrearPrev = {
+        proveedorId: 0
     }
+    const {isOpen, toggle} = useModal()
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
     const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
+    const [proveedores, setProveedores] = useState<proveedoresModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
     const history = useHistory()
-    const { id }: any = useParams()
-
 
     useEffect(() => {
-        const res = services.getProductos()
+        const res = ventasServices.getProductos()
         res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
             setProductosDisp(respuesta.data.productos);
+        })
+    }, [])
+
+    useEffect(() => {
+        const res = provServices.getProveedores()
+        res.then((resp: AxiosResponse<proveedoresModel[]>) => {
+            setProveedores(resp.data)
         })
     }, [])
 
@@ -60,7 +71,7 @@ export default function Ventas() {
 
     async function agregar(valores: valoresPrevProps) {
         const obj = getProducto(valores)
-        setProductosArreglo([...productosArreglo,obj])
+        setProductosArreglo([...productosArreglo, obj])
     }
 
     async function quitar(id: number) {
@@ -76,33 +87,22 @@ export default function Ventas() {
         return total
     }
 
-    async function convertir(valores: ventasCrear) {
+    async function convertir(valores: comprasCrearPrev) {
         var arraygeneral = []
         for (let i = 0; i < productosArreglo.length; i++) {
             arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!]
         }
-        var fDePago = ''
-        if (valores.efectivo) {
-            fDePago = "Efectivo"
+        var compra: comprasCrear = {
+            proveedorId: valores.proveedorId,
+            productosIds: arraygeneral
         }
-        if (valores.ctaCorriente) {
-            fDePago = "Cuenta Corriente"
-        }
-        if (valores.transferencia) {
-            fDePago = "Transferencia"
-        }
-        var venta: nuevoVentasModel = {
-            clienteId: id,
-            productosIds: arraygeneral,
-            formaDePago: fDePago
-        }
-        crear(venta)
+        crear(compra)
     }
 
-    function crear(venta: nuevoVentasModel) {
+    function crear(compra: comprasCrear) {
         try {
-            services.crear(venta)
-            history.push('/listadoVentas')
+            services.crear(compra)
+            history.push('/listadoProveedores')
             history.go(0)
         }
         catch (error) {
@@ -112,11 +112,17 @@ export default function Ventas() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
+            <h3 style={{ marginTop: '1rem' }}>Cargar Compra</h3>
             <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
                 {(formikProps) => (
                     <>
                         <Form>
+                            <label htmlFor="proveedorId">Proveedor</label>
+                            <select style={{ marginBottom: '5px' }} className="form-control" {...formikProps.getFieldProps(`proveedorId`)}>
+                                <option value="0">--Seleccione un proveedor--</option>
+                                {proveedores.map(proveedor =>
+                                    <option key={proveedor.id} value={proveedor.id}>{proveedor.nombre}</option>)}
+                            </select>
                             <Formik initialValues={modeloPrevs} onSubmit={valores => agregar(valores)} validationSchema={Yup.object({ cantidad: Yup.number().min(1) })}>
                                 {(formikProps2) => (
                                     <>
@@ -127,6 +133,15 @@ export default function Ventas() {
                                             }} className="btn btn-warning" style={{ marginRight: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
                                                 Añadir Producto
                                             </Button>
+                                            <button className="btn btn-secondary" onClick={toggle}> + </button>
+                                            <Popup
+                                                open={isOpen}
+                                                closeOnDocumentClick
+                                            >
+                                                <span className="modal-box"><button onClick={toggle}>X</button><CargarProducto popUp/></span>
+                                            </Popup>
+                                            {/* <Button className="btn btn-secondary" onClick={()=>setOpen(!open)}>+</Button>
+                                            {open ? <span className="modal-box"><button onClick={()=>setOpen(!open)}>X</button><CargarProducto popUp/></span>:null} */}
                                             <table style={{ marginTop: '1rem' }} className='table'>
                                                 <thead className="table-dark">
                                                     <tr>
@@ -164,13 +179,6 @@ export default function Ventas() {
                                 )}
                             </Formik>
 
-
-                            {/* <Button onClick={() => setDescuento(!descuento)}>Aplicar Descuento</Button> */}
-                            <div className="col-md-8">
-                                <FormGroupCheckbox campo="efectivo" label="Efectivo" />
-                                <FormGroupCheckbox campo="ctaCorriente" label="Cuenta Corriente" />
-                                <FormGroupCheckbox campo="transferencia" label="Transferencia" />
-                            </div>
                             <Button type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
                             </Button>

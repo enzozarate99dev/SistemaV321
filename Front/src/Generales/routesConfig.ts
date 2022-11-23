@@ -3,6 +3,9 @@ import CargarCliente from "../Clientes/Components/CargarCliente";
 import EditarCliente from "../Clientes/Components/EditarCliente";
 import FiltroClientes from "../Clientes/Components/FiltroClientes";
 import InfoCliente from "../Clientes/Components/InfoCliente";
+import Compras from "../Compras/Components/Compras";
+import DetalleCompras from "../Compras/Components/DetalleCompras";
+import FiltroCompras from "../Compras/Components/FiltroCompras";
 import EditarPresupuesto from "../Presupuestos/Components/EditarPresupuesto";
 import FiltroPresupuestos from "../Presupuestos/Components/FiltroPresupuestos";
 import Presupuesto from "../Presupuestos/Components/Presupuesto";
@@ -52,6 +55,10 @@ const rutas = [
     {path: '/proveedores', componente: CargarProveedor, exact: true, esCajero:true},
     {path: '/listadoProveedores', componente: FiltroProveedores, exact: true, esCajero:true},
     {path: '/proveedores/editar/:id(\\d+)', componente: EditarProveedor, exact: true, esCajero:true},
+
+    {path: '/compras', componente: Compras, exact: true, esCajero:true},
+    {path: '/listadoCompras', componente: FiltroCompras, exact: true, esCajero:true},
+    {path: '/compras/detalle/:id(\\d+)', componente: DetalleCompras, exact: true, esCajero:true},
 
     {path: '/login', componente: Login, exact: true},
     {path: '/registro', componente: Usuarios, exact: true, esAdmin:true},

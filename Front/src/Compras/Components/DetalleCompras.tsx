@@ -1,28 +1,24 @@
 import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ventasModel } from "../../Models/ventas.model";
-import * as services from "../Services/ventas.services";
-import * as serClientes from "../../Clientes/Services/clientes.services"
-import { clienteModel } from "../../Models/clientes.model";
+import { comprasModel } from "../../Models/compras.model";
+import * as services from "../Services/compras.services";
 
-export default function DetalleVentas() {
+export default function DetalleCompras() {
     const { id }: any = useParams();
-    const [venta, setVenta] = useState<ventasModel>()
+    const [compra, setCompra] = useState<comprasModel>()
 
     useEffect(() => {
-        const res = services.getVenta(id)
-            res.then((respuesta: AxiosResponse<ventasModel>) => {
-                respuesta.data.fechaDeVenta = new Date(respuesta.data.fechaDeVenta)
-                setVenta(respuesta.data)
-                console.log(venta)
+        const res = services.getCompra(id)
+            res.then((respuesta: AxiosResponse<comprasModel>) => {
+                respuesta.data.fechaDeCompra = new Date(respuesta.data.fechaDeCompra)
+                setCompra(respuesta.data)
             })
     }, [id])
 
-
     return (
         <div className='container'>
-            <h4 style={{marginTop:'1rem'}}>Detalle de venta {id}</h4>
+            <h4 style={{marginTop:'1rem'}}>Detalle de compra {id}</h4>
             <table className='table'>
                 <thead>
                     <tr className='table-warning'>
@@ -33,8 +29,8 @@ export default function DetalleVentas() {
                     </tr>
                 </thead>
                 <tbody>
-                    {venta?.productos.map((producto) => (
-                        <tr className='table-secondary' key={venta?.id}>
+                    {compra?.productos.map((producto) => (
+                        <tr className='table-secondary' key={compra?.id}>
                             <td>{producto.nombre}</td>
                             <td>${producto.precio}</td>
                             <td>{producto.cantidad}</td>
@@ -56,7 +52,7 @@ export default function DetalleVentas() {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className='table-secondary'>{venta?.precioTotal}</td>
+                        <td className='table-secondary'>{compra?.precioTotal}</td>
                     </tr>
                 </tbody>
             </table>

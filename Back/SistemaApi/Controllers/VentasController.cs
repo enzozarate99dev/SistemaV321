@@ -73,7 +73,7 @@ namespace SistemaApi.Controllers
 
                 await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
 
-                var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).ToListAsync();
+                var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).OrderBy(x=>x.ClienteId).ToListAsync();
                 return mapper.Map<List<VentaDTO>>(ventas);
             }       
         }

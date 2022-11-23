@@ -24,3 +24,8 @@ export async function getProveedor(id:any){
 export async function editar(proveedorEditar: proveedoresCrear, id:any){
     await axios.put(`${urlProveedores}/${id}`, proveedorEditar)
 }
+
+export async function getProveedores(){
+    const res = axios.get(`${urlProveedores}`)
+    return res
+}

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
+using SistemaApi.Utilidades;
 
 namespace SistemaApi.Controllers
 {
@@ -26,6 +27,38 @@ namespace SistemaApi.Controllers
             var resultado = mapper.Map<List<CompraDTO>>(compras);
 
             return resultado;
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<CompraDTO>> Get(int id)
+        {
+            var compra = await context.Compras.Include(x => x.CompraProducto).ThenInclude(x => x.Producto).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (compra == null) { return NotFound(); }
+
+            var dto = mapper.Map<CompraDTO>(compra);
+            return dto;
+        }
+
+        [HttpGet("filtrar")]
+        public async Task<ActionResult<List<CompraDTO>>> Filtrar([FromQuery] CompraFiltrarDTO compraFiltrarDTO)
+        {
+
+            var comprasQueryable = context.Compras.AsQueryable();
+            if (compraFiltrarDTO.ProveedorId != 0)
+            {
+                    comprasQueryable = comprasQueryable.Where(x => x.ProveedorId == compraFiltrarDTO.ProveedorId);
+            }
+
+            if (compraFiltrarDTO.FechaDeCompra != null)
+            {
+                comprasQueryable = comprasQueryable.Where(x => x.FechaDeCompra.Date <= compraFiltrarDTO.FechaDeCompra.Value.Date);
+            }
+
+            await HttpContext.InsertarParametrosPaginacionEnCabecera(comprasQueryable);
+
+            var compras = await comprasQueryable.Paginar(compraFiltrarDTO.PaginacionDTO).ToListAsync();
+            return mapper.Map<List<CompraDTO>>(compras);
         }
 
         [HttpPost]
@@ -62,6 +95,21 @@ namespace SistemaApi.Controllers
             compra.PrecioTotal = total;
             compra.FechaDeCompra = DateTime.Now;
             context.Add(compra);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var compra = await context.Compras.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (compra == null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(compra);
             await context.SaveChangesAsync();
             return NoContent();
         }

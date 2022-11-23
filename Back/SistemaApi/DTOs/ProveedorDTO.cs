@@ -1,6 +1,4 @@
-﻿using SistemaApi.Controllers;
-
-namespace SistemaApi.DTOs
+﻿namespace SistemaApi.DTOs
 {
     public class ProveedorDTO
     {

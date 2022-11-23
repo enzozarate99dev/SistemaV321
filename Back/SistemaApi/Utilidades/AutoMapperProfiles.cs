@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SistemaApi.Controllers;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
 

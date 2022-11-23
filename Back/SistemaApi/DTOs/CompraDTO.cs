@@ -1,7 +1,6 @@
-﻿using SistemaApi.DTOs;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SistemaApi.Controllers
+namespace SistemaApi.DTOs
 {
     public class CompraDTO
     {

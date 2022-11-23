@@ -81,9 +81,9 @@ export default function ListadoVentas(props: propsListadoVentas) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.ventas?.map((venta) => (
+                        {props.ventas?.map((venta,index) => (
                             <tr key={venta.id}>
-                                {props.clientes ? <td>{getNombre(props.clientes,venta.clienteId)}</td> : <td></td>}
+                                <td>{}</td>
                                 <td>{venta.precioTotal}</td>
                                 <td>{venta.formaDePago}</td>
                                 <td>{formatDate(venta.fechaDeVenta.toString())}</td>
@@ -113,5 +113,4 @@ export default function ListadoVentas(props: propsListadoVentas) {
 interface propsListadoVentas {
     ventas?: ventasModel[];
     ventasConsFinal?: ventasConsumidorFinalModel[];
-    clientes?: clienteModel[]
 }

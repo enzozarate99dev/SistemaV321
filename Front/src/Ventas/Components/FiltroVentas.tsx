@@ -22,7 +22,6 @@ export default function FiltroVentas() {
     const [ventas, setVentas] = useState<ventasModel[]>()
     const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
-    const [clientes,setClientes] = useState<clienteModel[]>([])
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
 
@@ -35,12 +34,6 @@ export default function FiltroVentas() {
         recordsPorPagina: 10
     }
 
-    useEffect(()=>{
-        const res = serClientes.getTodosLosClientes()
-        res.then((resp: AxiosResponse<clienteModel[]>)=>{
-            setClientes(resp.data)
-        })
-    },[])
 
     useEffect(() => {
         const res = services.getProductos()
@@ -154,7 +147,7 @@ export default function FiltroVentas() {
                                 </div>:null}
                         </Form>
 
-                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} clientes= {clientes}/>
+                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF}/>
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

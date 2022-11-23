@@ -1,6 +1,7 @@
 import { Form, Formik, FormikHelpers } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
+import useModal from "../../Compras/Components/useModal";
 import { productoCrear } from "../../Models/producto.model";
 import Button from "../../utils/Button";
 import FormGroupImagen from "../../utils/FormGroupImagen";
@@ -67,9 +68,9 @@ export default function FormularioProductos(props: formularioProductosProps) {
                         <Button disabled={formikProps.isSubmitting} type="submit">
                             Guardar
                         </Button>
-                        <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/">
+                        {!props.popUp ? <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/listadoProductos">
                             Cancelar
-                        </Link>
+                        </Link>: null}
                     </div>
                 </Form>
             )}
@@ -83,4 +84,9 @@ interface formularioProductosProps {
         valores: productoCrear,
         accion: FormikHelpers<productoCrear>
     ): void;
+    popUp: boolean;
+}
+
+FormularioProductos.defaultProps = {
+    popUp: false
 }

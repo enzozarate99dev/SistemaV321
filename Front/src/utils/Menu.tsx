@@ -36,11 +36,15 @@ export default function Menu() {
                             </NavDropdown>
                             <NavDropdown title="Proveedores" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoProveedores">Gestionar proveedores</NavDropdown.Item>
-                                <NavDropdown.Item href="/proveedores">Cargar proveedor</NavDropdown.Item>
+                                <NavDropdown.Item href="/proveedores">Cargar proveedor</NavDropdown.Item>                               
                             </NavDropdown>
                             <NavDropdown title="Ventas" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
                                 <NavDropdown.Item href="/redirigirVentas">Cargar venta</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Compras" id="collasible-nav-dropdown">
+                                <NavDropdown.Item href="/listadoCompras">Gestionar compras</NavDropdown.Item>
+                                <NavDropdown.Item href="/compras">Cargar Compra</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Presupuestos" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoPresupuestos">Gestionar presupuestos</NavDropdown.Item>

@@ -12,7 +12,6 @@ import FormularioProductos from "./FormularioProductos";
 export default function CargarProducto(props: cargarProductoProps) {
     const [errores, setErrores] = useState<string[]>([]);
     const history = useHistory();
-    const {toggle} = useModal()
 
     async function crear(producto:productoCrear) {
         try{
@@ -20,7 +19,7 @@ export default function CargarProducto(props: cargarProductoProps) {
             if(!props.popUp){
                 history.push('/listadoProductos');
             }else{
-                history.goBack()
+                props.setBandera!()
             }
         }
         catch (error){
@@ -32,7 +31,7 @@ export default function CargarProducto(props: cargarProductoProps) {
         <>
             <h2 style={{marginTop:'1rem'}}>Añadir un producto</h2>
             <MostrarErrores errores={errores}/>
-            <FormularioProductos modelo={{ nombre: '', precio: 0, cantidad: 0 }} onSubmit={async valores => {
+            <FormularioProductos modelo={{ nombre: '', precio: 0, cantidad: 0, codigo:'', descripcion:'' }} onSubmit={async valores => {
                 await crear(valores)
             }} popUp={props.popUp}/>
         </>
@@ -41,6 +40,7 @@ export default function CargarProducto(props: cargarProductoProps) {
 
 interface cargarProductoProps{
     popUp: boolean;
+    setBandera?: () => void
 }
 
 CargarProducto.defaultProps = {

@@ -15,6 +15,7 @@ import FiltroProductos from "../Productos/Components/FiltroProductos";
 import CargarProveedor from "../Proveedores/Components/CargarProveedor";
 import EditarProveedor from "../Proveedores/Components/EditarProveedor";
 import FiltroProveedores from "../Proveedores/Components/FiltroProveedores";
+import InfoProveedor from "../Proveedores/Components/InfoProveedor";
 import ListadoUsuarios from "../Usuarios/Components/ListadoUsuarios";
 import Usuarios from "../Usuarios/Components/Usuarios";
 import Redireccionar from "../utils/Redireccionar";
@@ -26,6 +27,7 @@ import Redirigir from "../Ventas/Components/Redirigir";
 import Ventas from "../Ventas/Components/Ventas";
 import ConsumidorFinal from "../VentasConsFinal/Components/ConsumidorFinal";
 import DetalleVentasCF from "../VentasConsFinal/Components/DetalleVentasCF";
+import HomePage from "./HomePage";
 
 
 const rutas = [
@@ -55,6 +57,7 @@ const rutas = [
     {path: '/proveedores', componente: CargarProveedor, exact: true, esCajero:true},
     {path: '/listadoProveedores', componente: FiltroProveedores, exact: true, esCajero:true},
     {path: '/proveedores/editar/:id(\\d+)', componente: EditarProveedor, exact: true, esCajero:true},
+    {path: '/proveedores/:id(\\d+)', componente: InfoProveedor, exact: true, esCajero:true},
 
     {path: '/compras', componente: Compras, exact: true, esCajero:true},
     {path: '/listadoCompras', componente: FiltroCompras, exact: true, esCajero:true},
@@ -64,7 +67,7 @@ const rutas = [
     {path: '/registro', componente: Usuarios, exact: true, esAdmin:true},
     {path: '/listadoUsuarios', componente: ListadoUsuarios, exact: true, esAdmin:true},
     
-
+    {path: '/',componente: HomePage, exact: true, esAdmin:true},
     {path: '*', componente: Redireccionar}
 ]
 

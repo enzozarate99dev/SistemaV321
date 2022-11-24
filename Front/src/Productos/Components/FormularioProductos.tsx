@@ -27,36 +27,21 @@ export default function FormularioProductos(props: formularioProductosProps) {
                 <Form style={{ marginTop: '-10px' }} className="row g-3 needs-validation" noValidate>
                     <div className="col-md-4">
                         <FormGroupText campo="nombre" label="Nombre" placeholder="Nombre del producto" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-md-4">
                         <div className="input-group has-validation">
                             <span style={{ height: '38px', marginTop: '32px' }} className="input-group-text" id="inputGroupPrepend">$</span>
                             <FormGroupText campo="precio" label="Precio" placeholder="Precio del producto ($)" />
-                            <div className="invalid-feedback">
-                                Please choose a username.
-                            </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <FormGroupText campo="cantidad" label="Cantidad disponible" placeholder="Cantidad disponible" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-md-6">
                         <FormGroupText campo="codigo" label="Codigo" placeholder="Codigo" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-md-6">
                         <FormGroupText campo="categoria" label="Categoria" placeholder="Categoria" />
-                        <div className="valid-feedback">
-                            Looks good!
-                        </div>
                     </div>
                     <div className="col-md-8">
                         <FormGroupImagen campo="foto" label="Foto" imagenURL={props.modelo.fotoURL} />
@@ -70,7 +55,12 @@ export default function FormularioProductos(props: formularioProductosProps) {
                         </Button>
                         {!props.popUp ? <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/listadoProductos">
                             Cancelar
-                        </Link>: null}
+                        </Link> : <Button
+                            className="btn btn-danger"
+                            style={{marginLeft:'0.5rem'}}
+                            onClick={() => {
+                                formikProps.setValues(props.modelo)
+                            }}>Limpiar</Button>}
                     </div>
                 </Form>
             )}

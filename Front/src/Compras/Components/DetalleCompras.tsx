@@ -24,7 +24,7 @@ export default function DetalleCompras() {
                     <tr className='table-warning'>
                         <th>Nombre del producto</th>
                         <th>Precio por unidad</th>
-                        <th>Cantidad vendida</th>
+                        <th>Cantidad comprada</th>
                         <th>Subtotal</th>
                     </tr>
                 </thead>

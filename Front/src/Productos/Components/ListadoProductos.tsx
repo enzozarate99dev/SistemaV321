@@ -19,6 +19,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
     async function borrar(id: number) {
         try {
             services.borrar(id)
+            history.go(0)
         }
         catch (error) {
             console.log(error.response.data)

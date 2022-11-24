@@ -25,20 +25,26 @@ export default function Compras() {
     const modelo: comprasCrearPrev = {
         proveedorId: 0
     }
-    const {isOpen, toggle} = useModal()
+    const { isOpen, toggle } = useModal()
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
     const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
     const [proveedores, setProveedores] = useState<proveedoresModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
+    const [bandera, setBandera] = useState(true)
     const history = useHistory()
+
+    const cambiarBandera = () => {
+        setBandera(!bandera)
+    }
+
 
     useEffect(() => {
         const res = ventasServices.getProductos()
         res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
             setProductosDisp(respuesta.data.productos);
         })
-    }, [])
+    }, [bandera])
 
     useEffect(() => {
         const res = provServices.getProveedores()
@@ -100,9 +106,10 @@ export default function Compras() {
     }
 
     function crear(compra: comprasCrear) {
+        console.log(compra)
         try {
             services.crear(compra)
-            history.push('/listadoProveedores')
+            history.push('/listadoCompras')
             history.go(0)
         }
         catch (error) {
@@ -133,12 +140,18 @@ export default function Compras() {
                                             }} className="btn btn-warning" style={{ marginRight: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
                                                 Añadir Producto
                                             </Button>
-                                            <button className="btn btn-secondary" onClick={toggle}> + </button>
+                                            <Button className="btn btn-secondary" onClick={() => {
+                                                toggle()
+                                                cambiarBandera()
+                                            }}> + </Button>
                                             <Popup
                                                 open={isOpen}
                                                 closeOnDocumentClick
                                             >
-                                                <span className="modal-box"><button onClick={toggle}>X</button><CargarProducto popUp/></span>
+                                                <span className="modal-box"><Button className="btn btn-danger" onClick={() => {
+                                                    toggle()
+                                                    cambiarBandera()
+                                                }}> X </Button><CargarProducto setBandera={cambiarBandera} popUp /></span>
                                             </Popup>
                                             {/* <Button className="btn btn-secondary" onClick={()=>setOpen(!open)}>+</Button>
                                             {open ? <span className="modal-box"><button onClick={()=>setOpen(!open)}>X</button><CargarProducto popUp/></span>:null} */}

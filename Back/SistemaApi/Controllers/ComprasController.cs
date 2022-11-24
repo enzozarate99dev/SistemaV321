@@ -88,7 +88,7 @@ namespace SistemaApi.Controllers
                 var id = tuple[0];
                 var cantidad = tuple[1];
                 var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id);
-                producto.Cantidad = producto.Cantidad - cantidad;
+                producto.Cantidad = producto.Cantidad + cantidad;
                 total = total + (producto.Precio * cantidad);
             }
             var compra = mapper.Map<Compra>(compraCreacionDTO);

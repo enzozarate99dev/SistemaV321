@@ -100,10 +100,10 @@ export default function Ventas() {
     }
 
     function crear(venta: nuevoVentasModel) {
+        console.log(venta)
         try {
             services.crear(venta)
             history.push('/listadoVentas')
-            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data);

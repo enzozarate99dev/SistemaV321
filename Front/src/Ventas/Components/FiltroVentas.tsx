@@ -13,14 +13,15 @@ import * as serClientes from "../../Clientes/Services/clientes.services";
 import * as services from '../Services/ventas.services';
 import ListadoVentas from "./ListadoVentas";
 import { clienteModel } from "../../Models/clientes.model";
+import FilterIcon from "../../assets/FilterIcon";
 
 
 export default function FiltroVentas() {
 
     const [totalDePaginas, setTotalDePaginas] = useState(0);
     const [productos, setProductos] = useState<productoModel[]>([])
-    const [ventas, setVentas] = useState<ventasModel[]>()
-    const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>()
+    const [ventas, setVentas] = useState<ventasModel[]>([])
+    const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>([])
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
@@ -112,7 +113,7 @@ export default function FiltroVentas() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon/></Button>
 
                             {mostrarFiltros ?
                                 <div className="form-inline">

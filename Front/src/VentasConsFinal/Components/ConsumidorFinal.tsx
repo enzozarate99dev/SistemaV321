@@ -100,7 +100,6 @@ export default function ConsumidorFinal() {
         try {
             servicesCF.crear(venta)
             history.push('/listadoVentas')
-            history.go(0)
         }
         catch (error) {
             setErrores(error.response.data);
@@ -168,7 +167,7 @@ export default function ConsumidorFinal() {
                                 <FormGroupCheckbox campo="efectivo" label="Efectivo" />
                                 <FormGroupCheckbox campo="transferencia" label="Transferencia" />
                             </div>
-                            <Button onClick={() => formikProps.submitForm()} type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                            <Button type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
                             </Button>
                             <Link style={{ marginLeft: '1rem', marginTop: '1rem', marginBottom: '1rem' }} className="btn btn-secondary" to="/">

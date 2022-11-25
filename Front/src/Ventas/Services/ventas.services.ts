@@ -35,5 +35,15 @@ export async function cancelar(id:any, pago: ventaCancelar){
     await axios.put(`${urlVentas}/cancelar/${id}`,pago)
 }
 
+export async function chart(){
+    const res = axios.get(`${urlVentas}/chart`)
+    return res
+}
+
+export async function chartSemanal(){
+    const res = axios.get(`${urlVentas}/chartSemanal`)
+    return res
+}
+
 
 

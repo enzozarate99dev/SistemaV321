@@ -31,3 +31,8 @@ export async function getTodosLosClientes(){
     return res
 }
 
+export async function getNombre(id:number){
+    const res = axios.get(`${urlClientes}/nombre/${id}`)
+    return res
+}
+

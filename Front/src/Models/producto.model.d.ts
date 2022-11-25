@@ -28,6 +28,7 @@ export interface productoCrear{
 
 export interface actualizar{
     ids?: number[];
+    ids2?:number[];
     valor?: number;
     aumentar?:boolean;
     descontar?:boolean;

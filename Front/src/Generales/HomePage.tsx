@@ -1,57 +1,106 @@
 import 'antd/dist/reset.css';
-import { Layout, Card, Menu, Breadcrumb } from 'antd';
+import { Layout, Card, Menu, Breadcrumb, Tabs } from 'antd';
 import Title from 'antd/lib/typography/Title';
-import SubMenu from 'antd/lib/menu/SubMenu';    
-import { useState } from 'react';
-
+import SubMenu from 'antd/lib/menu/SubMenu';
+import { useEffect, useState } from 'react';
+import Chart from "react-apexcharts"
+import * as ventasServices from "../Ventas/Services/ventas.services"
+import { AxiosResponse } from 'axios';
+import Button from '../utils/Button';
 
 
 export default function HomePage() {
-    const [selectedPlayer, setSelectedPlayer] = useState('');
-    const [visible, setVisible] = useState(false);
+    const [data, setData] = useState<number[]>([])
+    const [dataSemanal, setDataSemanal] = useState<chartSemanal[]>([])
 
     const { Header, Footer, Sider, Content } = Layout;
 
+    useEffect(() => {
+        const res = ventasServices.chart()
+        res.then((resp: AxiosResponse<number[]>) => {
+            setData(resp.data)
+        })
+    }, [])
+
+    useEffect(() => {
+        const res = ventasServices.chartSemanal()
+        res.then((resp: AxiosResponse<chartSemanal[]>) => {
+            setDataSemanal(resp.data)
+        })
+    }, [])
+
+    function getCategories(): string[] {
+        var array: string[] = []
+        dataSemanal.map((dato, index) => array[index] = dato.dia)
+        return array
+    }
+
+    function getDatos(): number[] {
+        var array: number[] = []
+        dataSemanal.map((dato, index) => array[index] = dato.cantidad)
+        return array
+    }
+
+    const opt = {
+        options: {
+            chart: {
+                id: "bar"
+            },
+            xaxis: {
+                categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            }
+        },
+        series: [
+            {
+                name: "Mensual",
+                data: data
+            }
+        ]
+    }
+
+    const optSemanal = {
+        options: {
+            chart: {
+                id: "bar"
+            },
+            xaxis: {
+                categories: getCategories(),
+            }
+        },
+        series: [
+            {
+                name: "Semanal",
+                data: getDatos()
+            }
+        ]
+    }
+
     return (
-        <Layout style={{ height: '850px', marginTop: '10px', width: '1800px', marginLeft: '-350px' }}>
-            <Sider>
-                <Menu
-                    defaultSelectedKeys={['Dashboard']}
-                    mode="inline"
-                >
-                    <Menu.Item key='Dashboard'>
-                        Dashboard
-                    </Menu.Item>
-                    <SubMenu
-                        title={
-                            <span>
-                                <span>About US</span>
-                            </span>
-                        }
-                    >
-                        <Menu.ItemGroup key='AboutUS' title='Country 1'>
-                            <Menu.Item key='location1'> Location 1</Menu.Item>
-                            <Menu.Item key='location2'> Location 2</Menu.Item>
-                        </Menu.ItemGroup>
-                    </SubMenu>
-                </Menu>
-            </Sider>
-            <Layout>
+        <Layout style={{ height: '850px', marginTop: '20px', width: '1860px', marginLeft: '-370px', background: 'transparent' }}>
+            <Layout style={{ height: '850px', marginTop: '20px', width: '1860px', background: 'transparent' }}>
                 <Content style={{ padding: '0 50px' }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-                    </Breadcrumb>
-                    <Card bordered style={{width: 500, height: 300, float: 'left', margin: 10}} >
-                        Asdadsa
-                    </Card>
+                    <Tabs>
+                        <Tabs.TabPane tab="Mensual" key="item-1">
+                            <Card title="Ventas Mensuales" bordered style={{ width: 800, height: 450, float: 'left', margin: 10 }} >
+                                <Chart type='bar' width={750} height={350} options={opt.options} series={opt.series} />
+                            </Card>
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Semanal" key="item-2">
+                            <Card title="Ultimos 7 días" bordered style={{ width: 800, height: 450, float: 'left', margin: 10 }} >
+                                <Chart type='line' width={750} height={350} options={optSemanal.options} series={optSemanal.series} />
+                            </Card>
+                        </Tabs.TabPane>
+                        <Card title="Ultimos 7 días" bordered style={{ width: 800, height: 450, float: 'right', margin: 10 }} >
+                            <Chart type='line' width={750} height={350} options={optSemanal.options} series={optSemanal.series} />
+                        </Card>
+                    </Tabs>
                 </Content>
-                <Content style={{ padding: '0 50px', marginTop:'-100px' }}>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>222</Breadcrumb.Item>
-                    </Breadcrumb>
-                </Content>
-                <Footer style={{ textAlign: 'center' }}>Ant Design Layout example Created by Shrideep</Footer>
             </Layout>
         </Layout>
     )
+}
+
+interface chartSemanal {
+    dia: string;
+    cantidad: number;
 }

@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import FilterIcon from "../../assets/FilterIcon";
 import { clienteModel } from "../../Models/clientes.model";
 import { proveedoresModel } from "../../Models/proveedores.model";
 import Button from "../../utils/Button";
@@ -69,7 +70,7 @@ export default function FiltroProveedores() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <Button style={{ marginBottom: '1rem'}} onClick={() => { setMostrarFiltros(!mostrarFiltros) }}>Filtros</Button>
+                            <Button style={{ marginBottom: '1rem'}} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon/></Button>
 
                             {mostrarFiltros ?
                                 <div className="form-inline">

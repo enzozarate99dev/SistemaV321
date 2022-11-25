@@ -32,6 +32,70 @@ namespace SistemaApi.Controllers
             return resultado;
         }
 
+        [HttpGet("chart")]
+        public async Task<ActionResult<int[]>> Chart()
+        {
+            var ventas = await context.Ventas.OrderBy(x => x.FechaDeVenta.Date).ToListAsync();
+            var ventasCF = await context.VentaConsumidorFinal.OrderBy(x => x.FechaDeVenta.Date).ToListAsync();
+            int[] resultado = new int[12];
+            for(var j=0; j<12; j++)
+            {
+                resultado[j] = 0;
+            }
+            foreach(var venta in ventas)
+            {
+                resultado[venta.FechaDeVenta.Month - 1]++;
+            }
+            foreach (var ventacf in ventasCF)
+            {
+                resultado[ventacf.FechaDeVenta.Month - 1]++;
+            }
+            return resultado;
+        }
+
+        [HttpGet("chartSemanal")]
+        public async Task<ActionResult<List<SemanalDTO>>> Semanal()
+        {
+            var ventas = await context.Ventas.Where(x => x.FechaDeVenta.Date >= (DateTime.Today.AddDays(-6)).Date).ToListAsync();
+            var ventascf = await context.VentaConsumidorFinal.Where(x => x.FechaDeVenta.Date >= (DateTime.Today.AddDays(-6)).Date).ToListAsync();
+            int[] cantidades = new int[7];
+            string[] dias = new string[7];
+            for(var i=0; i < 7; i++)
+            {
+                cantidades[i] = 0;
+                dias[i] = "";
+            }
+            for(var j=0; j < 7; j++)
+            {
+                dias[j] = DateTime.Today.AddDays(j - 6).ToString("dddd").ToUpper();
+            }
+            foreach(var venta in ventas)
+            {
+                var k = 0;
+                while(venta.FechaDeVenta.Date != DateTime.Today.AddDays(k-6).Date)
+                {
+                    k++;
+                }
+                cantidades[k]++;
+            }
+            foreach (var ventacf in ventascf)
+            {
+                var k = 0;
+                while (ventacf.FechaDeVenta.Date != DateTime.Today.AddDays(k - 6).Date)
+                {
+                    k++;
+                }
+                cantidades[k]++;
+            }
+            var dto = new List<SemanalDTO>();
+            for(var h=0; h<7; h++)
+            {
+                var obj = new SemanalDTO { Dia = dias[h], Cantidad = cantidades[h] };
+                dto.Add(obj);
+            }
+            return dto;
+        }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VentaDTO>> Get(int id)
         {

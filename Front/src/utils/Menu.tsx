@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useHistory } from "react-router-dom";
+import DashboardIcon from "../assets/DashboardIcon";
 import LogOut from "../assets/LogOut";
 import AutenticacionContext from "../auth/AutenticacionContext";
 import Autorizado from "../auth/Autorizado";
@@ -19,8 +20,8 @@ export default function Menu() {
     return (
 
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Navbar.Brand style={{padding:'0 100px'}} href="/"><DashboardIcon/></Navbar.Brand>
             <Container>
-                <Navbar.Brand href="/">Sistema</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
@@ -36,7 +37,7 @@ export default function Menu() {
                             </NavDropdown>
                             <NavDropdown title="Proveedores" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoProveedores">Gestionar proveedores</NavDropdown.Item>
-                                <NavDropdown.Item href="/proveedores">Cargar proveedor</NavDropdown.Item>                               
+                                <NavDropdown.Item href="/proveedores">Cargar proveedor</NavDropdown.Item>
                             </NavDropdown>
                             <NavDropdown title="Ventas" id="collasible-nav-dropdown">
                                 <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
@@ -64,13 +65,13 @@ export default function Menu() {
                     </Nav>
                     <Autorizado autorizado={<>
                         <div className="d-flex">
-                            <NavDropdown  title={<LogOut />}>
+                            <NavDropdown title={<LogOut />}>
                                 <NavDropdown.Item><a onClick={() => {
-                                logout()
-                                actualizar([])
-                                history.push('/')
-                                history.go(0)
-                            }} style={{color:'black'}}>Log out</a></NavDropdown.Item>
+                                    logout()
+                                    actualizar([])
+                                    history.push('/')
+                                    history.go(0)
+                                }} style={{ color: 'black' }}>Log out</a></NavDropdown.Item>
                             </NavDropdown>
                         </div></>}
 

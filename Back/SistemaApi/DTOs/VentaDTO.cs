@@ -11,7 +11,8 @@ namespace SistemaApi.DTOs
         public int ClienteId { get; set; }
         public string FormaDePago { get; set; }
         public double Adeudada { get; set; }
-        public DateTime FechaDeVenta { get; set; }
+        public DateTime FechaDeVenta { get; set; }      
         public List<ProductoDTO> Productos { get; set; }
+        public ClienteDTO Cliente { get; set; }
     }
 }

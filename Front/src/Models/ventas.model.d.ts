@@ -1,5 +1,6 @@
 import { TupleType } from "typescript";
 import { number } from "yup";
+import { clienteModel } from "./clientes.model";
 import { productoModel } from "./producto.model";
 
 export interface ventasModel{
@@ -10,6 +11,7 @@ export interface ventasModel{
     fechaDeVenta: Date;
     formaDePago: string;
     adeudada: number;
+    cliente: clienteModel;
 }
 
 export interface listadoVentas{

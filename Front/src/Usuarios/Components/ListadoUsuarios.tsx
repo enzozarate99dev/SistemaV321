@@ -26,7 +26,7 @@ export default function ListadoUsuarios() {
         }
     }
 
-    async function editar(nombre: string){
+    async function editar(nombre: string) {
 
     }
 
@@ -58,9 +58,10 @@ export default function ListadoUsuarios() {
 
     return (
         <Verificar listado={usuarios}>
-            <div className='container'>
+            <>
+                <h3 style={{ marginTop: '1rem' }}>Usuarios</h3>
                 <table className='table'>
-                    <thead>
+                    <thead className="table-dark">
                         <tr>
                             <th>Nombre de usuario</th>
                             <th>Email</th>
@@ -81,7 +82,7 @@ export default function ListadoUsuarios() {
                         ))}
                     </tbody>
                 </table>
-            </div>
+            </>
         </Verificar>
     )
 }

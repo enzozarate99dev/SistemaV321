@@ -23,13 +23,10 @@ namespace SistemaApi.Controllers
 
        
         [HttpGet]
-        public async Task<ActionResult<ListadoVentasDTO>> Get()
+        public async Task<ActionResult<List<VentaDTO>>> Get()
         {
             var ventas = await context.Ventas.Include(x=>x.VentaProducto).ThenInclude(x=>x.Producto).ToListAsync();
-            var resultado = new ListadoVentasDTO();
-            resultado.Ventas = mapper.Map<List<VentaDTO>>(ventas);
-
-            return resultado;
+            return mapper.Map<List<VentaDTO>>(ventas);
         }
 
         [HttpGet("chart")]
@@ -63,11 +60,7 @@ namespace SistemaApi.Controllers
             for(var i=0; i < 7; i++)
             {
                 cantidades[i] = 0;
-                dias[i] = "";
-            }
-            for(var j=0; j < 7; j++)
-            {
-                dias[j] = DateTime.Today.AddDays(j - 6).ToString("dddd").ToUpper();
+                dias[i] = DateTime.Today.AddDays(i - 6).ToString("dddd").ToUpper();
             }
             foreach(var venta in ventas)
             {
@@ -137,7 +130,8 @@ namespace SistemaApi.Controllers
 
                 await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
 
-                var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).OrderBy(x=>x.ClienteId).ToListAsync();
+                var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).Include(y=>y.Cliente).OrderBy(x=>x.ClienteId).ToListAsync();
+                
                 return mapper.Map<List<VentaDTO>>(ventas);
             }       
         }
@@ -174,7 +168,8 @@ namespace SistemaApi.Controllers
             }
             var venta = mapper.Map<Venta>(ventaCreacionDTO);
             venta.PrecioTotal = total;
-            venta.FechaDeVenta = DateTime.Now;
+            Random r = new Random();
+            venta.FechaDeVenta = DateTime.Now.AddDays(r.Next(0,7)*-1);
             if (venta.FormaDePago == "Cuenta Corriente")
             {
                 venta.Adeudada = total;
@@ -200,61 +195,6 @@ namespace SistemaApi.Controllers
             var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
             return new VentasPostGetDTO() { Productos = productosDTO };
         }
-
-        /*[HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] VentaCreacionDTO ventaCreacionDTO)
-        {
-            var venta = await context.Ventas.Include(x=> x.VentaProducto).FirstOrDefaultAsync(x => x.Id == id);
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == ventaCreacionDTO.ClienteId);
-            double total = 0;
-
-            if (venta == null)
-            {
-                return NotFound();
-            }
-
-            
-            if(ventaCreacionDTO.ProductosIds.Count == 0)
-            {
-                return BadRequest("Ingresar al menos un producto");
-            }
-            foreach (var tuple in ventaCreacionDTO.ProductosIds)
-            {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
-                if (tuple[1] > producto.Cantidad)
-                {
-                    return BadRequest("No hay suficientes unidades del producto");
-                }
-            }
-
-            if (venta.FormaDePago == "Cuenta Corriente")
-            {
-                cliente.Deuda -= venta.Adeudada;
-            }
-
-            foreach (var tuple in ventaCreacionDTO.ProductosIds)
-            {
-                var idP = tuple[0];
-                var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == idP);
-                producto.Cantidad = producto.Cantidad - cantidad;
-                total = total + (producto.Precio * cantidad);
-            }
-
-            venta = mapper.Map(ventaCreacionDTO, venta);
-            venta.PrecioTotal = total;
-            if (venta.FormaDePago == "Cuenta Corriente")
-            {
-                venta.Adeudada = total;
-                cliente.Deuda += total;
-            }
-            else
-            {
-                venta.Adeudada = 0;
-            }
-            await context.SaveChangesAsync();
-            return NoContent();
-        }*/
 
         [HttpPut("cancelar/{id:int}")]
         public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)

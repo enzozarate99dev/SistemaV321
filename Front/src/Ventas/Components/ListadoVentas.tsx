@@ -15,7 +15,7 @@ import * as services from "../Services/ventas.services";
 export default function ListadoVentas(props: propsListadoVentas) {
 
     const history = useHistory()
-    
+
     async function borrar(id: number) {
         try {
             services.borrar(id)
@@ -41,8 +41,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
         return array[0]
     }
 
-    function getNombre(clientes: clienteModel[], clienteId: number):string{
-        var newArray = clientes.filter(x=>x.id == clienteId)
+    function getNombre(clientes: clienteModel[], clienteId: number): string {
+        var newArray = clientes.filter(x => x.id == clienteId)
         return newArray[0].nombreYApellido
     }
 
@@ -69,43 +69,41 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
     return (
         <>
-            <Verificar listado={props.ventas}>
-                <table className='table'>
-                    <thead className="table-dark">
-                        <tr>
-                            <th>Nombre y Apellido</th>
-                            <th>Total</th>
-                            <th>Forma De Pago</th>
-                            <th>Fecha</th>
-                            <th></th>
+            <table className='table'>
+                <thead className="table-dark">
+                    <tr>
+                        <th>Nombre y Apellido</th>
+                        <th>Total</th>
+                        <th>Forma De Pago</th>
+                        <th>Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {props.ventas?.map((venta) => (
+                        <tr key={venta.id}>
+                            <td>{venta.cliente.nombreYApellido}</td>
+                            <td>{venta.precioTotal}</td>
+                            <td>{venta.formaDePago}</td>
+                            <td>{formatDate(venta.fechaDeVenta.toString())}</td>
+                            <td>
+                                {botones(`ventas/detalle/${venta.id}`, venta.id)}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {props.ventas?.map((venta,index) => (
-                            <tr key={venta.id}>
-                                <td>{}</td>
-                                <td>{venta.precioTotal}</td>
-                                <td>{venta.formaDePago}</td>
-                                <td>{formatDate(venta.fechaDeVenta.toString())}</td>
-                                <td>
-                                    {botones(`ventas/detalle/${venta.id}`, venta.id)}
-                                </td>
-                            </tr>
-                        ))}
-                        {props.ventasConsFinal?.map((ventacf) => (
-                            <tr key={ventacf.id}>
-                                <td>{ventacf.nombreCliente}</td>
-                                <td>{ventacf.precioTotal}</td>
-                                <td>{ventacf.formaDePago}</td>
-                                <td>{formatDate(ventacf.fechaDeVenta.toString())}</td>
-                                <td>
-                                    {botonesCF(`ventasConsumidorFinal/${ventacf.id}`, ventacf.id)}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </Verificar>
+                    ))}
+                    {props.ventasConsFinal?.map((ventacf) => (
+                        <tr key={ventacf.id}>
+                            <td>{ventacf.nombreCliente}</td>
+                            <td>{ventacf.precioTotal}</td>
+                            <td>{ventacf.formaDePago}</td>
+                            <td>{formatDate(ventacf.fechaDeVenta.toString())}</td>
+                            <td>
+                                {botonesCF(`ventasConsumidorFinal/${ventacf.id}`, ventacf.id)}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </>
     )
 }

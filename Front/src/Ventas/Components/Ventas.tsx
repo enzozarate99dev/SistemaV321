@@ -54,13 +54,18 @@ export default function Ventas() {
                 retorno = productosDisp[i]
             }
         }
-        retorno.cantidad = valores.cantidad
         return retorno
     }
 
     async function agregar(valores: valoresPrevProps) {
         const obj = getProducto(valores)
-        setProductosArreglo([...productosArreglo,obj])
+        if (productosArreglo.includes(obj)) {
+            const i = productosArreglo.indexOf(obj)
+            productosArreglo[i].cantidad = parseInt(productosArreglo[i].cantidad.toString()) + parseInt(valores.cantidad.toString())
+        } else {
+            obj.cantidad = valores.cantidad
+            setProductosArreglo([...productosArreglo, obj])
+        }
     }
 
     async function quitar(id: number) {

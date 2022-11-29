@@ -50,9 +50,9 @@ export default function InfoCliente() {
                     <label htmlFor="cta">No pagados</label>
                     <input style={{marginLeft:'0.5rem'}} type='checkbox' name="cta" onClick={handleCheckbox}></input> 
                     <br></br>
-                    {!checkbox ? (cliente?.ventas.map((venta,index) => <><Link to={`/ventas/detalle/${venta.id}`}>Venta {index+1}</Link><br></br></>)):(cliente?.ventas.map((venta,index) => <>{
+                    {/* {!checkbox ? (cliente?.ventas.map((venta,index) => <><Link to={`/ventas/detalle/${venta.id}`}>Venta {index+1}</Link><br></br></>)):(cliente?.ventas.map((venta,index) => <>{
                         (venta.adeudada > 0 ? <><Link to={`/ventas/detalle/${venta.id}`}>Venta {index+1}</Link><Link style={{marginLeft:'0.5rem'}} to={`/ventas/cancelar/${venta.id}`}>Cancelar esta deuda</Link><br></br></>:null)
-                    }</>))}
+                    }</>))} */}
                 </div> :
                 null}
         </div>

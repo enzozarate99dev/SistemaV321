@@ -7,7 +7,6 @@ export interface clienteModel{
     telefono: string;
     domicilio: string;
     deuda: number;
-    ventas: ventasModel[];
 }
 
 export interface clienteCrear{

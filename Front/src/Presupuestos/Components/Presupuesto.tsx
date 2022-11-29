@@ -56,8 +56,14 @@ export default function Presupuesto() {
     }
 
     async function agregar(valores: valoresPrevProps) {
-        const arr=getProducto(valores)
-        setProductosArreglo([...productosArreglo,arr])
+        const obj=getProducto(valores)
+        if (productosArreglo.includes(obj)) {
+            const i = productosArreglo.indexOf(obj)
+            productosArreglo[i].cantidad = parseInt(productosArreglo[i].cantidad.toString()) + parseInt(valores.cantidad.toString())
+        } else {
+            obj.cantidad = valores.cantidad
+            setProductosArreglo([...productosArreglo, obj])
+        }
     }
 
     async function quitar(id: number) {

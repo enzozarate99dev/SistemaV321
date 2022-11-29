@@ -12,6 +12,5 @@ namespace SistemaApi.DTOs
         public string Telefono { get; set; }
         public string Domicilio { get; set; }
         public double? Deuda { get; set; }
-        public virtual ICollection<VentaDTO> Ventas { get; set; }
     }
 }

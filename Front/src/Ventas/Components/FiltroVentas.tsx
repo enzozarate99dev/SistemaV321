@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import FilterIcon from "../../assets/FilterIcon";
 import { productoModel } from "../../Models/producto.model";
 import { ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
@@ -9,11 +10,8 @@ import Button from "../../utils/Button";
 import FormGroupFecha from "../../utils/FormGroupFecha";
 import Paginacion from "../../utils/Paginacion";
 import * as servicesCF from '../../VentasConsFinal/Services/consumidorFinal.services';
-import * as serClientes from "../../Clientes/Services/clientes.services";
 import * as services from '../Services/ventas.services';
 import ListadoVentas from "./ListadoVentas";
-import { clienteModel } from "../../Models/clientes.model";
-import FilterIcon from "../../assets/FilterIcon";
 
 
 export default function FiltroVentas() {

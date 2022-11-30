@@ -5,6 +5,7 @@ using SistemaApi.DTOs;
 using SistemaApi.Entidades;
 using SistemaApi.Utilidades;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace SistemaApi.Controllers
 {
@@ -26,6 +27,13 @@ namespace SistemaApi.Controllers
         public async Task<ActionResult<List<VentaDTO>>> Get()
         {
             var ventas = await context.Ventas.Include(x=>x.VentaProducto).ThenInclude(x=>x.Producto).ToListAsync();
+            return mapper.Map<List<VentaDTO>>(ventas);
+        }
+
+        [HttpGet("ventasCliente/{id:int}")]
+        public async Task<ActionResult<List<VentaDTO>>> Ventas(int id)
+        {
+            var ventas = await context.Ventas.Where(x => x.ClienteId == id).ToListAsync();
             return mapper.Map<List<VentaDTO>>(ventas);
         }
 
@@ -87,6 +95,48 @@ namespace SistemaApi.Controllers
                 dto.Add(obj);
             }
             return dto;
+        }
+
+        [HttpGet("chartProductos")]
+        public async Task<ActionResult<List<ProductoChartDTO>>> ChartProductos()
+        {
+            var ventas = await context.Ventas.Include(x => x.VentaProducto).ThenInclude(y => y.Producto).OrderBy(x=>x.Id).ToListAsync();
+            var ventascf = await context.VentaConsumidorFinal.Include(x => x.VentaCFProducto).ThenInclude(y => y.Producto).OrderBy(x => x.Id).ToListAsync();
+            var productos = await context.Productos.ToListAsync();
+            var list = new List<ProductoChartDTO>();
+            var ids = new List<int>();
+            int[] cantidades = new int[productos.Count];
+            string[] categorias = new string[productos.Count];
+            string[] nombres = new string[productos.Count];
+            for(var i=0; i<productos.Count; i++)
+            {
+                ids.Add(productos[i].Id);
+                categorias[i] = productos[i].Categoria;
+                nombres[i] = productos[i].Nombre;
+                cantidades[i] = 0;
+            }
+            foreach(var venta in ventas)
+            {
+                foreach(var producto in venta.VentaProducto)
+                {
+                    var ind = ids.FindIndex(x => x == producto.ProductoId);
+                    cantidades[ind]+=producto.Unidades;
+                }
+            }
+            foreach (var venta in ventascf)
+            {
+                foreach (var producto in venta.VentaCFProducto)
+                {
+                    var ind = ids.FindIndex(x => x == producto.ProductoId);
+                    cantidades[ind]+=producto.Unidades;
+                }
+            }
+            for(var h = 0; h < productos.Count;h++)
+            {
+                var obj = new ProductoChartDTO { IdProducto = ids[h], Cantidad = cantidades[h], Categoria = categorias[h], Nombre = nombres[h] };
+                list.Add(obj);
+            }
+            return list;
         }
 
         [HttpGet("{id:int}")]

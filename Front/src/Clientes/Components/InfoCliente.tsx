@@ -1,20 +1,15 @@
 import { AxiosResponse } from "axios";
-import { Formik, Form } from "formik";
 import { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
-import { Link, useHistory, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { clienteModel } from "../../Models/clientes.model";
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
-import FormGroupFecha from "../../utils/FormGroupFecha";
-import Paginacion from "../../utils/Paginacion";
-import ListadoVentas from "../../Ventas/Components/ListadoVentas";
-import * as services from '../Services/clientes.services';
-import * as ventasServices from '../../Ventas/Services/ventas.services'
 import { ventasModel } from "../../Models/ventas.model";
+import * as services from '../Services/clientes.services';
+import * as ventasServices from "../../Ventas/Services/ventas.services"
 
 export default function InfoCliente() {
     const { id }: any = useParams();
     const [cliente, setCliente] = useState<clienteModel>()
+    const [ventasCliente, setVentasCliente] = useState<ventasModel[]>([])
     const [clickeado, setClickeado] = useState(false)
     const [checkbox, setCheckbox] = useState(false)
 
@@ -24,6 +19,13 @@ export default function InfoCliente() {
             setCliente(respuesta.data)
         })
     }, [id])
+
+    useEffect(()=>{
+        const res = ventasServices.ventasCliente(id)
+        res.then((respuesta: AxiosResponse<ventasModel[]>)=>{
+            setVentasCliente(respuesta.data)
+        })
+    },[id])
 
     function handleCheckbox(){
         setCheckbox(!checkbox)
@@ -50,9 +52,9 @@ export default function InfoCliente() {
                     <label htmlFor="cta">No pagados</label>
                     <input style={{marginLeft:'0.5rem'}} type='checkbox' name="cta" onClick={handleCheckbox}></input> 
                     <br></br>
-                    {/* {!checkbox ? (cliente?.ventas.map((venta,index) => <><Link to={`/ventas/detalle/${venta.id}`}>Venta {index+1}</Link><br></br></>)):(cliente?.ventas.map((venta,index) => <>{
+                    {!checkbox ? (ventasCliente.map((venta,index) => <><Link to={`/ventas/detalle/${venta.id}`}>Venta {index+1}</Link><br></br></>)):(ventasCliente.map((venta,index) => <>{
                         (venta.adeudada > 0 ? <><Link to={`/ventas/detalle/${venta.id}`}>Venta {index+1}</Link><Link style={{marginLeft:'0.5rem'}} to={`/ventas/cancelar/${venta.id}`}>Cancelar esta deuda</Link><br></br></>:null)
-                    }</>))} */}
+                    }</>))}
                 </div> :
                 null}
         </div>

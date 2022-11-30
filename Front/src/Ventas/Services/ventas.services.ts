@@ -45,5 +45,14 @@ export async function chartSemanal(){
     return res
 }
 
+export async function ventasCliente(id:any){
+    const res = axios.get(`${urlVentas}/ventasCliente/${id}`)
+    return res
+}
+
+export async function chartProductos(){
+    const res = axios.get(`${urlVentas}/chartProductos`)
+    return res
+}
 
 

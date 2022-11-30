@@ -34,6 +34,7 @@ namespace SistemaApi.Controllers
             return resultado; 
         }
 
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProductoDTO>> Get(int id)
         {

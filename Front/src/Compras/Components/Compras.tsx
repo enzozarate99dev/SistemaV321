@@ -144,7 +144,7 @@ export default function Compras() {
                                                 toggle()
                                                 cambiarBandera()
                                             }}> + </Button>
-                                            <Popup
+                                            {/* <Popup
                                                 open={isOpen}
                                                 closeOnDocumentClick
                                             >
@@ -152,7 +152,7 @@ export default function Compras() {
                                                     toggle()
                                                     cambiarBandera()
                                                 }}> X </Button><CargarProducto setBandera={cambiarBandera} popUp /></span>
-                                            </Popup>
+                                            </Popup> */}
                                             {/* <Button className="btn btn-secondary" onClick={()=>setOpen(!open)}>+</Button>
                                             {open ? <span className="modal-box"><button onClick={()=>setOpen(!open)}>X</button><CargarProducto popUp/></span>:null} */}
                                             <table style={{ marginTop: '1rem' }} className='table'>

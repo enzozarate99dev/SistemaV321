@@ -1,6 +1,8 @@
+import { Modal } from "antd";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
@@ -8,19 +10,32 @@ import { actualizar, productoModel } from "../../Models/producto.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/productos.services";
-import '../styles.css'
+import '../styles.css';
+import CargarProducto from "./CargarProducto";
+import EditarProducto from "./EditarProducto";
 
 
 export default function ListadoProductos(props: propsListadoProductos) {
     const [actualizarPrecios, setActualizarPrecios] = useState(false)
     const [eliminarMultiple, setEliminarMultiple] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [id, setId] = useState<number>()
+
+    const showModal = () => {
+        setOpen(!open);
+        props.setFlag()
+    };
+    const showEdit = () => {
+        setEdit(!edit);
+    };
 
     const history = useHistory()
 
     async function borrar(id: number) {
         try {
             services.borrar(id)
-            history.go(0)
+            props.setFlag()
         }
         catch (error) {
             console.log(error.response.data)
@@ -29,16 +44,16 @@ export default function ListadoProductos(props: propsListadoProductos) {
 
     async function actualizar(valores: actualizar) {
         if (valores.ids2 != null) {
-            try{
+            try {
                 valores.ids2.map(id => services.borrar(id))
-                history.go(0)
-            }catch (error){
+                props.setFlag()
+            } catch (error) {
                 console.log(error.response.data)
             }
         } else {
             try {
                 services.actualizarF(valores)
-                history.go(0)
+                props.setFlag()
             }
             catch (error) {
                 console.log(error.response.data)
@@ -46,9 +61,14 @@ export default function ListadoProductos(props: propsListadoProductos) {
         }
     }
 
-    const botones = (urlEditar: string, id: number) =>
+    const botones = (id: number) =>
         <>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon /></Link>
+            <Button style={{ marginRight: '1rem' }} className="btn btn-transparent" onClick={()=>{
+                showEdit()
+                setId(id)
+            }}>
+                <EditIcon />
+            </Button>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
@@ -63,6 +83,27 @@ export default function ListadoProductos(props: propsListadoProductos) {
                     <Form>
                         <Button style={{ marginTop: '0.5rem' }} onClick={() => { setActualizarPrecios(!actualizarPrecios) }}>Actualizar Precios</Button>
                         <Button style={{ marginTop: '0.5rem', marginLeft: '0.5rem' }} onClick={() => { setEliminarMultiple(!eliminarMultiple) }}>Eliminar Multiple</Button>
+                        <Button style={{ marginTop: '0.5rem', marginLeft: '44rem' }} className="btn btn-transparent" onClick={showModal}><AddIcon /></Button>
+                        <Modal
+                            title="Cargar Producto"
+                            width={1150}
+                            open={open}
+                            footer={null}
+                            centered
+                            onCancel={showModal}
+                        >
+                            <p><CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag}/></p>
+                        </Modal>
+                        <Modal
+                            title="Editar Producto"
+                            width={1150}
+                            open={edit}
+                            footer={null}
+                            centered
+                            onCancel={showEdit}
+                        >
+                            <p><EditarProducto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag}/></p>
+                        </Modal>
                         <table style={{ marginTop: '1rem' }} className='table'>
                             <thead className="table-dark">
                                 <tr>
@@ -85,7 +126,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
                                         <td>{producto.cantidad}</td>
                                         <td><img width="50" height="50" src={producto.foto} alt="Poster" /></td>
                                         <td>
-                                            {botones(`productos/editar/${producto.id}`, producto.id)}
+                                            {botones(producto.id)}
                                         </td>
                                         {actualizarPrecios ? <td><Field style={{ marginLeft: "30px" }} name="ids" id="ids" value={producto.id.toString()} type="checkbox" /></td> : null}
                                         {eliminarMultiple ? <td><Field style={{ marginLeft: "30px" }} name="ids2" id="ids2" value={producto.id.toString()} type="checkbox" /></td> : null}
@@ -127,4 +168,5 @@ export default function ListadoProductos(props: propsListadoProductos) {
 
 interface propsListadoProductos {
     productos?: productoModel[];
+    setFlag: () => void;
 }

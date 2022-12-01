@@ -37,9 +37,12 @@ export default function FormularioProveedores(props: formularioProveedoresProps)
                         <Button disabled={formikProps.isSubmitting} type="submit">
                             Guardar
                         </Button>
-                        <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/">
-                            Cancelar
-                        </Link>
+                        <Button
+                            className="btn btn-danger"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                formikProps.setValues(props.modelo)
+                            }}>Limpiar</Button>
                     </div>
                 </Form>
             )}

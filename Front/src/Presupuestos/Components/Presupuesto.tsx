@@ -14,7 +14,7 @@ import * as services from "../../Ventas/Services/ventas.services"
 import * as presServices from "../Services/presupuestos.services"
 import NuevoProductoPresupuesto from "./NuevoProductoPresupuesto"
 
-export default function Presupuesto() {
+export default function Presupuesto(props: crearPresupuestoProps) {
 
     const modelo: presupuestoProps = {
         nombre: '',
@@ -93,10 +93,9 @@ export default function Presupuesto() {
     }
 
     function crear(presupuesto: presupuestoCrear) {
-        console.log(presupuesto)
         try {
             presServices.crear(presupuesto)
-            history.push('/listadoPresupuestos')
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data)
@@ -105,7 +104,6 @@ export default function Presupuesto() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Generar Presupuesto</h3>
             <Formik initialValues={modelo} onSubmit={valores => {
                 convertir(valores)
             }}
@@ -141,9 +139,9 @@ export default function Presupuesto() {
                                                         <tr key={producto.id}>
                                                             <td>{producto.id}</td>
                                                             <td>{producto.nombre}</td>
-                                                            <td>{producto.precio}</td>
+                                                            <td>{producto.precio.toFixed(2)}</td>
                                                             <td>{producto.cantidad}</td>
-                                                            <td>{producto.cantidad * producto.precio}</td>
+                                                            <td>{(producto.cantidad * producto.precio).toFixed(2)}</td>
                                                             <td><Button className="btn btn-transparent" onClick={()=>quitar(producto.id)}><TrashIcon/></Button></td>
                                                         </tr>
                                                     ))}
@@ -153,7 +151,7 @@ export default function Presupuesto() {
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>${sacarTotal()}</td>
+                                                        <td>${sacarTotal().toFixed(2)}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -193,4 +191,9 @@ export interface presupuestoProps {
 export interface valoresPrevProps {
     productosIds: number
     cantidad: number
+}
+
+interface crearPresupuestoProps{
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

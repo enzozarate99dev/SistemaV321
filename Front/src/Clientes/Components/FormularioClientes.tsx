@@ -19,7 +19,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
             })}
         >
             {(formikProps) => (
-                <Form style={{ marginTop: '-10px' }} className="row g-3 needs-validation" noValidate>
+                <Form style={{ marginTop: '-1px' }} className="row g-3 needs-validation" noValidate>
                     <div className="col-md-6">
                         <FormGroupText campo="nombreYApellido" label="Nombre Y Apellido" placeholder="Nombre del cliente" />
                     </div>
@@ -37,9 +37,18 @@ export default function FormularioClientes(props: formularioClientesProps) {
                         <Button disabled={formikProps.isSubmitting} type="submit">
                             Guardar
                         </Button>
-                        <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/">
-                            Cancelar
-                        </Link>
+                        <Button
+                            className="btn btn-danger"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                formikProps.setValues(props.modelo)
+                            }}>Limpiar</Button>
+                        <Button
+                            className="btn btn-secondary"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                props.setBandera!()
+                            }}>Salir</Button>  
                     </div>
                 </Form>
             )}
@@ -53,4 +62,5 @@ interface formularioClientesProps {
         valores: clienteCrear,
         accion: FormikHelpers<clienteCrear>
     ): void;
+    setBandera?: () => void;
 }

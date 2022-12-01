@@ -5,7 +5,7 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/proveedores.services";
 import FormularioProveedores from "./FormularioProveedores";
 
-export default function CargarProveedor() {
+export default function CargarProveedor(props: cargarProveedorProps) {
 
     const history = useHistory();
     const [errores, setErrores] = useState<string[]>([]);
@@ -14,8 +14,8 @@ export default function CargarProveedor() {
         console.log(proveedor)
         try {
             services.crear(proveedor)
-            history.push(`/listadoProveedores`)
-            history.go(0)
+            props.setFlagModal()
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data);
@@ -24,11 +24,15 @@ export default function CargarProveedor() {
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Cargar Proveedor</h3>
             <MostrarErrores errores={errores}/>
             <FormularioProveedores modelo={{ nombre: '', telefono: '', direccion: '', email: '' }} onSubmit={async valores => {
                 crear(valores)
             }} />
         </>
     )
+}
+
+interface cargarProveedorProps{
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

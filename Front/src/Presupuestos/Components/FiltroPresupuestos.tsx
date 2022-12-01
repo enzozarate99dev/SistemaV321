@@ -23,6 +23,12 @@ export default function FiltroPresupuestos() {
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
+    const [flag, setFlag] = useState(false);
+
+    const handleFlag = () => {
+        setFlag(!flag)
+        console.log(flag)
+    }
 
     const valorInicial: filtroPresupuestosProps = {
         productoId: 0,
@@ -49,7 +55,7 @@ export default function FiltroPresupuestos() {
             valorInicial.pagina = parseInt(query.get('pagina')!, 10)
         }
         buscarPresupuesto(valorInicial)
-    }, [])
+    }, [flag])
 
     function modificarURL(valores: filtroPresupuestosProps) {
         const queryStrings: string[] = []
@@ -72,7 +78,6 @@ export default function FiltroPresupuestos() {
         res.then((respuesta: AxiosResponse<presupuestoModel[]>) => {
             const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10)
             setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-            console.log(respuesta.data)
             setPresupuesto(respuesta.data)
         })
     }
@@ -116,7 +121,7 @@ export default function FiltroPresupuestos() {
                                 </div>:null}
                         </Form>
 
-                        <ListadoPresupuestos presupuestos={presupuesto} />
+                        <ListadoPresupuestos presupuestos={presupuesto} setFlag={handleFlag}/>
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

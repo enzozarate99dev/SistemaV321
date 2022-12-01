@@ -1,5 +1,8 @@
+import { Modal } from "antd";
+import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import * as XLSX from "xlsx";
+import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
@@ -7,11 +10,24 @@ import { modeloExcel, presupuestoModel } from "../../Models/presupuestos.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/presupuestos.services";
+import Presupuesto from "./Presupuesto";
 
 
 export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
 
     const history = useHistory()
+    const [open, setOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [id, setId] = useState<number>()
+
+    const showEdit = () => {
+        setEdit(!edit);
+    };
+
+    const showModal = () => {
+        setOpen(!open);
+        props.setFlag()
+    };
 
     async function borrar(id: number) {
         try {
@@ -91,34 +107,58 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
 
     return (
         <Verificar listado={props.presupuestos}>
-            <table className='table'>
-                <thead className="table-dark">
-                    <tr>
-                        <th>Nombre y Apellido</th>
-                        <th>Descuento aplicado</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {props.presupuestos?.map((presupuesto) => (
-                        <tr key={presupuesto.id}>
-                            <td>{presupuesto.nombre}</td>
-                            <td>{presupuesto.descuento}</td>
-                            <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
-                            <td>{presupuesto.precioTotal}</td>
-                            <td>
-                                {botones(presupuesto.id, `presupuesto/editar/${presupuesto.id}`)}
-                            </td>
+            <>
+                <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
+                <Modal
+                    title="Generar Presupuesto"
+                    width={1150}
+                    open={open}
+                    footer={null}
+                    centered
+                    onCancel={showModal}
+                >
+                    <p><Presupuesto setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
+                </Modal>
+                {/* <Modal
+                    title="Editar Cliente"
+                    width={1150}
+                    open={edit}
+                    footer={null}
+                    centered
+                    onCancel={showEdit}
+                >
+                    <p><EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
+                </Modal> */}
+                <table className='table'>
+                    <thead className="table-dark">
+                        <tr>
+                            <th>Nombre y Apellido</th>
+                            <th>Descuento aplicado</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th></th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {props.presupuestos?.map((presupuesto) => (
+                            <tr key={presupuesto.id}>
+                                <td>{presupuesto.nombre}</td>
+                                <td>{presupuesto.descuento}</td>
+                                <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
+                                <td>{presupuesto.precioTotal.toFixed(2)}</td>
+                                <td>
+                                    {botones(presupuesto.id, `presupuesto/editar/${presupuesto.id}`)}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </>
         </Verificar>
     )
 }
 
 interface propsListadoPresupuestos {
     presupuestos?: presupuestoModel[];
+    setFlag: () => void;
 }

@@ -9,15 +9,14 @@ import FormularioProveedores from "./FormularioProveedores";
 
 
 
-export default function EditarProveedor() {
+export default function EditarProveedor(props: editarProvedorProps) {
 
     const [proveedor, setProveedor] = useState<proveedoresCrear>();
     const [errores, setErrores] = useState<string[]>([])
-    const { id }: any = useParams()
     const history = useHistory()
 
     useEffect(() => {
-        const res = services.getProveedor(id)
+        const res = services.getProveedor(props.id)
             res.then((respuesta: AxiosResponse<proveedoresModel>) => {
                 const modelo: proveedoresCrear = {
                     nombre: respuesta.data.nombre,
@@ -27,12 +26,13 @@ export default function EditarProveedor() {
                 }
                 setProveedor(modelo)
             })
-    }, [id])
+    }, [props.id])
 
     async function editar(clienteEditar: proveedoresCrear) {
         try {
-            services.editar(clienteEditar,id)
-            history.push('/listadoProveedores')
+            services.editar(clienteEditar,props.id)
+            props.setFlagModal()
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data)
@@ -48,4 +48,10 @@ export default function EditarProveedor() {
             /> : <Cargando />}
         </>
     )
+}
+
+interface editarProvedorProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

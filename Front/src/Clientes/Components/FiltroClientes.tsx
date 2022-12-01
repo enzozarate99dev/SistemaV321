@@ -1,12 +1,16 @@
+import { Modal } from "antd";
 import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import AddIcon from "../../assets/AddIcon";
 import FilterIcon from "../../assets/FilterIcon";
 import { clienteModel } from "../../Models/clientes.model";
 import Button from "../../utils/Button";
+import FormGroupText from "../../utils/FormGroupText";
 import Paginacion from "../../utils/Paginacion";
 import * as services from "../Services/clientes.services";
+import CargarCliente from "./CargarCliente";
 import ListadoClientes from "./ListadoClientes";
 
 export default function FiltroClientes() {
@@ -16,6 +20,12 @@ export default function FiltroClientes() {
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
+    const [flag, setFlag] = useState(false);
+
+    const handleFlag = () => {
+        setFlag(!flag)
+        console.log(flag)
+    }
 
     const valorInicial: filtroClientesProps = {
         nombreYApellido: '',
@@ -33,7 +43,7 @@ export default function FiltroClientes() {
         }
 
         buscarCliente(valorInicial)
-    }, [])
+    }, [flag])
 
     function modificarURL(valores: filtroClientesProps) {
         const queryStrings: string[] = []
@@ -61,7 +71,7 @@ export default function FiltroClientes() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Filtrar Clientes</h3>
+            <h3 style={{ marginTop: '1rem' }}>Administrar Clientes</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarCliente(valores)
@@ -69,22 +79,15 @@ export default function FiltroClientes() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <Button style={{ marginBottom: '1rem'}} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon/></Button>
-
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon /></Button>
                             {mostrarFiltros ?
                                 <div className="form-inline">
                                     <div className="form-group mb-2">
-                                        <label htmlFor="nombreYApellido" className="sr-only">Nombre y Apellido</label>
-                                        <input type="text" className="form-control"
-                                            id="nombreYApellido" placeholder="Nombre y Apellido"
-                                            {...formikProps.getFieldProps('nombreYApellido')}
-                                        />
+                                        <FormGroupText onChange={() => formikProps.submitForm()} campo="nombreYApellido" placeholder="Nombre del cliente" />
                                     </div>
                                     <Button
-                                        className="btn btn-primary mb-2 mx-sm-3"
-                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
-                                    <Button
                                         className="btn btn-danger mb-2"
+                                        style={{marginLeft:'10px'}}
                                         onClick={() => {
                                             formikProps.setValues(valorInicial)
                                             buscarCliente(valorInicial)
@@ -92,7 +95,7 @@ export default function FiltroClientes() {
                                 </div> : null}
                         </Form>
 
-                        <ListadoClientes clientes={clientes} />
+                        <ListadoClientes clientes={clientes} setFlag={handleFlag} />
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

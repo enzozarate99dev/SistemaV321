@@ -6,21 +6,19 @@ import { clienteModel } from "../../Models/clientes.model";
 import { proveedoresModel } from "../../Models/proveedores.model";
 import * as services from '../Services/proveedores.services';
 
-export default function InfoProveedor() {
-    const { id }: any = useParams();
+export default function InfoProveedor(props: InfoProveedorProps) {
     const [proveedor, setProveedor] = useState<proveedoresModel>()
 
     useEffect(() => {
-        const res = services.getProveedor(id)
+        const res = services.getProveedor(props.id)
         res.then((respuesta: AxiosResponse<proveedoresModel>) => {
             setProveedor(respuesta.data)
         })
-    }, [id])
+    }, [props.id])
 
 
     return (
         <div className='container'>
-            <h3>Detalle de cliente {id}</h3>
             <br></br>
             <h2>{proveedor?.nombre}</h2>
             <h4>{proveedor?.email}</h4>
@@ -55,6 +53,12 @@ export default function InfoProveedor() {
             </Verificar>
         </div>
     )
+}
+
+interface InfoProveedorProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }
 
 

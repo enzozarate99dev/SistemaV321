@@ -18,6 +18,12 @@ export default function FiltroProveedores() {
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
+    const [flag, setFlag] = useState(false);
+
+    const handleFlag = () => {
+        setFlag(!flag)
+        console.log(flag)
+    }
 
     const valorInicial: filtroProveedoresProps = {
         nombre: '',
@@ -35,7 +41,7 @@ export default function FiltroProveedores() {
         }
 
         buscarProveedores(valorInicial)
-    }, [])
+    }, [flag])
 
     function modificarURL(valores: filtroProveedoresProps) {
         const queryStrings: string[] = []
@@ -62,7 +68,7 @@ export default function FiltroProveedores() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Filtrar Clientes</h3>
+            <h3 style={{ marginTop: '1rem' }}>Administrar Proveedores</h3>
             <Formik initialValues={valorInicial} onSubmit={valores => {
                 valores.pagina = 1;
                 buscarProveedores(valores)
@@ -93,7 +99,7 @@ export default function FiltroProveedores() {
                                 </div> : null}
                         </Form>
 
-                        <ListadoProveedores proveedores={proveedores} />
+                        <ListadoProveedores proveedores={proveedores} setFlag={handleFlag} />
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

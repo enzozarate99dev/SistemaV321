@@ -7,18 +7,17 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/productos.services";
 import FormularioProductos from "./FormularioProductos";
 
-export default function EditarProducto() {
+export default function EditarProducto(props: editarProductoProps) {
 
     const [errores, setErrores] = useState<string[]>([])
     const history = useHistory();
     const [producto, setProducto] = useState<productoCrear>();
 
-    const { id }: any = useParams()
-
-    async function editar(productoEditar: productoCrear, id: any) {
+    async function editar(productoEditar: productoCrear) {
         try {
-            services.editar(productoEditar,id)
-            history.push('/')
+            services.editar(productoEditar,props.id)
+            props.setFlagModal!()
+            props.setFlagListado!()
         }
         catch (error) {
             setErrores(error.response.data)
@@ -26,7 +25,7 @@ export default function EditarProducto() {
     }
 
     useEffect(() => {
-        const response = services.getProductos(id)
+        const response = services.getProductos(props.id)
         response.then((respuesta: AxiosResponse<productoCrear>) => {
             const modelo: productoCrear = {
                 nombre: respuesta.data.nombre,
@@ -38,15 +37,21 @@ export default function EditarProducto() {
             }
             setProducto(modelo)
         })
-    }, [id])
+    }, [props.id])
 
     return (
         <>
             <h3 style={{ marginTop: '1rem' }}>Editar Producto</h3>
             <MostrarErrores errores={errores} />
             {producto ? <FormularioProductos
-                modelo={producto} onSubmit={async valores => await editar(valores, id)}
+                modelo={producto} onSubmit={async valores => await editar(valores)}
             /> : <Cargando />}
         </>
     )
+}
+
+interface editarProductoProps{
+    id?: number
+    setFlagModal?: () => void
+    setFlagListado?: () => void
 }

@@ -53,14 +53,18 @@ export default function FormularioProductos(props: formularioProductosProps) {
                         <Button disabled={formikProps.isSubmitting} type="submit">
                             Guardar
                         </Button>
-                        {!props.popUp ? <Link style={{ marginLeft: '1rem' }} className="btn btn-secondary" to="/listadoProductos">
-                            Cancelar
-                        </Link> : <Button
+                        <Button
                             className="btn btn-danger"
-                            style={{marginLeft:'0.5rem'}}
+                            style={{ marginLeft: '0.5rem' }}
                             onClick={() => {
                                 formikProps.setValues(props.modelo)
-                            }}>Limpiar</Button>}
+                            }}>Limpiar</Button>                      
+                        <Button
+                            className="btn btn-secondary"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                props.setBandera!()
+                            }}>Salir</Button>                      
                     </div>
                 </Form>
             )}
@@ -74,9 +78,5 @@ interface formularioProductosProps {
         valores: productoCrear,
         accion: FormikHelpers<productoCrear>
     ): void;
-    popUp: boolean;
-}
-
-FormularioProductos.defaultProps = {
-    popUp: false
+    setBandera?: () => void;
 }

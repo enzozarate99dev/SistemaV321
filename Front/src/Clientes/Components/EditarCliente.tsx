@@ -9,15 +9,14 @@ import FormularioClientes from "./FormularioClientes";
 
 
 
-export default function EditarCliente() {
+export default function EditarCliente(props: editarClienteProps) {
 
     const [cliente, setCliente] = useState<clienteCrear>();
     const [errores, setErrores] = useState<string[]>([])
-    const { id }: any = useParams()
     const history = useHistory()
 
     useEffect(() => {
-        const res = services.getCliente(id)
+        const res = services.getCliente(props.id)
             res.then((respuesta: AxiosResponse<clienteCrear>) => {
                 const modelo: clienteCrear = {
                     nombreYApellido: respuesta.data.nombreYApellido,
@@ -27,12 +26,13 @@ export default function EditarCliente() {
                 }
                 setCliente(modelo)
             })
-    }, [id])
+    }, [props.id])
 
     async function editar(clienteEditar: clienteCrear) {
         try {
-            services.editar(clienteEditar,id)
-            history.push('/listadoClientes')
+            services.editar(clienteEditar,props.id)
+            props.setFlagModal!()
+            props.setFlagListado!()
         }
         catch (error) {
             setErrores(error.response.data)
@@ -41,11 +41,16 @@ export default function EditarCliente() {
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Editar Cliente</h3>
             <MostrarErrores errores={errores} />
             {cliente ? <FormularioClientes
                 modelo={cliente} onSubmit={async valores => await editar(valores)}
             /> : <Cargando />}
         </>
     )
+}
+
+interface editarClienteProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

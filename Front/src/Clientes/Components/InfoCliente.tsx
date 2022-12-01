@@ -6,26 +6,25 @@ import { ventasModel } from "../../Models/ventas.model";
 import * as services from '../Services/clientes.services';
 import * as ventasServices from "../../Ventas/Services/ventas.services"
 
-export default function InfoCliente() {
-    const { id }: any = useParams();
+export default function InfoCliente(props: infoClienteProps) {
     const [cliente, setCliente] = useState<clienteModel>()
     const [ventasCliente, setVentasCliente] = useState<ventasModel[]>([])
     const [clickeado, setClickeado] = useState(false)
     const [checkbox, setCheckbox] = useState(false)
 
     useEffect(() => {
-        const res = services.getCliente(id)
+        const res = services.getCliente(props.id)
         res.then((respuesta: AxiosResponse<clienteModel>) => {
             setCliente(respuesta.data)
         })
-    }, [id])
+    }, [props.id])
 
     useEffect(()=>{
-        const res = ventasServices.ventasCliente(id)
+        const res = ventasServices.ventasCliente(props.id)
         res.then((respuesta: AxiosResponse<ventasModel[]>)=>{
             setVentasCliente(respuesta.data)
         })
-    },[id])
+    },[props.id])
 
     function handleCheckbox(){
         setCheckbox(!checkbox)
@@ -37,7 +36,6 @@ export default function InfoCliente() {
 
     return (
         <div className='container'>
-            <h3>Detalle de cliente {id}</h3>
             <br></br>
             <h2>{cliente?.nombreYApellido}</h2>
             <h4>{cliente?.email}</h4>
@@ -59,6 +57,12 @@ export default function InfoCliente() {
                 null}
         </div>
     )
+}
+
+interface infoClienteProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }
 
 

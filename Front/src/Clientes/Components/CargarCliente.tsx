@@ -5,7 +5,7 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import FormularioClientes from "./FormularioClientes";
 import * as services from "../Services/clientes.services"
 
-export default function CargarCliente() {
+export default function CargarCliente(props: cargarClienteProps) {
 
     const history = useHistory();
     const [errores, setErrores] = useState<string[]>([]);
@@ -13,8 +13,8 @@ export default function CargarCliente() {
     async function crear(cliente: clienteCrear) {
         try {
             services.crear(cliente)
-            history.push(`/listadoClientes`)
-            history.go(0)
+            props.setFlagListado()
+            props.setFlagModal()
         }
         catch (error) {
             setErrores(error.response.data);
@@ -23,11 +23,15 @@ export default function CargarCliente() {
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Cargar Cliente</h3>
             <MostrarErrores errores={errores}/>
-            <FormularioClientes modelo={{ nombreYApellido: '', telefono: '', domicilio: '', email: '' }} onSubmit={async valores => {
+            <FormularioClientes modelo={{ nombreYApellido: '', telefono: '', domicilio: '', email: '' }} setBandera={props.setFlagModal} onSubmit={async valores => {
                 await crear(valores)
             }} />
         </>
     )
+}
+
+interface cargarClienteProps{
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

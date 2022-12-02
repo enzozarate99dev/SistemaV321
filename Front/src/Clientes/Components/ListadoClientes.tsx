@@ -1,6 +1,5 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
 import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
@@ -16,7 +15,6 @@ import InfoCliente from "./InfoCliente";
 
 export default function ListadoClientes(props: propsListadoClientes) {
 
-    const history = useHistory()
     const [open, setOpen] = useState(false);
     const [edit, setEdit] = useState(false);
     const [info, setInfo] = useState(false);

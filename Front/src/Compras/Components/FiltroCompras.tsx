@@ -21,6 +21,12 @@ export default function FiltroCompras() {
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
+    const [flag, setFlag] = useState(false);
+
+    const handleFlag = () => {
+        setFlag(!flag)
+        console.log(flag)
+    }
 
     const valorInicial: filtroComprasProps = {
         proveedorId: 0,
@@ -109,7 +115,7 @@ export default function FiltroCompras() {
                                 </div>:null}
                         </Form>
 
-                        <ListadoCompras compras={compras}/>
+                        <ListadoCompras compras={compras} setFlag={handleFlag}/>
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

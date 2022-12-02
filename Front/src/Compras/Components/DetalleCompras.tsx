@@ -4,21 +4,20 @@ import { useParams } from "react-router-dom";
 import { comprasModel } from "../../Models/compras.model";
 import * as services from "../Services/compras.services";
 
-export default function DetalleCompras() {
-    const { id }: any = useParams();
+export default function DetalleCompras(props: infoCompraProps) {
     const [compra, setCompra] = useState<comprasModel>()
 
     useEffect(() => {
-        const res = services.getCompra(id)
+        const res = services.getCompra(props.id)
             res.then((respuesta: AxiosResponse<comprasModel>) => {
                 respuesta.data.fechaDeCompra = new Date(respuesta.data.fechaDeCompra)
                 setCompra(respuesta.data)
             })
-    }, [id])
+    }, [props.id])
 
     return (
         <div className='container'>
-            <h4 style={{marginTop:'1rem'}}>Detalle de compra {id}</h4>
+            <h4 style={{marginTop:'1rem'}}>Detalle de compra {props.id}</h4>
             <table className='table'>
                 <thead>
                     <tr className='table-warning'>
@@ -32,9 +31,9 @@ export default function DetalleCompras() {
                     {compra?.productos.map((producto) => (
                         <tr className='table-secondary' key={compra?.id}>
                             <td>{producto.nombre}</td>
-                            <td>${producto.precio}</td>
+                            <td>${producto.precio.toFixed(2)}</td>
                             <td>{producto.cantidad}</td>
-                            <td>{producto.cantidad * producto.precio}</td>
+                            <td>{(producto.cantidad * producto.precio).toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -52,10 +51,16 @@ export default function DetalleCompras() {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className='table-secondary'>{compra?.precioTotal}</td>
+                        <td className='table-secondary'>{compra?.precioTotal.toFixed(2)}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     )
+}
+
+interface infoCompraProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

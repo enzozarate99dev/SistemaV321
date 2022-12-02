@@ -16,7 +16,7 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../../Ventas/Services/ventas.services";
 import * as servicesCF from "../Services/consumidorFinal.services";
 
-export default function ConsumidorFinal() {
+export default function ConsumidorFinal(props: crearVentaCFProps) {
 
     const modelo: ventasConsumidorFinalCrear = {
         nombreCliente: '',
@@ -104,7 +104,7 @@ export default function ConsumidorFinal() {
     async function crear(venta: nuevoVentasCFModel) {
         try {
             servicesCF.crear(venta)
-            history.push('/listadoVentas')
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data);
@@ -113,7 +113,6 @@ export default function ConsumidorFinal() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
                 {(formikProps) => (
                     <>
@@ -175,13 +174,28 @@ export default function ConsumidorFinal() {
                             <Button type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
                             </Button>
-                            <Link style={{ marginLeft: '1rem', marginTop: '1rem', marginBottom: '1rem' }} className="btn btn-secondary" to="/">
-                                Cancelar
-                            </Link>
+                            <Button
+                            className="btn btn-danger"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                formikProps.setValues(modelo)
+                                setProductosArreglo([])
+                            }}>Limpiar</Button>
+                            <Button
+                            className="btn btn-secondary"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                props.setFlagModal()
+                            }}>Salir</Button>
                         </Form>
                         <MostrarErrores errores={errores} />
                     </>
                 )}
             </Formik>
         </>);
+}
+
+interface crearVentaCFProps {
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

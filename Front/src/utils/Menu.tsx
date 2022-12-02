@@ -29,18 +29,9 @@ export default function Menu() {
                             <Nav.Link href="/listadoProductos">Productos</Nav.Link>
                             <Nav.Link href="/listadoClientes">Clientes</Nav.Link>
                             <Nav.Link href="/listadoProveedores">Proveedores</Nav.Link>
-                            <NavDropdown title="Ventas" id="collasible-nav-dropdown">
-                                <NavDropdown.Item href="/listadoVentas">Gestionar ventas</NavDropdown.Item>
-                                <NavDropdown.Item href="/redirigirVentas">Cargar venta</NavDropdown.Item>
-                            </NavDropdown>
-                            <NavDropdown title="Compras" id="collasible-nav-dropdown">
-                                <NavDropdown.Item href="/listadoCompras">Gestionar compras</NavDropdown.Item>
-                                <NavDropdown.Item href="/compras">Cargar Compra</NavDropdown.Item>
-                            </NavDropdown>
-                            <NavDropdown title="Presupuestos" id="collasible-nav-dropdown">
-                                <NavDropdown.Item href="/listadoPresupuestos">Gestionar presupuestos</NavDropdown.Item>
-                                <NavDropdown.Item href="/ventas/presupuesto">Generar presupuesto</NavDropdown.Item>
-                            </NavDropdown>
+                            <Nav.Link href="/listadoVentas">Ventas</Nav.Link>
+                            <Nav.Link href="/listadoCompras">Compras</Nav.Link>
+                            <Nav.Link href="/listadoPresupuestos">Presupuestos</Nav.Link>
                         </>}
                         />
                         <Autorizado role="admin" autorizado={
@@ -49,7 +40,6 @@ export default function Menu() {
                                     <NavDropdown.Item href="/listadoUsuarios">Gestionar usuarios</NavDropdown.Item>
                                     <NavDropdown.Item href="/registro">Registrar usuario</NavDropdown.Item>
                                 </NavDropdown>
-
                             </>
                         } />
                     </Nav>

@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { clienteCrear } from "../../Models/clientes.model";
 import MostrarErrores from "../../utils/MostrarErrores";
+import * as services from "../Services/clientes.services";
 import FormularioClientes from "./FormularioClientes";
-import * as services from "../Services/clientes.services"
 
 export default function CargarCliente(props: cargarClienteProps) {
 
-    const history = useHistory();
     const [errores, setErrores] = useState<string[]>([]);
 
     async function crear(cliente: clienteCrear) {

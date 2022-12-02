@@ -10,6 +10,7 @@ import { modeloExcel, presupuestoModel } from "../../Models/presupuestos.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/presupuestos.services";
+import EditarPresupuesto from "./EditarPresupuesto";
 import Presupuesto from "./Presupuesto";
 
 
@@ -93,10 +94,15 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
         return array[0]
     }
 
-    const botones = (id: number, urlEditar: string) =>
+    const botones = (id: number) =>
         <>
             <Button style={{ marginRight: '1rem', marginLeft: '1rem' }} className="btn btn-info" onClick={() => handleExport(id)}>Exportar</Button>
-            <Link style={{ marginRight: '1rem' }} className="btn btn-transparent" to={urlEditar}><EditIcon /></Link>
+            <Button style={{ marginRight: '1rem' }} className="btn btn-transparent" onClick={()=>{
+                showEdit()
+                setId(id)
+            }}>
+                <EditIcon />
+            </Button>
             <Button
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
@@ -119,16 +125,16 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
                 >
                     <p><Presupuesto setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
                 </Modal>
-                {/* <Modal
-                    title="Editar Cliente"
+                <Modal
+                    title="Editar Presupuesto"
                     width={1150}
                     open={edit}
                     footer={null}
                     centered
                     onCancel={showEdit}
                 >
-                    <p><EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
-                </Modal> */}
+                    <p><EditarPresupuesto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
+                </Modal>
                 <table className='table'>
                     <thead className="table-dark">
                         <tr>
@@ -147,7 +153,7 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
                                 <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
                                 <td>{presupuesto.precioTotal.toFixed(2)}</td>
                                 <td>
-                                    {botones(presupuesto.id, `presupuesto/editar/${presupuesto.id}`)}
+                                    {botones(presupuesto.id)}
                                 </td>
                             </tr>
                         ))}

@@ -1,9 +1,11 @@
 import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as Yup from 'yup';
 import TrashIcon from "../../assets/TrashIcon";
+import * as cliServices from "../../Clientes/Services/clientes.services";
+import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
 import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../../Models/ventas.model";
 import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
@@ -13,7 +15,7 @@ import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/ventas.services";
 
-export default function Ventas() {
+export default function Ventas(props: crearVentaProps) {
 
     const modelo: ventasCrear = {
         clienteId: 0,
@@ -24,9 +26,8 @@ export default function Ventas() {
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
     const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
+    const [clientes, setClientes] = useState<clienteModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
-    const history = useHistory()
-    const { id }: any = useParams()
 
 
     useEffect(() => {
@@ -35,6 +36,13 @@ export default function Ventas() {
             setProductosDisp(respuesta.data.productos);
         })
     }, [])
+
+    useEffect(()=>{
+        const res = cliServices.getTodosLosClientes()
+        res.then((respuesta: AxiosResponse<clienteModel[]>)=>{
+            setClientes(respuesta.data)
+        })
+    },[])
 
 
     const modeloPrevs: valoresPrevProps = {
@@ -97,7 +105,7 @@ export default function Ventas() {
             fDePago = "Transferencia"
         }
         var venta: nuevoVentasModel = {
-            clienteId: id,
+            clienteId: valores.clienteId,
             productosIds: arraygeneral,
             formaDePago: fDePago
         }
@@ -105,10 +113,9 @@ export default function Ventas() {
     }
 
     function crear(venta: nuevoVentasModel) {
-        console.log(venta)
         try {
             services.crear(venta)
-            history.push('/listadoVentas')
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data);
@@ -117,11 +124,16 @@ export default function Ventas() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Cargar Venta</h3>
             <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
                 {(formikProps) => (
                     <>
                         <Form>
+                            <label htmlFor="clienteId">Cliente</label>
+                            <select style={{ marginBottom: '5px' }} className="form-control" {...formikProps.getFieldProps(`clienteId`)}>
+                                <option value="0">--Seleccione un cliente--</option>
+                                {clientes.map(cliente =>
+                                    <option key={cliente.id} value={cliente.id}>{cliente.nombreYApellido}</option>)}
+                            </select>
                             <Formik initialValues={modeloPrevs} onSubmit={valores => agregar(valores)} validationSchema={Yup.object({ cantidad: Yup.number().min(1) })}>
                                 {(formikProps2) => (
                                     <>
@@ -179,13 +191,28 @@ export default function Ventas() {
                             <Button type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
                             </Button>
-                            <Link style={{ marginLeft: '1rem', marginTop: '1rem', marginBottom: '1rem' }} className="btn btn-secondary" to="/">
-                                Cancelar
-                            </Link>
+                            <Button
+                            className="btn btn-danger"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                formikProps.setValues(modelo)
+                                setProductosArreglo([])
+                            }}>Limpiar</Button>
+                            <Button
+                            className="btn btn-secondary"
+                            style={{ marginLeft: '0.5rem' }}
+                            onClick={() => {
+                                props.setFlagModal()
+                            }}>Salir</Button>  
                         </Form>
                         <MostrarErrores errores={errores} />
                     </>
                 )}
             </Formik>
         </>);
+}
+
+interface crearVentaProps {
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

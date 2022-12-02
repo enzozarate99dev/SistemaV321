@@ -14,3 +14,8 @@ export async function getUsuarios(){
 export async function borrar(nombre: string){
     await axios.delete(`${urlCuentas}/${nombre}`)
 }
+
+export async function getSingleUser(nombre: string){
+    const res = axios.get(`${urlCuentas}/${nombre}`)
+    return res
+}

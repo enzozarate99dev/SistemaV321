@@ -6,23 +6,22 @@ import * as services from "../Services/ventas.services";
 import * as serClientes from "../../Clientes/Services/clientes.services"
 import { clienteModel } from "../../Models/clientes.model";
 
-export default function DetalleVentas() {
-    const { id }: any = useParams();
+export default function DetalleVentas(props: infoVentaProps) {
     const [venta, setVenta] = useState<ventasModel>()
 
     useEffect(() => {
-        const res = services.getVenta(id)
+        const res = services.getVenta(props.id)
             res.then((respuesta: AxiosResponse<ventasModel>) => {
                 respuesta.data.fechaDeVenta = new Date(respuesta.data.fechaDeVenta)
                 setVenta(respuesta.data)
                 console.log(venta)
             })
-    }, [id])
+    }, [props.id])
 
 
     return (
         <div className='container'>
-            <h4 style={{marginTop:'1rem'}}>Detalle de venta {id}</h4>
+            <h4 style={{marginTop:'1rem'}}>Detalle de venta {props.id}</h4>
             <table className='table'>
                 <thead>
                     <tr className='table-warning'>
@@ -36,9 +35,9 @@ export default function DetalleVentas() {
                     {venta?.productos.map((producto) => (
                         <tr className='table-secondary' key={venta?.id}>
                             <td>{producto.nombre}</td>
-                            <td>${producto.precio}</td>
+                            <td>${producto.precio.toFixed(2)}</td>
                             <td>{producto.cantidad}</td>
-                            <td>{producto.cantidad * producto.precio}</td>
+                            <td>{(producto.cantidad * producto.precio).toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -56,10 +55,16 @@ export default function DetalleVentas() {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className='table-secondary'>{venta?.precioTotal}</td>
+                        <td className='table-secondary'>{venta?.precioTotal?.toFixed(2)}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     )
+}
+
+interface infoVentaProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

@@ -1,16 +1,20 @@
+import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
-import { usuariosCrear, usuariosEnviar } from "../../Models/usuarios.model";
+import { usuariosCrear, usuariosEnviar, usuariosModel } from "../../Models/usuarios.model";
 import Button from "../../utils/Button";
 import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
 import FormGroupText from "../../utils/FormGroupText";
 import * as services from "../Services/usuarios.services";
 
 
-export default function Usuarios(props: cargarUsuarioProps) {
+export default function EditarUsuarios(props: editarUsuarioProps) {
 
+    const history = useHistory()
+    const [modelo, setModelo] = useState<usuariosCrear>()
 
-    const modelo: usuariosCrear = { nombre: '', email: '', password: '', admin: false, cajero: false }
 
     async function convertir(credenciales: usuariosCrear) {
         var role: string = ''
@@ -29,8 +33,23 @@ export default function Usuarios(props: cargarUsuarioProps) {
         registrar(rol)
     }
 
+    useEffect(() => {
+        const res = services.getSingleUser(props.id)
+        res.then((respuesta: AxiosResponse<usuariosModel>) => {
+            var modelo: usuariosCrear = {
+                nombre: respuesta.data.userName,
+                email: respuesta.data.email,
+                admin: false,
+                cajero: false,
+                password: ""
+            }
+            setModelo(modelo)
+            console.log(modelo)
+        })
+
+    }, [props.id])
+
     async function registrar(credenciales: usuariosEnviar) {
-        console.log(credenciales)
         try {
             services.registrar(credenciales)
             props.setFlagListado()
@@ -42,7 +61,7 @@ export default function Usuarios(props: cargarUsuarioProps) {
 
     return (
         <Formik
-            initialValues={modelo}
+            initialValues={modelo!}
             onSubmit={valores => convertir(valores)}
             validationSchema={Yup.object({
                 nombre: Yup.string().required("Este campo es requerido"),
@@ -74,7 +93,7 @@ export default function Usuarios(props: cargarUsuarioProps) {
                                 className="btn btn-danger"
                                 style={{ marginLeft: '0.5rem' }}
                                 onClick={() => {
-                                    formikProps.setValues(modelo)
+                                    formikProps.setValues(modelo!)
                                 }}>Limpiar</Button>
                             <Button
                                 className="btn btn-secondary"
@@ -90,8 +109,9 @@ export default function Usuarios(props: cargarUsuarioProps) {
     );
 }
 
-interface cargarUsuarioProps {
+interface editarUsuarioProps {
     setFlagModal: () => void
     setFlagListado: () => void
+    id: string;
 }
 

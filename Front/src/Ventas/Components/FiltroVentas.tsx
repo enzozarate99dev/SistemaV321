@@ -23,6 +23,12 @@ export default function FiltroVentas() {
     const [mostrarFiltros, setMostrarFiltros] = useState(false)
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
+    const [flag, setFlag] = useState(false);
+
+    const handleFlag = () => {
+        setFlag(!flag)
+        console.log(flag)
+    }
 
     const valorInicial: filtroVentasProps = {
         productoId: 0,
@@ -56,7 +62,7 @@ export default function FiltroVentas() {
         }
         buscarVenta(valorInicial)
         buscarVentaCF(valorInicial)
-    }, [])
+    }, [flag])
 
     function modificarURL(valores: filtroVentasProps) {
         const queryStrings: string[] = []
@@ -146,7 +152,7 @@ export default function FiltroVentas() {
                                 </div>:null}
                         </Form>
 
-                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF}/>
+                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} setFlag={handleFlag}/>
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

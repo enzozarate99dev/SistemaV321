@@ -20,6 +20,7 @@ export default function FiltroProductos() {
 
     const cambiarFlag = () => {
         setFlag(!flag)
+        console.log(flag)
     }
 
     const history = useHistory()

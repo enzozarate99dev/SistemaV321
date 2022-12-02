@@ -1,8 +1,8 @@
+import { Modal } from "antd";
 import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import Popup from "reactjs-popup";
 import * as Yup from 'yup';
 import TrashIcon from "../../assets/TrashIcon";
 import { comprasCrear, comprasCrearPrev } from "../../Models/compras.model";
@@ -17,25 +17,28 @@ import Button from "../../utils/Button";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as ventasServices from "../../Ventas/Services/ventas.services";
 import * as services from "../Services/compras.services";
-import "./modal.css"
-import useModal from "./useModal";
+import "./modal.css";
 
-export default function Compras() {
+export default function Compras(props: crearCompraProps) {
 
     const modelo: comprasCrearPrev = {
         proveedorId: 0
     }
-    const { isOpen, toggle } = useModal()
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
     const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
     const [proveedores, setProveedores] = useState<proveedoresModel[]>([])
     const [errores, setErrores] = useState<string[]>([]);
     const [bandera, setBandera] = useState(true)
+    const [addProd, setAddProd] = useState(false)
     const history = useHistory()
 
     const cambiarBandera = () => {
         setBandera(!bandera)
+    }
+
+    const handleAddProd = () => {
+        setAddProd(!addProd)
     }
 
 
@@ -106,11 +109,9 @@ export default function Compras() {
     }
 
     function crear(compra: comprasCrear) {
-        console.log(compra)
         try {
             services.crear(compra)
-            history.push('/listadoCompras')
-            history.go(0)
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data);
@@ -119,7 +120,6 @@ export default function Compras() {
 
     return (
         <>
-            <h3 style={{ marginTop: '1rem' }}>Cargar Compra</h3>
             <Formik initialValues={modelo} onSubmit={valores => convertir(valores)}>
                 {(formikProps) => (
                     <>
@@ -141,9 +141,22 @@ export default function Compras() {
                                                 Añadir Producto
                                             </Button>
                                             <Button className="btn btn-secondary" onClick={() => {
-                                                toggle()
+                                                handleAddProd()
                                                 cambiarBandera()
                                             }}> + </Button>
+                                            <Modal
+                                                title="Cargar Producto"
+                                                width={1150}
+                                                open={addProd}
+                                                footer={null}
+                                                centered
+                                                onCancel={()=>{handleAddProd()
+                                                cambiarBandera()}}
+                                            >
+                                                <p>
+                                                    <CargarProducto setFlagModal={handleAddProd} setFlagListado={cambiarBandera} />
+                                                </p>
+                                            </Modal>
                                             {/* <Popup
                                                 open={isOpen}
                                                 closeOnDocumentClick
@@ -204,4 +217,9 @@ export default function Compras() {
                 )}
             </Formik>
         </>);
+}
+
+interface crearCompraProps {
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

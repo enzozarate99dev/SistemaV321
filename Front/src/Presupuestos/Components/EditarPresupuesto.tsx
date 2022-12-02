@@ -16,10 +16,9 @@ import NuevoProductoPresupuesto from "./NuevoProductoPresupuesto";
 import { valoresPrevProps } from "./Presupuesto";
 
 
-export default function EditarPresupuesto() {
+export default function EditarPresupuesto(props: editarPresupuestoProps) {
 
     const [errores, setErrores] = useState<string[]>([])
-    const { id }: any = useParams()
     const history = useHistory()
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
     const [productosArreglo, setProductosArreglo] = useState<productoModel[]>([])
@@ -65,7 +64,7 @@ export default function EditarPresupuesto() {
     }
 
     useEffect(() => {
-        const res = services.getPresupuesto(id)
+        const res = services.getPresupuesto(props.id)
         res.then((respuesta: AxiosResponse<presupuestoModel>) => {
             setProductosArreglo(respuesta.data.productos)
             const modelo: presupuestoCrearPrev = {
@@ -74,7 +73,7 @@ export default function EditarPresupuesto() {
             }
             setModelo(modelo)
         })
-    }, [id])
+    }, [props.id])
 
     function sacarTotal(): number {
         var total: number = 0
@@ -100,8 +99,9 @@ export default function EditarPresupuesto() {
     async function editar(presupuesto: presupuestoCrear) {
         console.log(presupuesto)
         try {
-            services.editar(id, presupuesto)
-            history.push('/listadoPresupuestos')
+            services.editar(props.id, presupuesto)
+            props.setFlagListado()
+            props.setFlagModal()
         }
         catch (error) {
             setErrores(error.response.data)
@@ -179,4 +179,10 @@ export default function EditarPresupuesto() {
             </Formik>: null}
         </>
     );
+}
+
+interface editarPresupuestoProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

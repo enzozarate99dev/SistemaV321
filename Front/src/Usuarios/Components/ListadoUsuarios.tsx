@@ -1,6 +1,7 @@
+import { Modal } from "antd";
 import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
@@ -8,26 +9,39 @@ import { usuariosModel } from "../../Models/usuarios.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/usuarios.services";
+import EditarUsuarios from "./EditarUsuario";
+import Usuarios from "./Usuarios";
 
 
 export default function ListadoUsuarios() {
 
-    const history = useHistory()
     const [usuarios, setUsuarios] = useState<usuariosModel[]>([])
+    const [open, setOpen] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [id, setId] = useState<string>()
+    const [flag, setFlag] = useState(false);
 
+    const handleFlag = () => {
+        setFlag(!flag)
+    }
+
+    const showEdit = () => {
+        setEdit(!edit);
+    };
+
+    const showModal = () => {
+        setOpen(!open);
+        handleFlag()
+    };
 
     async function borrar(nombre: string) {
         try {
             services.borrar(nombre)
-            history.go(0)
+            handleFlag()
         }
         catch (error) {
             console.log(error.response.data)
         }
-    }
-
-    async function editar(nombre: string) {
-
     }
 
     useEffect(() => {
@@ -36,13 +50,15 @@ export default function ListadoUsuarios() {
             setUsuarios(respuesta.data)
         })
 
-    }, [])
+    }, [flag])
 
     const botones = (nombre: string) =>
         <>
             <Button
                 style={{ marginRight: '1rem' }}
-                onClick={() => confirmar(() => editar(nombre))}
+                onClick={()=>{showEdit()
+                    setId(nombre)
+                }}
                 className="btn btn-transparent">
                 <EditIcon />
             </Button>
@@ -60,6 +76,29 @@ export default function ListadoUsuarios() {
         <Verificar listado={usuarios}>
             <>
                 <h3 style={{ marginTop: '1rem' }}>Usuarios</h3>
+                <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
+                <Modal
+                    title="Cargar Usuario"
+                    width={1150}
+                    open={open}
+                    footer={null}
+                    centered
+                    onCancel={()=>{showModal()
+                    handleFlag()}}
+                >
+                    <p><Usuarios setFlagModal={showModal} setFlagListado={handleFlag} /></p>
+                </Modal>
+                <Modal
+                    title="Editar Usuario"
+                    width={1150}
+                    open={edit}
+                    footer={null}
+                    centered
+                    onCancel={()=>{showEdit()
+                    handleFlag()}}
+                >
+                    <p><EditarUsuarios id={id!} setFlagModal={showEdit} setFlagListado={handleFlag} /></p>
+                </Modal>
                 <table className='table'>
                     <thead className="table-dark">
                         <tr>

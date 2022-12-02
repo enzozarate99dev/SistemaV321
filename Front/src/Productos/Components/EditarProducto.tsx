@@ -16,8 +16,8 @@ export default function EditarProducto(props: editarProductoProps) {
     async function editar(productoEditar: productoCrear) {
         try {
             services.editar(productoEditar,props.id)
-            props.setFlagModal!()
-            props.setFlagListado!()
+            props.setFlagModal()
+            props.setFlagListado()
         }
         catch (error) {
             setErrores(error.response.data)
@@ -51,7 +51,7 @@ export default function EditarProducto(props: editarProductoProps) {
 }
 
 interface editarProductoProps{
-    id?: number
-    setFlagModal?: () => void
-    setFlagListado?: () => void
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

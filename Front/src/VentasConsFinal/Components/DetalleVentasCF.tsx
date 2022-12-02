@@ -4,28 +4,21 @@ import { useParams } from "react-router-dom";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import * as services from "../Services/consumidorFinal.services";
 
-export default function DetalleVentasCF() {
-    const { id }: any = useParams();
+export default function DetalleVentasCF(props: infoVentaCFProps) {
     const [venta, setVenta] = useState<ventasConsumidorFinalModel>()
 
     useEffect(() => {
-        const res = services.getVenta(id)
+        const res = services.getVenta(props.id)
             res.then((respuesta: AxiosResponse<ventasConsumidorFinalModel>) => {
                 respuesta.data.fechaDeVenta = new Date(respuesta.data.fechaDeVenta)
                 setVenta(respuesta.data)
                 console.log(venta)
             })
-    }, [id])
-
-    function cuenta(cantidad: number, precio: number): number {
-        var total: number = cantidad * precio
-        return total
-    }
-
+    }, [props.id])
 
     return (
         <div className='container'>
-            <h4>Detalle de venta {id}</h4>
+            <h4>Detalle de venta {props.id}</h4>
             <h5>Cliente: {venta?.nombreCliente}</h5>
             <table className='table'>
                 <thead>
@@ -40,9 +33,9 @@ export default function DetalleVentasCF() {
                     {venta?.productos.map((producto) => (
                         <tr className='table-secondary' key={venta?.id}>
                             <td>{producto.nombre}</td>
-                            <td>${producto.precio}</td>
+                            <td>${producto.precio.toFixed(2)}</td>
                             <td>{producto.cantidad}</td>
-                            <td>{cuenta(producto.cantidad, producto.precio)}</td>
+                            <td>{(producto.cantidad * producto.precio).toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -60,10 +53,16 @@ export default function DetalleVentasCF() {
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td className='table-secondary'>{venta?.precioTotal}</td>
+                        <td className='table-secondary'>{venta?.precioTotal?.toFixed(2)}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     )
+}
+
+interface infoVentaCFProps{
+    id: number
+    setFlagModal: () => void
+    setFlagListado: () => void
 }

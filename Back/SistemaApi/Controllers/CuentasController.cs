@@ -44,6 +44,15 @@ namespace SistemaApi.Controllers
             return listado;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UsuariosDTO>> User(string id)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == id);
+            var userRol = await userManager.GetRolesAsync(user);
+
+            return new UsuariosDTO { UserName = user.UserName, Email = user.Email, Role = userRol[0] };
+        }
+
         [HttpPost("crear")]
         public async Task<ActionResult<RespuestaAutenticacion>> Crear([FromBody] RegistroCreacionDTO credenciales)
         {

@@ -117,31 +117,28 @@ export default function FiltroVentas() {
                 {(formikProps) => (
                     <>
                         <Form>
-                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon/></Button>
+                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon /></Button>
 
                             {mostrarFiltros ?
                                 <div className="form-inline">
                                     <div className="form-group mx-sm-3 mb-2">
-                                        <select className="form-control" {...formikProps.getFieldProps('productoId')}>
+                                        <Field className="form-control" as="select" name="productoId" onClick={() => formikProps.submitForm()}>
                                             <option value="0">Seleccione un producto</option>
                                             {productos.map(producto =>
                                                 <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
-                                        </select>
+                                        </Field>
                                     </div>
                                     <div className="form-group mx-sm-3 mb-2">
-                                        <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
+                                        <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" onClick={() => formikProps.submitForm()} />
                                     </div>
                                     <div style={{ marginLeft: '-10px' }} className="form-group mx-sm-3 mb-2">
-                                        <Field className="form-check-input" id="consumidor" name="consumidor" type="checkbox" />
+                                        <Field className="form-check-input" id="consumidor" onClick={() => formikProps.submitForm()} name="consumidor" type="checkbox" />
                                         <label htmlFor="consumidor">C. Final</label>
                                     </div>
                                     <div className="form-group mx-sm-3 mb-2">
-                                        <Field className="form-check-input" id="registrado" name="registrado" type="checkbox" />
+                                        <Field className="form-check-input" id="registrado" onClick={() => formikProps.submitForm()} name="registrado" type="checkbox" />
                                         <label htmlFor="registrado">Cliente Registrado</label>
                                     </div>
-                                    <Button
-                                        className="btn btn-primary mb-2 mx-sm-3"
-                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
                                     <Button
                                         className="btn btn-danger mb-2"
                                         onClick={() => {
@@ -149,10 +146,10 @@ export default function FiltroVentas() {
                                             buscarVentaCF(valorInicial)
                                             buscarVenta(valorInicial)
                                         }}>Limpiar</Button>
-                                </div>:null}
+                                </div> : null}
                         </Form>
 
-                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} setFlag={handleFlag}/>
+                        <ListadoVentas ventas={ventas} ventasConsFinal={ventasCF} setFlag={handleFlag} />
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}
                             paginaActual={formikProps.values.pagina}

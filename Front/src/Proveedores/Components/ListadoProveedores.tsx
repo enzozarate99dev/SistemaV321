@@ -66,65 +66,67 @@ export default function ListadoProveedores(props: propsListadoClientes) {
         </>
 
     return (
-        <Verificar listado={props.proveedores}>
-            <>
-                <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
-                <Modal
-                    title="Cargar Cliente"
-                    width={1150}
-                    open={open}
-                    footer={null}
-                    centered
-                    onCancel={showModal}
-                >
-                    <p><CargarProveedor setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <Modal
-                    title="Editar Cliente"
-                    width={1150}
-                    open={edit}
-                    footer={null}
-                    centered
-                    onCancel={showEdit}
-                >
-                    <p><EditarProveedor id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <Modal
-                    title="Informacion del cliente"
-                    width={1150}
-                    open={info}
-                    footer={null}
-                    centered
-                    onCancel={showInfo}
-                >
-                    <p><InfoProveedor id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <table className='table' style={{ marginTop: '-15px' }}>
-                    <thead className="table-dark">
-                        <tr>
-                            <th></th>
-                            <th>#</th>
-                            <th>Nombre y Apellido</th>
-                            <th>Correo Electronico</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {props.proveedores?.map((proveedor) => (
-                            <tr key={proveedor.id}>
-                                <td></td>
-                                <td>{proveedor.id}</td>
-                                <td>{proveedor.nombre}</td>
-                                <td>{proveedor.email}</td>
-                                <td>
-                                    {botones(proveedor.id)}
-                                </td>
+        <>
+            <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
+            <Modal
+                title="Cargar Proveedor"
+                width={1150}
+                open={open}
+                footer={null}
+                centered
+                onCancel={showModal}
+            >
+                <p><CargarProveedor setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Modal
+                title="Editar Proveedor"
+                width={1150}
+                open={edit}
+                footer={null}
+                centered
+                onCancel={showEdit}
+            >
+                <p><EditarProveedor id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Modal
+                title="Informacion del proveedor"
+                width={1150}
+                open={info}
+                footer={null}
+                centered
+                onCancel={showInfo}
+            >
+                <p><InfoProveedor id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Verificar listado={props.proveedores}>
+                <>
+                    <table className='table' style={{ marginTop: '-15px' }}>
+                        <thead className="table-dark">
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>Nombre y Apellido</th>
+                                <th>Correo Electronico</th>
+                                <th></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </>
-        </Verificar>
+                        </thead>
+                        <tbody>
+                            {props.proveedores?.map((proveedor) => (
+                                <tr key={proveedor.id}>
+                                    <td></td>
+                                    <td>{proveedor.id}</td>
+                                    <td>{proveedor.nombre}</td>
+                                    <td>{proveedor.email}</td>
+                                    <td>
+                                        {botones(proveedor.id)}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            </Verificar>
+        </>
     )
 }
 

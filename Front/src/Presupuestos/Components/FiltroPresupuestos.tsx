@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import FilterIcon from "../../assets/FilterIcon";
@@ -97,21 +97,18 @@ export default function FiltroPresupuestos() {
                             {mostrarFiltros ?
                                 <div className="form-inline">
                                     <div className="form-group mx-sm-3 mb-2">
-                                        <FormGroupText campo="nombre" placeholder="Nombre" />
+                                        <FormGroupText campo="nombre" placeholder="Nombre" onChange={() => formikProps.submitForm()} />
                                     </div>
                                     <div className="form-group mx-sm-3 mb-2">
-                                        <select className="form-control" {...formikProps.getFieldProps('productoId')}>
+                                        <Field className="form-control" as="select" name="productoId" onClick={() => formikProps.submitForm()}>
                                             <option value="0">Seleccione un producto</option>
                                             {productos.map(producto =>
                                                 <option key={producto.id} value={producto.id}>{producto.nombre}</option>)}
-                                        </select>
+                                        </Field>
                                     </div>
                                     <div className="form-group mx-sm-3 mb-2">
-                                        <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" />
+                                        <FormGroupFecha campo="fechaDeVenta" label="Fecha de Venta" onClick={() => formikProps.submitForm()} />
                                     </div>
-                                    <Button
-                                        className="btn btn-primary mb-2 mx-sm-3"
-                                        onClick={() => formikProps.submitForm()}>Filtrar</Button>
                                     <Button
                                         className="btn btn-danger mb-2"
                                         onClick={() => {

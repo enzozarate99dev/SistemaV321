@@ -16,6 +16,7 @@ export default function CargarProducto(props: cargarProductoProps) {
         try{
             services.crear(producto)
             props.setFlagListado()
+            props.setFlagModal()
         }
         catch (error){
             setErrores(error.response.data)

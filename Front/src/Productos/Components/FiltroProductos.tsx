@@ -106,7 +106,7 @@ export default function FiltroProductos() {
                                     <div className="form-group mb-2">
                                         <FormGroupText onChange={()=>formikProps.submitForm()} campo="nombre" placeholder="Nombre del producto"/>
                                     </div>
-                                    <div className="form-group mb-2">
+                                    <div className="form-group mb-2" style={{marginLeft: '5px'}}>
                                         <FormGroupText onChange={()=>formikProps.submitForm()} campo="precio" placeholder="Precio maximo"/>
                                     </div>
                                     <div className="form-group mx-sm-3 mb-2">
@@ -118,6 +118,7 @@ export default function FiltroProductos() {
                                         <label className="form-check-label" htmlFor="sinStock">Sin Stock</label>
                                     </div>
                                     <Button
+                                        style={{marginLeft: '5px'}}
                                         className="btn btn-danger mb-2"
                                         onClick={() => {
                                             formikProps.setValues(valorInicial)

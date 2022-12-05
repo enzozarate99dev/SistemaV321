@@ -65,65 +65,68 @@ export default function ListadoClientes(props: propsListadoClientes) {
         </>
 
     return (
-        <Verificar listado={props.clientes}>
-            <>
-                <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
-                <Modal
-                    title="Cargar Cliente"
-                    width={1150}
-                    open={open}
-                    footer={null}
-                    centered
-                    onCancel={showModal}
-                >
-                    <p><CargarCliente setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <Modal
-                    title="Editar Cliente"
-                    width={1150}
-                    open={edit}
-                    footer={null}
-                    centered
-                    onCancel={showEdit}
-                >
-                    <p><EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <Modal
-                    title="Informacion del cliente"
-                    width={1150}
-                    open={info}
-                    footer={null}
-                    centered
-                    onCancel={showInfo}
-                >
-                    <p><InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <table style={{ marginTop: '-15px' }} className='table'>
-                    <thead className="table-dark">
-                        <tr>
-                            <th></th>
-                            <th>#</th>
-                            <th>Nombre y Apellido</th>
-                            <th>Deuda Total</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {props.clientes?.map((cliente) => (
-                            <tr key={cliente.id}>
-                                <td></td>
-                                <td>{cliente.id}</td>
-                                <td>{cliente.nombreYApellido}</td>
-                                <td>{cliente.deuda}</td>
-                                <td>
-                                    {botones(cliente.id)}
-                                </td>
+        <>
+            <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
+            <Modal
+                title="Cargar Cliente"
+                width={1150}
+                open={open}
+                footer={null}
+                centered
+                onCancel={showModal}
+            >
+                <p><CargarCliente setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Modal
+                title="Editar Cliente"
+                width={1150}
+                open={edit}
+                footer={null}
+                centered
+                onCancel={showEdit}
+            >
+                <p><EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Modal
+                title="Informacion del cliente"
+                width={1150}
+                open={info}
+                footer={null}
+                centered
+                onCancel={showInfo}
+            >
+                <p><InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Verificar listado={props.clientes}>
+                <>
+
+                    <table style={{ marginTop: '-15px' }} className='table'>
+                        <thead className="table-dark">
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>Nombre y Apellido</th>
+                                <th>Deuda Total</th>
+                                <th></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </>
-        </Verificar>
+                        </thead>
+                        <tbody>
+                            {props.clientes?.map((cliente) => (
+                                <tr key={cliente.id}>
+                                    <td></td>
+                                    <td>{cliente.id}</td>
+                                    <td>{cliente.nombreYApellido}</td>
+                                    <td>{cliente.deuda}</td>
+                                    <td>
+                                        {botones(cliente.id)}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            </Verificar>
+        </>
     )
 }
 

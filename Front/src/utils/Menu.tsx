@@ -36,10 +36,7 @@ export default function Menu() {
                         />
                         <Autorizado role="admin" autorizado={
                             <>
-                                <NavDropdown title="Usuarios" id="collasible-nav-dropdown">
-                                    <NavDropdown.Item href="/listadoUsuarios">Gestionar usuarios</NavDropdown.Item>
-                                    <NavDropdown.Item href="/registro">Registrar usuario</NavDropdown.Item>
-                                </NavDropdown>
+                                <Nav.Link href="/listadoUsuarios">Usuarios</Nav.Link>
                             </>
                         } />
                     </Nav>

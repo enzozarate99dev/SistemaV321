@@ -97,7 +97,7 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
     const botones = (id: number) =>
         <>
             <Button style={{ marginRight: '1rem', marginLeft: '1rem' }} className="btn btn-info" onClick={() => handleExport(id)}>Exportar</Button>
-            <Button style={{ marginRight: '1rem' }} className="btn btn-transparent" onClick={()=>{
+            <Button style={{ marginRight: '1rem' }} className="btn btn-transparent" onClick={() => {
                 showEdit()
                 setId(id)
             }}>
@@ -112,55 +112,57 @@ export default function ListadoPresupuestos(props: propsListadoPresupuestos) {
 
 
     return (
-        <Verificar listado={props.presupuestos}>
-            <>
-                <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
-                <Modal
-                    title="Generar Presupuesto"
-                    width={1150}
-                    open={open}
-                    footer={null}
-                    centered
-                    onCancel={showModal}
-                >
-                    <p><Presupuesto setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <Modal
-                    title="Editar Presupuesto"
-                    width={1150}
-                    open={edit}
-                    footer={null}
-                    centered
-                    onCancel={showEdit}
-                >
-                    <p><EditarPresupuesto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
-                </Modal>
-                <table className='table'>
-                    <thead className="table-dark">
-                        <tr>
-                            <th>Nombre y Apellido</th>
-                            <th>Descuento aplicado</th>
-                            <th>Fecha</th>
-                            <th>Total</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {props.presupuestos?.map((presupuesto) => (
-                            <tr key={presupuesto.id}>
-                                <td>{presupuesto.nombre}</td>
-                                <td>{presupuesto.descuento}</td>
-                                <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
-                                <td>{presupuesto.precioTotal.toFixed(2)}</td>
-                                <td>
-                                    {botones(presupuesto.id)}
-                                </td>
+        <>
+            <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
+            <Modal
+                title="Generar Presupuesto"
+                width={1150}
+                open={open}
+                footer={null}
+                centered
+                onCancel={showModal}
+            >
+                <p><Presupuesto setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Modal
+                title="Editar Presupuesto"
+                width={1150}
+                open={edit}
+                footer={null}
+                centered
+                onCancel={showEdit}
+            >
+                <p><EditarPresupuesto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} /></p>
+            </Modal>
+            <Verificar listado={props.presupuestos}>
+                <>
+                    <table className='table'>
+                        <thead className="table-dark">
+                            <tr>
+                                <th>Nombre y Apellido</th>
+                                <th>Descuento aplicado</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </>
-        </Verificar>
+                        </thead>
+                        <tbody>
+                            {props.presupuestos?.map((presupuesto) => (
+                                <tr key={presupuesto.id}>
+                                    <td>{presupuesto.nombre}</td>
+                                    <td>{presupuesto.descuento}</td>
+                                    <td>{formatDate(presupuesto.fechaDeVenta.toString())}</td>
+                                    <td>{presupuesto.precioTotal.toFixed(2)}</td>
+                                    <td>
+                                        {botones(presupuesto.id)}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
+            </Verificar>
+        </>
     )
 }
 

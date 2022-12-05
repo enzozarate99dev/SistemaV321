@@ -59,33 +59,33 @@ export default function ListadoCompras(props: propListadoCompras) {
 
     return (
         <>
+            <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
+            <Modal
+                title="Cargar Compra"
+                width={1150}
+                open={open}
+                footer={null}
+                centered
+                onCancel={showModal}
+            >
+                <p>
+                    <Compras setFlagModal={showModal} setFlagListado={props.setFlag} />
+                </p>
+            </Modal>
+            <Modal
+                title="Detalle Compra"
+                width={1150}
+                open={info}
+                footer={null}
+                centered
+                onCancel={showInfo}
+            >
+                <p>
+                    <DetalleCompras id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
+                </p>
+            </Modal>
             <Verificar listado={props.compras!}>
                 <>
-                    <Button style={{ marginBottom: '1rem', marginLeft: '65.75rem', marginTop: '-85px' }} onClick={() => { showModal() }} className="btn btn-transparent"><AddIcon /></Button>
-                    <Modal
-                        title="Cargar Compra"
-                        width={1150}
-                        open={open}
-                        footer={null}
-                        centered
-                        onCancel={showModal}
-                    >
-                        <p>
-                            <Compras setFlagModal={showModal} setFlagListado={props.setFlag} />
-                        </p>
-                    </Modal>
-                    <Modal
-                        title="Detalle Compra"
-                        width={1150}
-                        open={info}
-                        footer={null}
-                        centered
-                        onCancel={showInfo}
-                    >
-                        <p>
-                            <DetalleCompras id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
-                        </p>
-                    </Modal>
                     <table className='table'>
                         <thead className="table-dark">
                             <tr>

@@ -41,7 +41,6 @@ export default function EditarProveedor(props: editarProvedorProps) {
 
     return (
         <>
-            <h3 style={{marginTop:'1rem'}}>Editar Cliente</h3>
             <MostrarErrores errores={errores} />
             {proveedor ? <FormularioProveedores
                 modelo={proveedor} onSubmit={async valores => await editar(valores)}

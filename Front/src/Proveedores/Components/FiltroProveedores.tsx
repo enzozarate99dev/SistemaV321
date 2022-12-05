@@ -6,6 +6,7 @@ import FilterIcon from "../../assets/FilterIcon";
 import { clienteModel } from "../../Models/clientes.model";
 import { proveedoresModel } from "../../Models/proveedores.model";
 import Button from "../../utils/Button";
+import FormGroupText from "../../utils/FormGroupText";
 import Paginacion from "../../utils/Paginacion";
 import * as services from "../Services/proveedores.services";
 import ListadoProveedores from "./ListadoProveedores";
@@ -81,11 +82,7 @@ export default function FiltroProveedores() {
                             {mostrarFiltros ?
                                 <div className="form-inline">
                                     <div className="form-group mb-2">
-                                        <label htmlFor="nombreYApellido" className="sr-only">Nombre y Apellido</label>
-                                        <input type="text" className="form-control"
-                                            id="nombre" placeholder="Nombre y Apellido"
-                                            {...formikProps.getFieldProps('nombre')}
-                                        />
+                                        <FormGroupText onChange={()=>formikProps.submitForm()} campo="nombre" placeholder="Nombre del proveedor"/>
                                     </div>
                                     <Button
                                         className="btn btn-primary mb-2 mx-sm-3"

@@ -38,7 +38,7 @@ namespace SistemaApi
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaProducto> VentaProductos { get; set; }
-        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }
         public DbSet<Presupuestos> Presupuestos { get; set; }

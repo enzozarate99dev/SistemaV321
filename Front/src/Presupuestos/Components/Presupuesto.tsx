@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios"
 import { Form, Formik } from "formik"
 import { useEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
+import Swal from "sweetalert2"
 import * as Yup from "yup"
 import TrashIcon from "../../assets/TrashIcon"
 import { presupuestoCrear } from "../../Models/presupuestos.model"
@@ -96,6 +97,10 @@ export default function Presupuesto(props: crearPresupuestoProps) {
         try {
             presServices.crear(presupuesto)
             props.setFlagListado()
+            Swal.fire(
+                'Carga Correcta',
+                'El presupuesto fue cargado correctamente', 'success'
+            )
         }
         catch (error) {
             setErrores(error.response.data)

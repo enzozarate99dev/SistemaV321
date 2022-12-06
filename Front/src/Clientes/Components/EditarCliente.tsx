@@ -22,7 +22,15 @@ export default function EditarCliente(props: editarClienteProps) {
                     nombreYApellido: respuesta.data.nombreYApellido,
                     domicilio: respuesta.data.domicilio,
                     telefono: respuesta.data.telefono,
-                    email: respuesta.data.email
+                    email: respuesta.data.email,
+                    codigoPostal: respuesta.data.codigoPostal,
+                    localidad: respuesta.data.localidad,
+                    nroDocumento: respuesta.data.nroDocumento,
+                    percibeIIBB: false,
+                    percibeIVA: false,
+                    provincia: respuesta.data.provincia,
+                    razonSocial: respuesta.data.razonSocial,
+                    tipoDocumento: respuesta.data.tipoDocumento
                 }
                 setCliente(modelo)
             })

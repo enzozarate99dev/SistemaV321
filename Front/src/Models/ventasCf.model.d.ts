@@ -1,7 +1,8 @@
 export interface ventasConsumidorFinalCrear{
     nombreCliente: string;
-    efectivo: boolean;
-    transferencia: boolean;
+    formaDePago: number;
+    iva: number;
+    tipoComprobante: string;
 }
 
 export interface ventasConsumidorFinalModel{
@@ -10,11 +11,13 @@ export interface ventasConsumidorFinalModel{
     productos: productoModel[],
     precioTotal?: number;
     fechaDeVenta: Date;
-    formaDePago: string;
+    formaDePago: number;
 }
 
 export interface nuevoVentasCFModel{
     nombreCliente:  string;
     productosIds: number[][];
-    formaDePago: string;
+    formaDePago: number;
+    iva: number;
+    tipoComprobante: string;
 }

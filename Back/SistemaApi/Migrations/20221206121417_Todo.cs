@@ -47,6 +47,7 @@ namespace SistemaApi.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
+        
 
             migrationBuilder.CreateTable(
                 name: "Presupuestos",
@@ -98,23 +99,7 @@ namespace SistemaApi.Migrations
                 {
                     table.PrimaryKey("PK_Proveedores", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "VentaConsumidorFinal",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
-                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FormaDePago = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VentaConsumidorFinal", x => x.Id);
-                });
-
+         
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
@@ -217,29 +202,6 @@ namespace SistemaApi.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ventas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
-                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
-                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FormaDePago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Adeudada = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ventas", x => x.Id);
-                    table.ForeignKey(
-                        name: "Venta1",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

@@ -1,7 +1,8 @@
 import { AxiosResponse } from "axios";
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import * as Yup from 'yup';
 import TrashIcon from "../../assets/TrashIcon";
 import * as cliServices from "../../Clientes/Services/clientes.services";
@@ -19,9 +20,10 @@ export default function Ventas(props: crearVentaProps) {
 
     const modelo: ventasCrear = {
         clienteId: 0,
-        efectivo: false,
-        ctaCorriente: false,
-        transferencia: false
+        formaDePago: 0,
+        tratamientoImpositivo: 0,
+        tipoComprobante: "",
+        iva:0
     }
 
     const [productosDisp, setProductosDisp] = useState<productoModel[]>([])
@@ -37,12 +39,12 @@ export default function Ventas(props: crearVentaProps) {
         })
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         const res = cliServices.getTodosLosClientes()
-        res.then((respuesta: AxiosResponse<clienteModel[]>)=>{
+        res.then((respuesta: AxiosResponse<clienteModel[]>) => {
             setClientes(respuesta.data)
         })
-    },[])
+    }, [])
 
 
     const modeloPrevs: valoresPrevProps = {
@@ -94,28 +96,26 @@ export default function Ventas(props: crearVentaProps) {
         for (let i = 0; i < productosArreglo.length; i++) {
             arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!]
         }
-        var fDePago = ''
-        if (valores.efectivo) {
-            fDePago = "Efectivo"
-        }
-        if (valores.ctaCorriente) {
-            fDePago = "Cuenta Corriente"
-        }
-        if (valores.transferencia) {
-            fDePago = "Transferencia"
-        }
         var venta: nuevoVentasModel = {
             clienteId: valores.clienteId,
             productosIds: arraygeneral,
-            formaDePago: fDePago
+            formaDePago: valores.formaDePago,
+            tratamientoImpositivo: valores.tratamientoImpositivo,
+            tipoComprobante: valores.tipoComprobante,
+            iva: valores.iva
         }
         crear(venta)
     }
 
     function crear(venta: nuevoVentasModel) {
+        console.log(venta)
         try {
             services.crear(venta)
             props.setFlagListado()
+            Swal.fire(
+                'Carga Correcta',
+                'La venta fue cargada correctamente', 'success'
+            )
         }
         catch (error) {
             setErrores(error.response.data);
@@ -183,27 +183,79 @@ export default function Ventas(props: crearVentaProps) {
 
 
                             {/* <Button onClick={() => setDescuento(!descuento)}>Aplicar Descuento</Button> */}
-                            <div className="col-md-8">
-                                <FormGroupCheckbox campo="efectivo" label="Efectivo" />
-                                <FormGroupCheckbox campo="ctaCorriente" label="Cuenta Corriente" />
-                                <FormGroupCheckbox campo="transferencia" label="Transferencia" />
+                            <div style={{ marginTop: '-5px' }} className="row g-3">
+                                <div className="col-md-6">
+                                    <label htmlFor="formaDePago">Forma de Pago</label>
+                                    <Field as="select" className="form-control" name="formaDePago">
+                                        <option value={0}>Seleccionar forma de pago</option>
+                                        <option value={1}>Contado</option>
+                                        <option value={2}>Cuenta Corriente</option>
+                                        <option value={3}>Tarjeta de Debito</option>
+                                        <option value={4}>Tarjeta de Credito</option>
+                                        <option value={5}>Cheque</option>
+                                        <option value={6}>Ticket</option>
+                                        <option value={7}>Otro</option>
+                                        <option value={8}>MercadoPago</option>
+                                        <option value={9}>Cobro Digital</option>
+                                        <option value={10}>DineroMail</option>
+                                        <option value={11}>Decidir</option>
+                                        <option value={12}>Todo Pago</option>
+                                    </Field>
+                                </div>
+                                <div className="col-md-6">
+                                    <label htmlFor="tratamientoImpositivo">Tratamiento Impositivo</label>
+                                    <Field as="select" className="form-control" name="tratamientoImpositivo">
+                                        <option value={0}>Seleccionar tratamiento impositivo</option>
+                                        <option value={1}>MONOTRIBUTISTA</option>
+                                        <option value={2}>RESPONSABLE INSCRIPTO</option>
+                                        <option value={4}>IVA EXENTO</option>
+                                        <option value={5}>IVA NO RESPONSABLE</option>
+                                        <option value={7}>IVA NO ALCANZADO</option>
+                                    </Field>
+                                </div>
+                                <div style={{marginTop:'5px'}} className="col-md-6">
+                                    <label htmlFor="tipoComprobante">Tipo Comprobante</label>
+                                    <Field as="select" className="form-control" name="tipoComprobante">
+                                        <option value={0}>Seleccionar tipo de comprobante</option>
+                                        <option value="FA">FACTURA A</option>
+                                        <option value="FA SUJ RET">OPERACIÓN SUJETA A RETENCIÓN</option>
+                                        <option value="NCA">NOTA DE CREDITO A</option>
+                                        <option value="NDA">NOTA DE DEBITO A</option>
+                                        <option value="RA">RECIBO A</option>
+                                        <option value="FB">FACTURA B</option>
+                                        <option value="FB8001">FACTURA B a RI con Informe 8001</option>
+                                    </Field>
+                                </div>
+                                <div style={{marginTop:'5px'}} className="col-md-6">
+                                    <label htmlFor="iva">IVA</label>
+                                    <Field as="select" className="form-control" name="iva">
+                                        <option value={0}>Seleccionar IVA</option>
+                                        <option value={10.5}>10,5</option>
+                                        <option value={21}>21</option>
+                                        <option value={27}>27</option>
+                                        <option value={2.5}>2,5</option>
+                                        <option value={5}>5</option>
+                                        <option value={0}>0</option>
+                                    </Field>
+                                </div>
                             </div>
+
                             <Button type="submit" style={{ marginTop: '1rem', marginBottom: '1rem' }}>
                                 Guardar
                             </Button>
                             <Button
-                            className="btn btn-danger"
-                            style={{ marginLeft: '0.5rem' }}
-                            onClick={() => {
-                                formikProps.setValues(modelo)
-                                setProductosArreglo([])
-                            }}>Limpiar</Button>
+                                className="btn btn-danger"
+                                style={{ marginLeft: '0.5rem' }}
+                                onClick={() => {
+                                    formikProps.setValues(modelo)
+                                    setProductosArreglo([])
+                                }}>Limpiar</Button>
                             <Button
-                            className="btn btn-secondary"
-                            style={{ marginLeft: '0.5rem' }}
-                            onClick={() => {
-                                props.setFlagModal()
-                            }}>Salir</Button>  
+                                className="btn btn-secondary"
+                                style={{ marginLeft: '0.5rem' }}
+                                onClick={() => {
+                                    props.setFlagModal()
+                                }}>Salir</Button>
                         </Form>
                         <MostrarErrores errores={errores} />
                     </>

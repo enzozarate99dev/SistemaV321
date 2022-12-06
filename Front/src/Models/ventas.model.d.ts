@@ -9,7 +9,9 @@ export interface ventasModel{
     productos: productoModel[],
     precioTotal?: number;
     fechaDeVenta: Date;
-    formaDePago: string;
+    formaDePago: number;
+    tratamientoImpositivo: number;
+    tipoComprobante: string;
     adeudada: number;
     cliente: clienteModel;
 }
@@ -20,9 +22,10 @@ export interface listadoVentas{
 
 export interface ventasCrear{
     clienteId: number;
-    efectivo: boolean;
-    ctaCorriente: boolean;
-    transferencia: boolean;
+    formaDePago: number;
+    tratamientoImpositivo: number;
+    tipoComprobante: string;
+    iva:number;
 }
 
 export interface ventaCancelar{
@@ -36,5 +39,8 @@ export interface ventasPostGetModel{
 export interface nuevoVentasModel{
     clienteId:  number;
     productosIds: number[][];
-    formaDePago: string;
+    formaDePago: number;
+    tratamientoImpositivo: number;
+    tipoComprobante: string;
+    iva: number;
 }

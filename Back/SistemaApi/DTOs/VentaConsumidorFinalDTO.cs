@@ -8,7 +8,7 @@ namespace SistemaApi.DTOs
         public string NombreCliente { get; set; }
         public double? PrecioTotal { get; set; }
         public DateTime FechaDeVenta { get; set; }
-        public string FormaDePago { get; set; }
+        public int FormaDePago { get; set; }
         public List<ProductoDTO> Productos { get; set; }
     }
 }

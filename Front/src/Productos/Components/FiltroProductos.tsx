@@ -20,8 +20,8 @@ export default function FiltroProductos() {
 
     const cambiarFlag = () => {
         setFlag(!flag)
-        console.log(flag)
     }
+
 
     const history = useHistory()
     const query = new URLSearchParams(useLocation().search)
@@ -77,7 +77,6 @@ export default function FiltroProductos() {
         modificarURL(valores)
         const response = services.filtrar(valores)
         response.then((respuesta: AxiosResponse<productoModel[]>) => {
-            console.log(respuesta.data)
             const totalDeRegistros = parseInt(
                 respuesta.headers["cantidadtotalregistros"],
                 10
@@ -128,7 +127,7 @@ export default function FiltroProductos() {
                                 : null}
                         </Form>
 
-                        <ListadoProductos productos={productos} setFlag={cambiarFlag} />
+                        <ListadoProductos productos={productos} setFlag={cambiarFlag}/>
 
                         <Paginacion
                             cantidadTotalDePaginas={totalDePaginas}

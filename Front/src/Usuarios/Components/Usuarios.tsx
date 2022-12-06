@@ -1,4 +1,5 @@
 import { Form, Formik } from "formik";
+import Swal from "sweetalert2";
 import * as Yup from "yup";
 import { usuariosCrear, usuariosEnviar } from "../../Models/usuarios.model";
 import Button from "../../utils/Button";
@@ -34,6 +35,10 @@ export default function Usuarios(props: cargarUsuarioProps) {
         try {
             services.registrar(credenciales)
             props.setFlagListado()
+            Swal.fire(
+                'Carga Correcta',
+                'El usuario fue cargado correctamente', 'success'
+            )
         }
         catch (error) {
             console.log(error.response.data)

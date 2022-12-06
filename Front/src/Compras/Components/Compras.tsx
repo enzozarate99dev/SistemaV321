@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
 import * as Yup from 'yup';
 import TrashIcon from "../../assets/TrashIcon";
 import { comprasCrear, comprasCrearPrev } from "../../Models/compras.model";
@@ -80,7 +81,13 @@ export default function Compras(props: crearCompraProps) {
 
     async function agregar(valores: valoresPrevProps) {
         const obj = getProducto(valores)
-        setProductosArreglo([...productosArreglo, obj])
+        if (productosArreglo.includes(obj)) {
+            const i = productosArreglo.indexOf(obj)
+            productosArreglo[i].cantidad = parseInt(productosArreglo[i].cantidad.toString()) + parseInt(valores.cantidad.toString())
+        } else {
+            obj.cantidad = valores.cantidad
+            setProductosArreglo([...productosArreglo, obj])
+        }
     }
 
     async function quitar(id: number) {
@@ -112,6 +119,10 @@ export default function Compras(props: crearCompraProps) {
         try {
             services.crear(compra)
             props.setFlagListado()
+            Swal.fire(
+                'Carga Correcta',
+                'La compra fue cargada correctamente', 'success'
+            )
         }
         catch (error) {
             setErrores(error.response.data);
@@ -154,7 +165,7 @@ export default function Compras(props: crearCompraProps) {
                                                 cambiarBandera()}}
                                             >
                                                 <p>
-                                                    <CargarProducto setFlagModal={handleAddProd} setFlagListado={cambiarBandera} />
+                                                    {/* <CargarProducto setFlagModal={handleAddProd} setFlagListado={cambiarBandera} /> */}
                                                 </p>
                                             </Modal>
                                             {/* <Popup

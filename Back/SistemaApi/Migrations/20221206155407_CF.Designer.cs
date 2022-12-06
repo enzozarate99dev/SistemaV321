@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221128144911_Todo")]
-    partial class Todo
+    [Migration("20221206155407_CF")]
+    partial class CF
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -222,13 +222,17 @@ namespace SistemaApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.Cliente", b =>
+            modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CodigoPostal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Deuda")
                         .HasColumnType("float");
@@ -241,13 +245,38 @@ namespace SistemaApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Localidad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NombreYApellido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NroDocumento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PercibeIIBB")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("PercibeIVA")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Provincia")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RazonSocial")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoDocumento")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -425,12 +454,18 @@ namespace SistemaApi.Migrations
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FormaDePago")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("FormaDePago")
+                        .HasColumnType("int");
 
                     b.Property<double?>("PrecioTotal")
                         .HasColumnType("float");
+
+                    b.Property<string>("TipoComprobante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TratamientoImpositivo")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -468,9 +503,8 @@ namespace SistemaApi.Migrations
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FormaDePago")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("FormaDePago")
+                        .HasColumnType("int");
 
                     b.Property<string>("NombreCliente")
                         .IsRequired()
@@ -605,7 +639,7 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
-                    b.HasOne("SistemaApi.Entidades.Cliente", "Cliente")
+                    b.HasOne("SistemaApi.Entidades.ClienteEntidad", "Cliente")
                         .WithMany("Ventas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -653,7 +687,7 @@ namespace SistemaApi.Migrations
                     b.Navigation("Venta");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.Cliente", b =>
+            modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
                 {
                     b.Navigation("Ventas");
                 });

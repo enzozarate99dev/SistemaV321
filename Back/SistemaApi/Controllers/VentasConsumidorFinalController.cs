@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Facturante;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
+using SistemaApi.Services;
 using SistemaApi.Utilidades;
 using System.Linq;
 
@@ -14,11 +16,13 @@ namespace SistemaApi.Controllers
     {
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly IFacturas facturas;
 
-        public VentasConsumidorFinalController(ApplicationDbContext context, IMapper mapper)
+        public VentasConsumidorFinalController(ApplicationDbContext context, IMapper mapper, IFacturas facturas)
         {
             this.context = context;
             this.mapper = mapper;
+            this.facturas = facturas;
         }
 
         [HttpGet("{id:int}")]
@@ -88,47 +92,15 @@ namespace SistemaApi.Controllers
                 total = total + (producto.Precio * cantidad);
             }
             var venta = mapper.Map<VentaConsumidorFinal>(ventaCreacioncfDTO);
-            venta.PrecioTotal = total;
+            venta.PrecioTotal = total + (total*(ventaCreacioncfDTO.Iva/100));
             venta.FechaDeVenta = DateTime.Now;
             context.Add(venta);
             await context.SaveChangesAsync();
+
+            var obj = await CrearRequest(ventaCreacioncfDTO);
+            facturas.GenerarFactura(obj);
             return NoContent();
         }
-
-        /*[HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] VentaCreacionCFDTO ventaCreacioncfDTO)
-        {
-            var venta = await context.VentaConsumidorFinal.Include(x => x.VentaCFProducto).FirstOrDefaultAsync(x => x.Id == id);
-            double total = 0;
-
-            if (venta == null)
-            {
-                return NotFound();
-            }
-            foreach (var tuple in ventaCreacioncfDTO.ProductosIds)
-            {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
-                if (tuple[1] > producto.Cantidad)
-                {
-                    return BadRequest("No hay suficientes unidades del producto");
-                }
-            }
-
-            foreach (var tuple in ventaCreacioncfDTO.ProductosIds)
-            {
-                var idP = tuple[0];
-                var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == idP);
-                producto.Cantidad = producto.Cantidad - cantidad;
-                total = total + (producto.Precio * cantidad);
-            }
-
-            venta = mapper.Map(ventaCreacioncfDTO, venta);
-            venta.PrecioTotal = total;
-
-            await context.SaveChangesAsync();
-            return NoContent();
-        }*/
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
@@ -143,6 +115,61 @@ namespace SistemaApi.Controllers
             context.Remove(venta);
             await context.SaveChangesAsync();
             return NoContent();
+        }
+
+        private async Task<CrearComprobanteRequest> CrearRequest(VentaCreacionCFDTO ventaCreacionCFDTO)
+        {
+            CrearComprobanteRequest request = new CrearComprobanteRequest();
+            request.Autenticacion = new Autenticacion();
+            request.Autenticacion.Usuario = "";
+            request.Autenticacion.Hash = "";
+            request.Autenticacion.Empresa = 3468;
+
+
+            request.Cliente = new Cliente();
+            request.Cliente.CondicionPago = ventaCreacionCFDTO.FormaDePago;
+            request.Cliente.Contacto = ventaCreacionCFDTO.NombreCliente;
+            request.Cliente.EnviarComprobante = true;
+            request.Cliente.TipoDocumento = 1;
+            request.Cliente.TratamientoImpositivo = 3;
+
+            request.Encabezado = new ComprobanteEncabezado();
+            request.Encabezado.Bienes = 1;
+            request.Encabezado.CondicionVenta = ventaCreacionCFDTO.FormaDePago;
+            request.Encabezado.EnviarComprobante = true;
+            request.Encabezado.FechaHora = DateTime.Now;
+            request.Encabezado.FechaVtoPago = DateTime.Now.AddDays(7);
+            request.Encabezado.ImporteImpuestosInternos = 0;
+            request.Encabezado.ImportePercepcionesMunic = 0;
+            request.Encabezado.Moneda = 2;
+            request.Encabezado.Observaciones = "";
+            request.Encabezado.OrdenCompra = "";
+            request.Encabezado.PercepcionIIBB = 0;
+            request.Encabezado.PercepcionIVA = 0;
+            request.Encabezado.PorcentajeIIBB = 0;
+            request.Encabezado.Prefijo = "00099";
+            request.Encabezado.Remito = "";
+            request.Encabezado.TipoComprobante = ventaCreacionCFDTO.TipoComprobante;
+            request.Encabezado.TipoDeCambio = 1;
+
+            int longitud = ventaCreacionCFDTO.ProductosIds.Count;
+            request.Items = new ComprobanteItem[longitud];
+
+            for (var i = 0; i < longitud; i++)
+            {
+                request.Items[i] = new ComprobanteItem();
+                var prod = await context.Productos.FirstOrDefaultAsync(x => x.Id == ventaCreacionCFDTO.ProductosIds[i][0]);
+                request.Items[i].Bonificacion = 0;
+                request.Items[i].Cantidad = ventaCreacionCFDTO.ProductosIds[i][1];
+                request.Items[i].Codigo = prod.Codigo;
+                request.Items[i].Detalle = prod.Descripcion;
+                request.Items[i].Gravado = true;
+                request.Items[i].IVA = (decimal)ventaCreacionCFDTO.Iva;
+                request.Items[i].PrecioUnitario = (decimal)prod.Precio;
+            }
+
+            return request;
+
         }
     }
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
 import { proveedoresCrear } from "../../Models/proveedores.model";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/proveedores.services";
@@ -14,8 +15,11 @@ export default function CargarProveedor(props: cargarProveedorProps) {
         console.log(proveedor)
         try {
             services.crear(proveedor)
-            props.setFlagModal()
             props.setFlagListado()
+            Swal.fire(
+                'Carga Correcta',
+                'El proveedor fue cargado correctamente', 'success'
+            )
         }
         catch (error) {
             setErrores(error.response.data);

@@ -4,6 +4,7 @@ import { productoCrear } from "../../Models/producto.model";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/productos.services";
 import FormularioProductos from "./FormularioProductos";
+import Swal from "sweetalert2";
 
 
 
@@ -16,7 +17,12 @@ export default function CargarProducto(props: cargarProductoProps) {
         try{
             services.crear(producto)
             props.setFlagListado()
-            props.setFlagModal()
+            Swal.fire({
+                title: 'Carga Correcta!',
+                text: 'El producto fue añadido correctamente',
+                icon: 'success',
+                willClose: () => props.setFlagModal()
+              })
         }
         catch (error){
             setErrores(error.response.data)

@@ -9,9 +9,11 @@ namespace SistemaApi.Entidades
         public double? PrecioTotal { get; set; }
         [Required]
         public DateTime FechaDeVenta { get; set; }
-        public string FormaDePago { get; set; }
+        public int FormaDePago { get; set; }
+        public int TratamientoImpositivo { get; set; }
+        public string TipoComprobante { get; set; }
         public double Adeudada { get; set; }
         public List<VentaProducto> VentaProducto { get; set; }
-        public virtual Cliente Cliente { get; set; }
+        public virtual ClienteEntidad Cliente { get; set; }
     }
 }

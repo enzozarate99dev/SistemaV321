@@ -6,6 +6,14 @@ export interface clienteModel{
     email: string;
     telefono: string;
     domicilio: string;
+    codigoPostal: string;
+    localidad: string;
+    nroDocumento: string;
+    percibeIIBB: boolean;
+    percibeIVA: boolean;
+    provincia: string;
+    razonSocial: string;
+    tipoDocumento: number;
     deuda: number;
 }
 
@@ -14,4 +22,12 @@ export interface clienteCrear{
     email: string;
     telefono: string;
     domicilio: string;
+    codigoPostal: string;
+    localidad: string;
+    nroDocumento: string;
+    percibeIIBB: boolean;
+    percibeIVA: boolean;
+    provincia: string;
+    razonSocial: string;
+    tipoDocumento: number;
 }

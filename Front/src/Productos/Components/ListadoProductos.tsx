@@ -87,7 +87,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
                 centered
                 onCancel={showModal}
             >
-                <p><CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag} /></p>
+                <p><CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag}/></p>
             </Modal>
             <Modal
                 title="Editar Producto"

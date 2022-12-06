@@ -57,7 +57,7 @@ namespace SistemaApi.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] ClienteCreacionDTO clienteCreacionDTO)
         {
-            var cliente = mapper.Map<Cliente>(clienteCreacionDTO);
+            var cliente = mapper.Map<ClienteEntidad>(clienteCreacionDTO);
             cliente.Deuda = 0;
 
             context.Add(cliente);

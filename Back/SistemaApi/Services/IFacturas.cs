@@ -4,7 +4,7 @@ namespace SistemaApi.Services
 {
     public interface IFacturas
     {
-        public void GenerarFactura(CrearComprobanteRequest crearComprobanteRequest);
+        public Task<int?> GenerarFactura(CrearComprobanteRequest crearComprobanteRequest);
         public void GetFacturas();
     }
 }

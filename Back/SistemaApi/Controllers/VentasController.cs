@@ -8,6 +8,8 @@ using SistemaApi.Services;
 using SistemaApi.Utilidades;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 
 namespace SistemaApi.Controllers
 {
@@ -18,12 +20,14 @@ namespace SistemaApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly IFacturas facturas;
+        ComprobantesClient comprobantesClient;
 
         public VentasController(ApplicationDbContext context, IMapper mapper, IFacturas facturas)
         {
             this.context = context;
             this.mapper = mapper;
             this.facturas = facturas;
+            comprobantesClient = new ComprobantesClient(ComprobantesClient.EndpointConfiguration.BasicHttpBinding_IComprobantes);
         }
 
        
@@ -39,6 +43,31 @@ namespace SistemaApi.Controllers
         {
             facturas.GetFacturas();
             return NoContent();
+        }
+
+        [HttpGet("pdf/{id:int}")]
+        public async Task<ActionResult<string>> URLPDF(int id)
+        {
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
+            if(venta == null)
+            {
+                return BadRequest("No existe la venta");
+            }
+
+            DetalleComprobanteRequest request = new DetalleComprobanteRequest();
+            request.Autenticacion = new Autenticacion();
+            request.Autenticacion.Usuario = "TESTING_API_6N";
+            request.Autenticacion.Hash = "10BgP6cOWs78";
+            request.Autenticacion.Empresa = 3468;
+            request.IdComprobante = venta.IdComprobante;
+            DetalleComprobanteResponse detResponse = await comprobantesClient.DetalleComprobanteAsync(request);
+            return detResponse.Comprobante.URLPDF;
+        }
+
+        [HttpPost("webhook")]
+        public async Task<ActionResult<DetalleComprobante>> WebHook([FromBody] DetalleComprobante detalleComprobante)
+        {
+            return detalleComprobante;
         }
 
         [HttpGet("ventasCliente/{id:int}")]
@@ -241,11 +270,19 @@ namespace SistemaApi.Controllers
                 venta.Adeudada = 0;
                 cliente.Deuda += 0;
             }
-            context.Add(venta);
-            await context.SaveChangesAsync();
             var objeto = await CrearRequest(cliente, ventaCreacionDTO);
-            facturas.GenerarFactura(objeto);
-            return NoContent();
+            var idComp = await facturas.GenerarFactura(objeto);
+            if(idComp != -1)
+            {
+                venta.IdComprobante = (int)idComp;
+                context.Add(venta);
+                await context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("Error al generar comprobante Facturante.com");
+            }                             
         }
 
         [HttpGet("PostGet")]
@@ -295,8 +332,8 @@ namespace SistemaApi.Controllers
         {
             CrearComprobanteRequest request = new CrearComprobanteRequest();
             request.Autenticacion = new Autenticacion();
-            request.Autenticacion.Usuario = "";
-            request.Autenticacion.Hash = "";
+            request.Autenticacion.Usuario = "TESTING_API_6N";
+            request.Autenticacion.Hash = "10BgP6cOWs78";
             request.Autenticacion.Empresa = 3468;
 
 
@@ -336,6 +373,7 @@ namespace SistemaApi.Controllers
             request.Encabezado.Remito = "";
             request.Encabezado.TipoComprobante = ventaCreacionDTO.TipoComprobante;
             request.Encabezado.TipoDeCambio = 1;
+
 
             int longitud = ventaCreacionDTO.ProductosIds.Count;
             request.Items = new ComprobanteItem[longitud];

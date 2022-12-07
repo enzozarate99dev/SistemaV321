@@ -20,8 +20,7 @@ export default function CargarProducto(props: cargarProductoProps) {
             Swal.fire({
                 title: 'Carga Correcta!',
                 text: 'El producto fue añadido correctamente',
-                icon: 'success',
-                willClose: () => props.setFlagModal()
+                icon: 'success'
               })
         }
         catch (error){

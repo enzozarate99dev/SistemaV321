@@ -12,6 +12,7 @@ namespace SistemaApi.Entidades
         public int FormaDePago { get; set; }
         public int TratamientoImpositivo { get; set; }
         public string TipoComprobante { get; set; }
+        public int IdComprobante { get; set; }
         public double Adeudada { get; set; }
         public List<VentaProducto> VentaProducto { get; set; }
         public virtual ClienteEntidad Cliente { get; set; }

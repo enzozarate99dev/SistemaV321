@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
+using SistemaApi.Migrations;
 using SistemaApi.Services;
 using SistemaApi.Utilidades;
 using System.Linq;
@@ -17,12 +18,14 @@ namespace SistemaApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly IFacturas facturas;
+        ComprobantesClient comprobantesClient;
 
         public VentasConsumidorFinalController(ApplicationDbContext context, IMapper mapper, IFacturas facturas)
         {
             this.context = context;
             this.mapper = mapper;
             this.facturas = facturas;
+            comprobantesClient = new ComprobantesClient(ComprobantesClient.EndpointConfiguration.BasicHttpBinding_IComprobantes);
         }
 
         [HttpGet("{id:int}")]
@@ -34,6 +37,25 @@ namespace SistemaApi.Controllers
 
             var dto = mapper.Map<VentaConsumidorFinalDTO>(venta);
             return dto;
+        }
+
+        [HttpGet("pdf/{id:int}")]
+        public async Task<ActionResult<string>> URLPDF(int id)
+        {
+            var venta = await context.VentaConsumidorFinal.FirstOrDefaultAsync(x => x.Id == id);
+            if (venta == null)
+            {
+                return BadRequest("No existe la venta");
+            }
+
+            DetalleComprobanteRequest request = new DetalleComprobanteRequest();
+            request.Autenticacion = new Autenticacion();
+            request.Autenticacion.Usuario = "TESTING_API_6N";
+            request.Autenticacion.Hash = "10BgP6cOWs78";
+            request.Autenticacion.Empresa = 3468;
+            request.IdComprobante = venta.IdComprobante;
+            DetalleComprobanteResponse detResponse = await comprobantesClient.DetalleComprobanteAsync(request);
+            return detResponse.Comprobante.URLPDF;
         }
 
         [HttpGet("filtrar")]
@@ -95,11 +117,19 @@ namespace SistemaApi.Controllers
             venta.PrecioTotal = total + (total*(ventaCreacioncfDTO.Iva/100));
             venta.FechaDeVenta = DateTime.Now;
             context.Add(venta);
-            await context.SaveChangesAsync();
-
             var obj = await CrearRequest(ventaCreacioncfDTO);
-            facturas.GenerarFactura(obj);
-            return NoContent();
+            var idComp = await facturas.GenerarFactura(obj);
+            if (idComp != -1)
+            {
+                venta.IdComprobante = (int)idComp;
+                context.Add(venta);
+                await context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("Error al generar comprobante Facturante.com");
+            }
         }
 
         [HttpDelete("{id:int}")]
@@ -121,17 +151,28 @@ namespace SistemaApi.Controllers
         {
             CrearComprobanteRequest request = new CrearComprobanteRequest();
             request.Autenticacion = new Autenticacion();
-            request.Autenticacion.Usuario = "";
-            request.Autenticacion.Hash = "";
+            request.Autenticacion.Usuario = "TESTING_API_6N";
+            request.Autenticacion.Hash = "10BgP6cOWs78";
             request.Autenticacion.Empresa = 3468;
 
 
             request.Cliente = new Cliente();
             request.Cliente.CondicionPago = ventaCreacionCFDTO.FormaDePago;
             request.Cliente.Contacto = ventaCreacionCFDTO.NombreCliente;
+            request.Cliente.NroDocumento = "1";
             request.Cliente.EnviarComprobante = true;
             request.Cliente.TipoDocumento = 1;
             request.Cliente.TratamientoImpositivo = 3;
+            request.Cliente.CodigoPostal = "-";
+            request.Cliente.DireccionFiscal = "-";
+            request.Cliente.Localidad = "-";
+            request.Cliente.MailContacto = "-";
+            request.Cliente.MailFacturacion = "-";
+            request.Cliente.PercibeIIBB = false;
+            request.Cliente.PercibeIVA = false;
+            request.Cliente.Provincia = "-";
+            request.Cliente.RazonSocial = "-";
+            request.Cliente.Telefono = "-";
 
             request.Encabezado = new ComprobanteEncabezado();
             request.Encabezado.Bienes = 1;

@@ -455,6 +455,9 @@ namespace SistemaApi.Migrations
                     b.Property<int>("FormaDePago")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdComprobante")
+                        .HasColumnType("int");
+
                     b.Property<double?>("PrecioTotal")
                         .HasColumnType("float");
 
@@ -502,6 +505,9 @@ namespace SistemaApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("FormaDePago")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdComprobante")
                         .HasColumnType("int");
 
                     b.Property<string>("NombreCliente")

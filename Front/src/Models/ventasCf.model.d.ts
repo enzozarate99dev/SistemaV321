@@ -12,6 +12,7 @@ export interface ventasConsumidorFinalModel{
     precioTotal?: number;
     fechaDeVenta: Date;
     formaDePago: number;
+    idComprobante: number;
 }
 
 export interface nuevoVentasCFModel{

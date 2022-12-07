@@ -14,6 +14,7 @@ export interface ventasModel{
     tipoComprobante: string;
     adeudada: number;
     cliente: clienteModel;
+    idComprobante: number;
 }
 
 export interface listadoVentas{

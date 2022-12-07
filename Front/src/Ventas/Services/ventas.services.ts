@@ -55,4 +55,8 @@ export async function chartProductos(){
     return res
 }
 
+export async function getPDF(id: number){
+    const res = axios.get(`${urlVentas}/pdf/${id}`)
+    return res
+}
 

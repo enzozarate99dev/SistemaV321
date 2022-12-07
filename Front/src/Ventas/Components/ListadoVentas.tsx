@@ -1,8 +1,9 @@
 import { Modal, Tabs } from "antd";
 import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import AddIcon from "../../assets/AddIcon";
+import PdfIcon from "../../assets/PdfIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import Verificar from "../../Generales/verificador";
 import { clienteModel } from "../../Models/clientes.model";
@@ -69,9 +70,13 @@ export default function ListadoVentas(props: propsListadoVentas) {
         return array[0]
     }
 
-    function getNombre(clientes: clienteModel[], clienteId: number): string {
-        var newArray = clientes.filter(x => x.id == clienteId)
-        return newArray[0].nombreYApellido
+    function getPDF(id: number, tipo: string){
+        if(tipo=="cf"){
+            const res = servicesCF.getPDF(id)
+            res.then((resp: AxiosResponse<string>)=>{
+                window.open(resp.data)
+            })
+        }
     }
 
     const botones = (id: number) =>
@@ -102,6 +107,12 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 className="btn btn-transparent">
                 <TrashIcon />
             </Button>
+            <Button
+                onClick={() => getPDF(id, "cf")}
+                className="btn btn-transparent">
+                <PdfIcon />
+            </Button>
+            
         </>
 
 

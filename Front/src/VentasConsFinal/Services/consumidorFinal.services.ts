@@ -24,3 +24,8 @@ export async function borrar(id: number){
 export async function editar(valores:nuevoVentasCFModel, id: any){
     await axios.put(`${urlConsumidoFinal}/${id}`, valores)
 }
+
+export async function getPDF(id: number){
+    const res = axios.get(`${urlConsumidoFinal}/pdf/${id}`)
+    return res
+}

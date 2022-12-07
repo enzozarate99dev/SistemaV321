@@ -188,13 +188,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
                                     <label htmlFor="tipoComprobante">Tipo Comprobante</label>
                                     <Field as="select" className="form-control" name="tipoComprobante">
                                         <option value={0}>Seleccionar tipo de comprobante</option>
-                                        <option value="FA">FACTURA A</option>
-                                        <option value="FA SUJ RET">OPERACIÓN SUJETA A RETENCIÓN</option>
-                                        <option value="NCA">NOTA DE CREDITO A</option>
-                                        <option value="NDA">NOTA DE DEBITO A</option>
-                                        <option value="RA">RECIBO A</option>
                                         <option value="FB">FACTURA B</option>
-                                        <option value="FB8001">FACTURA B a RI con Informe 8001</option>
                                     </Field>
                                 </div>
                                 <div style={{marginTop:'5px'}} className="col-md-6">

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class Todo : Migration
+    public partial class Todos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,7 +47,31 @@ namespace SistemaApi.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
-        
+
+            migrationBuilder.CreateTable(
+                name: "Clientes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreYApellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Domicilio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CodigoPostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Localidad = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NroDocumento = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PercibeIIBB = table.Column<bool>(type: "bit", nullable: false),
+                    PercibeIVA = table.Column<bool>(type: "bit", nullable: false),
+                    Provincia = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RazonSocial = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoDocumento = table.Column<int>(type: "int", nullable: false),
+                    Deuda = table.Column<double>(type: "float", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clientes", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Presupuestos",
@@ -99,7 +123,24 @@ namespace SistemaApi.Migrations
                 {
                     table.PrimaryKey("PK_Proveedores", x => x.Id);
                 });
-         
+
+            migrationBuilder.CreateTable(
+                name: "VentaConsumidorFinal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
+                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FormaDePago = table.Column<int>(type: "int", nullable: false),
+                    IdComprobante = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VentaConsumidorFinal", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
@@ -202,6 +243,32 @@ namespace SistemaApi.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ventas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
+                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FormaDePago = table.Column<int>(type: "int", nullable: false),
+                    TratamientoImpositivo = table.Column<int>(type: "int", nullable: false),
+                    TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdComprobante = table.Column<int>(type: "int", nullable: false),
+                    Adeudada = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ventas", x => x.Id);
+                    table.ForeignKey(
+                        name: "Venta1",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

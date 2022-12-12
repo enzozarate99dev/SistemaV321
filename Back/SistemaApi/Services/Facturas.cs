@@ -38,7 +38,7 @@ namespace SistemaApi.Services
             }          
         }
 
-        public async void GetFacturas()
+        public async Task<ListadoComprobantesResponse> GetFacturas()
         {
             ListadoComprobantesRequest request = new ListadoComprobantesRequest();
             request.Autenticacion = new Autenticacion();
@@ -49,6 +49,7 @@ namespace SistemaApi.Services
             request.FechaHasta = DateTime.Now.AddDays(2);
 
             ListadoComprobantesResponse responseList = await comprobantesClient.ListadoComprobantesAsync(request);
+            return responseList;
         }
 
         private string ObjectToXml<T>(T objectToSerialise)

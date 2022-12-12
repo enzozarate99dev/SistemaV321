@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "storage1": {
+      "ignored": "true",
+      "type": "storage"
+    },
+    "appInsights1": {
+      "ignored": "true",
+      "type": "appInsights",
+      "connectionId": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+      "dynamicId": null
+    },
+    "apis1": {
+      "ignored": "true",
+      "type": "apis.azure"
+    },
+    "identityapp1": {
+      "ignored": "true",
+      "type": "identityapp"
+    }
+  }
+}

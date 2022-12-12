@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
-using SistemaApi.Migrations;
 using SistemaApi.Services;
 using SistemaApi.Utilidades;
 using System.Linq;

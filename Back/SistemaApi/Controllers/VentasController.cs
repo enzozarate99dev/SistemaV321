@@ -39,10 +39,10 @@ namespace SistemaApi.Controllers
         }
 
         [HttpGet("fact")]
-        public async Task<ActionResult> Fact()
+        public async Task<ActionResult<ListadoComprobantesResponse>> Fact()
         {
-            facturas.GetFacturas();
-            return NoContent();
+            var list = await facturas.GetFacturas();
+            return list;
         }
 
         [HttpGet("pdf/{id:int}")]
@@ -65,9 +65,10 @@ namespace SistemaApi.Controllers
         }
 
         [HttpPost("webhook")]
-        public async Task<ActionResult<DetalleComprobante>> WebHook([FromBody] DetalleComprobante detalleComprobante)
+        public async Task<ActionResult> WebHook([FromBody] DetalleComprobante detalleComprobante)
         {
-            return detalleComprobante;
+            var det = detalleComprobante;
+            return NoContent();
         }
 
         [HttpGet("ventasCliente/{id:int}")]
@@ -373,7 +374,7 @@ namespace SistemaApi.Controllers
             request.Encabezado.Remito = "";
             request.Encabezado.TipoComprobante = ventaCreacionDTO.TipoComprobante;
             request.Encabezado.TipoDeCambio = 1;
-
+            request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventas/webhook";
 
             int longitud = ventaCreacionDTO.ProductosIds.Count;
             request.Items = new ComprobanteItem[longitud];

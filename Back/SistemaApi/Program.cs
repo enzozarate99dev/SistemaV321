@@ -21,9 +21,8 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
+builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>();
 
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IFacturas, Facturas>();
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -44,7 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("defaultConnection")));
 
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     var frontend_url = configuration.GetValue<string>("frontend_url");
     options.AddDefaultPolicy(builder =>
@@ -52,7 +51,11 @@ builder.Services.AddCors(options =>
         builder.WithOrigins(frontend_url).AllowAnyMethod().AllowAnyHeader()
         .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
     });
-});
+});*/
+
+
+
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 
@@ -67,9 +70,11 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseStaticFiles();
-
-app.UseCors();
+app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials());
 
 app.MapControllers();
 

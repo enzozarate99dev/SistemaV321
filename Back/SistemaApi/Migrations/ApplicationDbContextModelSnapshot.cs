@@ -449,6 +449,9 @@ namespace SistemaApi.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ConfirmacionAfip")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
 
@@ -500,6 +503,9 @@ namespace SistemaApi.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ConfirmacionAfip")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");

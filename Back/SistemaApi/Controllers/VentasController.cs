@@ -259,8 +259,7 @@ namespace SistemaApi.Controllers
             }
             var venta = mapper.Map<Venta>(ventaCreacionDTO);
             venta.PrecioTotal = total + (total * (ventaCreacionDTO.Iva / 100));
-            Random r = new Random();
-            venta.FechaDeVenta = DateTime.Now.AddDays(r.Next(0,7)*-1);
+            venta.FechaDeVenta = DateTime.Now;
             if (venta.FormaDePago == 2)
             {
                 venta.Adeudada = total;
@@ -276,6 +275,7 @@ namespace SistemaApi.Controllers
             if(idComp != -1)
             {
                 venta.IdComprobante = (int)idComp;
+                venta.ConfirmacionAfip = 0;
                 context.Add(venta);
                 await context.SaveChangesAsync();
                 return NoContent();

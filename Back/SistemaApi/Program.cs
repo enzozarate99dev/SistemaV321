@@ -45,10 +45,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 /*builder.Services.AddCors(options =>
 {
-    var frontend_url = configuration.GetValue<string>("frontend_url");
+    var frontendUrl = configuration.GetValue<string>("frontend_url");
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(frontend_url).AllowAnyMethod().AllowAnyHeader()
+        builder.WithOrigins(frontendUrl).AllowAnyMethod().AllowAnyHeader()
         .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
     });
 });*/
@@ -60,11 +60,9 @@ builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICAT
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

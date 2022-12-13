@@ -119,6 +119,7 @@ export default function Ventas(props: crearVentaProps) {
         }
         catch (error) {
             setErrores(error.response.data);
+            console.log(error.response.data)
         }
     }
 

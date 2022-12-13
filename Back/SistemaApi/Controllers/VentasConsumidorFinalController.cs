@@ -87,6 +87,25 @@ namespace SistemaApi.Controllers
             }   
         }
 
+        [HttpPost("webhook")]
+        public async Task<ActionResult> WebHook([FromBody] DetalleComprobante detalleComprobante)
+        {
+            var venta = await context.VentaConsumidorFinal.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.IdComprobante);
+            if(venta == null)
+            {
+                return BadRequest("La venta no existe");
+            }
+            if(detalleComprobante.EstadoComprobante == 4)
+            {
+                venta.ConfirmacionAfip = 1;
+            }else if(detalleComprobante.EstadoComprobante == 6)
+            {
+                venta.ConfirmacionAfip = 2;
+            }
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] VentaCreacionCFDTO ventaCreacioncfDTO)
         {
@@ -121,6 +140,7 @@ namespace SistemaApi.Controllers
             if (idComp != -1)
             {
                 venta.IdComprobante = (int)idComp;
+                venta.ConfirmacionAfip = 0;
                 context.Add(venta);
                 await context.SaveChangesAsync();
                 return NoContent();
@@ -191,6 +211,7 @@ namespace SistemaApi.Controllers
             request.Encabezado.Remito = "";
             request.Encabezado.TipoComprobante = ventaCreacionCFDTO.TipoComprobante;
             request.Encabezado.TipoDeCambio = 1;
+            request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventas/webhook";
 
             int longitud = ventaCreacionCFDTO.ProductosIds.Count;
             request.Items = new ComprobanteItem[longitud];

@@ -10,6 +10,7 @@ namespace SistemaApi.DTOs
         public DateTime FechaDeVenta { get; set; }
         public int FormaDePago { get; set; }
         public int IdComprobante { get; set; }
+        public int ConfirmacionAfip { get; set; }
         public List<ProductoDTO> Productos { get; set; }
     }
 }

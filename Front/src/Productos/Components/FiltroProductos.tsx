@@ -36,8 +36,7 @@ export default function FiltroProductos() {
     }
 
 
-    useEffect(() => {
-
+    useEffect( () => {
         if (query.get('nombre')) {
             valorInicial.nombre = query.get('nombre')!;
         }
@@ -73,10 +72,10 @@ export default function FiltroProductos() {
         history.push(`/listadoProductos?${queryStrings.join('&')}`)
     }
 
-    function buscarProducto(valores: filtroVentasProps) {
+     const buscarProducto = async (valores: filtroVentasProps) => {
         modificarURL(valores)
         const response = services.filtrar(valores)
-        response.then((respuesta: AxiosResponse<productoModel[]>) => {
+        await response.then((respuesta: AxiosResponse<productoModel[]>) => {
             const totalDeRegistros = parseInt(
                 respuesta.headers["cantidadtotalregistros"],
                 10

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class Todos : Migration
+    public partial class Ventas : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -134,7 +134,8 @@ namespace SistemaApi.Migrations
                     PrecioTotal = table.Column<double>(type: "float", nullable: true),
                     FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FormaDePago = table.Column<int>(type: "int", nullable: false),
-                    IdComprobante = table.Column<int>(type: "int", nullable: false)
+                    IdComprobante = table.Column<int>(type: "int", nullable: false),
+                    ConfirmacionAfip = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -260,6 +261,7 @@ namespace SistemaApi.Migrations
                     TratamientoImpositivo = table.Column<int>(type: "int", nullable: false),
                     TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdComprobante = table.Column<int>(type: "int", nullable: false),
+                    ConfirmacionAfip = table.Column<int>(type: "int", nullable: false),
                     Adeudada = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>

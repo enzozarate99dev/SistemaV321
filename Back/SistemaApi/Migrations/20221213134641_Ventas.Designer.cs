@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221212135554_Todos")]
-    partial class Todos
+    [Migration("20221213134641_Ventas")]
+    partial class Ventas
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -451,6 +451,9 @@ namespace SistemaApi.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ConfirmacionAfip")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
 
@@ -502,6 +505,9 @@ namespace SistemaApi.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ConfirmacionAfip")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");

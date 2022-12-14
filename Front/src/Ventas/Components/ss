@@ -1,0 +1,38 @@
+
+
+sucursales[n]
+venta[m] {codigo, precio, cantidad}
+resultado {id, items[]}
+int punteros = 1;
+for(i=0; i<venta.items.length; i++){
+    if(venta.items[i].cantidad != 0){
+    int j=0
+        while(j<n){
+            if(item.cantidad <= getStock(venta.items[i].codigo,j+1)){
+                obj = {id_producto = venta.items[i].id_producto, cantidad = venta.items[i].cantidad, precio = venta.items[i].precio, sucursal = j+1}
+                resultado.items.append(obj)
+                for(k=i+1;k<venta.items.length; k++){
+                    if(getStock(venta.items[k].codigo,j+1)!=0){
+                        if(getStock(venta.items[k].codigo,j+1)>=venta.items[k].cantidad){
+                            obj = {id_producto = venta.items[k].id_producto, cantidad = venta.items[k].cantidad, precio = venta.items[k].precio, sucursal = j+1}
+                            venta.items[k].cantidad = 0
+                        }else{
+                            obj = {id_producto = venta.items[k].id_producto, cantidad = getStock(venta.items[k].codigo,j+1), precio = venta.items[k].precio, sucursal = j}
+                            venta.items[k].cantidad -= getStock(venta.items[k].codigo,j+1)
+                        }
+                        resultado.items.append(obj)
+                    }
+                }              
+            }
+            j++;
+        }
+    }
+}
+
+
+calcularEnvio(int[]){
+
+}
+
+
+

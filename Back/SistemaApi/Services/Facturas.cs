@@ -19,15 +19,7 @@ namespace SistemaApi.Services
         {
 
             CrearComprobanteResponse response = await comprobantesClient.CrearComprobanteAsync(crearComprobanteRequest);
-
-            DetalleComprobanteRequest request = new DetalleComprobanteRequest();
-            request.Autenticacion = new Autenticacion();
-            request.Autenticacion.Usuario = "TESTING_API_6N";
-            request.Autenticacion.Hash = "10BgP6cOWs78";
-            request.Autenticacion.Empresa = 3468;
-            request.IdComprobante = (int)response.IdComprobante;
-
-            DetalleComprobanteResponse detResponse = await comprobantesClient.DetalleComprobanteAsync(request);
+        
             if (response.IdComprobante != null)
             {
                 return response.IdComprobante;

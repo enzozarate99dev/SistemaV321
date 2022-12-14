@@ -65,15 +65,17 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
+app.UseRouting();
 app.UseCors(x => x
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(origin => true) // allow any origin
                 .AllowCredentials());
+app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints => {
+    endpoints.MapControllers();
+});
+//app.MapControllers();
 
 app.Run();

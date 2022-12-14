@@ -76,6 +76,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
             res.then((resp: AxiosResponse<string>)=>{
                 window.open(resp.data)
             })
+        }else{
+            const res = services.getPDF(id)
+            res.then((resp: AxiosResponse<string>)=>{
+                window.open(resp.data)
+            })
         }
     }
 
@@ -91,6 +96,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 onClick={() => confirmar(() => borrar(id))}
                 className="btn btn-transparent">
                 <TrashIcon />
+            </Button>
+            <Button
+                onClick={() => getPDF(id, "")}
+                className="btn btn-transparent">
+                <PdfIcon />
             </Button>
         </>
 

@@ -2,11 +2,13 @@
 using Facturante;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
 using SistemaApi.Services;
 using SistemaApi.Utilidades;
 using System.Linq;
+using System.Net;
 
 namespace SistemaApi.Controllers
 {
@@ -17,13 +19,15 @@ namespace SistemaApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly IFacturas facturas;
+        private readonly ILogger<VentasConsumidorFinalController> logger;
         ComprobantesClient comprobantesClient;
 
-        public VentasConsumidorFinalController(ApplicationDbContext context, IMapper mapper, IFacturas facturas)
+        public VentasConsumidorFinalController(ApplicationDbContext context, IMapper mapper, IFacturas facturas, ILogger<VentasConsumidorFinalController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.facturas = facturas;
+            this.logger = logger;
             comprobantesClient = new ComprobantesClient(ComprobantesClient.EndpointConfiguration.BasicHttpBinding_IComprobantes);
         }
 
@@ -88,8 +92,9 @@ namespace SistemaApi.Controllers
         }
 
         [HttpPost("webhook")]
-        public async Task<ActionResult> WebHook([FromBody] DetalleComprobante detalleComprobante)
+        public async Task<ActionResult> WebHookFunc([FromForm] DetalleComprobante detalleComprobante)
         {
+            logger.LogInformation("log webhook");
             var venta = await context.VentaConsumidorFinal.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.IdComprobante);
             if(venta == null)
             {
@@ -135,6 +140,7 @@ namespace SistemaApi.Controllers
             venta.PrecioTotal = total + (total*(ventaCreacioncfDTO.Iva/100));
             venta.FechaDeVenta = DateTime.Now;
             context.Add(venta);
+            logger.LogInformation("request error");
             var obj = await CrearRequest(ventaCreacioncfDTO);
             var idComp = await facturas.GenerarFactura(obj);
             if (idComp != -1)
@@ -211,7 +217,11 @@ namespace SistemaApi.Controllers
             request.Encabezado.Remito = "";
             request.Encabezado.TipoComprobante = ventaCreacionCFDTO.TipoComprobante;
             request.Encabezado.TipoDeCambio = 1;
-            request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventas/webhook";
+            request.Encabezado.WebHook = new WebHook();
+            request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventascf/webhook";            
+            var header = new HttpHeader[1];
+            header[0] = new HttpHeader { Name = "Authorization", Value = "10BgP6cOWs78" };
+            request.Encabezado.WebHook.Headers = header;
 
             int longitud = ventaCreacionCFDTO.ProductosIds.Count;
             request.Items = new ComprobanteItem[longitud];

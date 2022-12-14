@@ -20,13 +20,15 @@ namespace SistemaApi.Controllers
         private readonly ApplicationDbContext context;
         private readonly IMapper mapper;
         private readonly IFacturas facturas;
+        private readonly ILogger<VentasController> logger;
         ComprobantesClient comprobantesClient;
 
-        public VentasController(ApplicationDbContext context, IMapper mapper, IFacturas facturas)
+        public VentasController(ApplicationDbContext context, IMapper mapper, IFacturas facturas, ILogger<VentasController> logger)
         {
             this.context = context;
             this.mapper = mapper;
             this.facturas = facturas;
+            this.logger = logger;
             comprobantesClient = new ComprobantesClient(ComprobantesClient.EndpointConfiguration.BasicHttpBinding_IComprobantes);
         }
 
@@ -34,6 +36,7 @@ namespace SistemaApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<VentaDTO>>> Get()
         {
+            logger.LogInformation("prueba logger");
             var ventas = await context.Ventas.Include(x=>x.VentaProducto).ThenInclude(x=>x.Producto).ToListAsync();
             return mapper.Map<List<VentaDTO>>(ventas);
         }
@@ -65,9 +68,23 @@ namespace SistemaApi.Controllers
         }
 
         [HttpPost("webhook")]
-        public async Task<ActionResult> WebHook([FromBody] DetalleComprobante detalleComprobante)
+        public async Task<ActionResult> WebHookFunc([FromBody] DetalleComprobante detalleComprobante)
         {
-            var det = detalleComprobante;
+            logger.LogInformation("log webhook");
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.IdComprobante);
+            if (venta == null)
+            {
+                return BadRequest("La venta no existe");
+            }
+            if (detalleComprobante.EstadoComprobante == 2)
+            {
+                venta.ConfirmacionAfip = 1;
+            }
+            else if (detalleComprobante.EstadoComprobante == 6)
+            {
+                venta.ConfirmacionAfip = 2;
+            }
+            await context.SaveChangesAsync();
             return NoContent();
         }
 
@@ -374,7 +391,12 @@ namespace SistemaApi.Controllers
             request.Encabezado.Remito = "";
             request.Encabezado.TipoComprobante = ventaCreacionDTO.TipoComprobante;
             request.Encabezado.TipoDeCambio = 1;
+            request.Encabezado.WebHook = new WebHook();
             request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventas/webhook";
+            //request.Encabezado.WebHook.Url = "https://eodkmdwv8jdt7dt.m.pipedream.net";
+            var header = new HttpHeader[1];
+            header[0] = new HttpHeader { Name = "Authorization", Value = "10BgP6cOWs78" };
+            request.Encabezado.WebHook.Headers = header;
 
             int longitud = ventaCreacionDTO.ProductosIds.Count;
             request.Items = new ComprobanteItem[longitud];

@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using Facturante;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Any;
+using Newtonsoft.Json;
 using SistemaApi.DTOs;
 using SistemaApi.Entidades;
 using SistemaApi.Services;
@@ -10,6 +14,8 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
+using System.Text.Json;
+using System.Xml;
 
 namespace SistemaApi.Controllers
 {
@@ -68,23 +74,30 @@ namespace SistemaApi.Controllers
         }
 
         [HttpPost("webhook")]
+        [Consumes("application/xml")]
         public async Task<ActionResult> WebHookFunc([FromBody] DetalleComprobante detalleComprobante)
         {
             logger.LogInformation("log webhook");
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.IdComprobante);
+            logger.LogInformation(detalleComprobante.ToString());
+            logger.LogInformation(detalleComprobante.EstadoComprobante.ToString());
+            logger.LogInformation(detalleComprobante.IdComprobante.ToString());
+
+
+            /*var venta = await context.Ventas.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.Comprobante.IdComprobante);
             if (venta == null)
             {
                 return BadRequest("La venta no existe");
             }
-            if (detalleComprobante.EstadoComprobante == 2)
+            if (detalleComprobante.Comprobante.EstadoComprobante == 2)
             {
-                venta.ConfirmacionAfip = 1;
+                venta.ConfirmacionAfip = 3;
             }
-            else if (detalleComprobante.EstadoComprobante == 6)
+            else if (detalleComprobante.Comprobante.EstadoComprobante == 4)
             {
-                venta.ConfirmacionAfip = 2;
+                venta.ConfirmacionAfip = 3;
             }
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync();*/
+
             return NoContent();
         }
 

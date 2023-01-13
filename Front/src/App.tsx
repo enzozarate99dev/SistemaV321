@@ -7,9 +7,9 @@ import "./fondo.css";
 import rutas from "./Generales/routesConfig";
 import { claim } from "./Models/auth.model";
 import Menu from "./utils/Menu";
+import MiLayout from "./utils/MiLayout";
 
 function App() {
-  //swdf
   const [claims, setClaims] = useState<claim[]>([]);
 
   useEffect(() => {
@@ -42,25 +42,27 @@ function App() {
       <BrowserRouter>
         <AutenticacionContext.Provider value={{ claims, actualizar }}>
           <Menu />
-          <div className="container">
-            <Switch>
-              {rutas.map((ruta) => (
-                <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
-                  {ruta.esCajero && !esCajero() && !esAdmin() ? (
-                    <>No tienes permiso</>
-                  ) : (
-                    <>
-                      {ruta.esAdmin && !esAdmin() ? (
-                        <>No tienes permiso</>
-                      ) : (
-                        <ruta.componente />
-                      )}
-                    </>
-                  )}
-                </Route>
-              ))}
-            </Switch>
-          </div>
+          <MiLayout>
+            <div style={{ height: "100vh" }}>
+              <Switch>
+                {rutas.map((ruta) => (
+                  <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
+                    {ruta.esCajero && !esCajero() && !esAdmin() ? (
+                      <>No tienes permiso</>
+                    ) : (
+                      <>
+                        {ruta.esAdmin && !esAdmin() ? (
+                          <>No tienes permiso</>
+                        ) : (
+                          <ruta.componente />
+                        )}
+                      </>
+                    )}
+                  </Route>
+                ))}
+              </Switch>
+            </div>
+          </MiLayout>
         </AutenticacionContext.Provider>
       </BrowserRouter>
     </>

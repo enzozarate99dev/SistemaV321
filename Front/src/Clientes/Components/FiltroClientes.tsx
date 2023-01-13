@@ -14,106 +14,124 @@ import CargarCliente from "./CargarCliente";
 import ListadoClientes from "./ListadoClientes";
 
 export default function FiltroClientes() {
+  const [totalDePaginas, setTotalDePaginas] = useState(0);
+  const [clientes, setClientes] = useState<clienteModel[]>();
+  const history = useHistory();
+  const query = new URLSearchParams(useLocation().search);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const [flag, setFlag] = useState(false);
 
-    const [totalDePaginas, setTotalDePaginas] = useState(0);
-    const [clientes, setClientes] = useState<clienteModel[]>()
-    const history = useHistory()
-    const query = new URLSearchParams(useLocation().search)
-    const [mostrarFiltros, setMostrarFiltros] = useState(false)
-    const [flag, setFlag] = useState(false);
+  const handleFlag = () => {
+    setFlag(!flag);
+    console.log(flag);
+  };
 
-    const handleFlag = () => {
-        setFlag(!flag)
-        console.log(flag)
+  const valorInicial: filtroClientesProps = {
+    nombreYApellido: "",
+    pagina: 1,
+    recordsPorPagina: 10,
+  };
+
+  useEffect(() => {
+    if (query.get("nombreYApellido")) {
+      valorInicial.nombreYApellido = query.get("nombreYApellido")!;
+    }
+    if (query.get("pagina")) {
+      valorInicial.pagina = parseInt(query.get("pagina")!, 10);
     }
 
-    const valorInicial: filtroClientesProps = {
-        nombreYApellido: '',
-        pagina: 1,
-        recordsPorPagina: 10
+    buscarCliente(valorInicial);
+  }, [flag]);
+
+  function modificarURL(valores: filtroClientesProps) {
+    const queryStrings: string[] = [];
+    if (valores.nombreYApellido) {
+      queryStrings.push(`nombreYApellido=${valores.nombreYApellido}`);
     }
+    queryStrings.push(`pagina=${valores.pagina}`);
+    history.push(`/listadoClientes?${queryStrings.join("&")}`);
+  }
 
-    useEffect(() => {
+  function buscarCliente(valores: filtroClientesProps) {
+    modificarURL(valores);
+    const data = services.filtrar(valores);
+    data.then((respuesta: AxiosResponse<clienteModel[]>) => {
+      console.log(respuesta);
+      const totalDeRegistros = parseInt(
+        respuesta.headers["cantidadtotalregistros"],
+        10
+      );
+      setTotalDePaginas(
+        Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina)
+      );
 
-        if (query.get('nombreYApellido')) {
-            valorInicial.nombreYApellido = query.get('nombreYApellido')!;
-        }
-        if (query.get('pagina')) {
-            valorInicial.pagina = parseInt(query.get('pagina')!, 10)
-        }
+      setClientes(respuesta.data);
+    });
+  }
 
-        buscarCliente(valorInicial)
-    }, [flag])
+  return (
+    <>
+      <h3 style={{ marginTop: "1rem" }}>Administrar Clientes</h3>
+      <Formik
+        initialValues={valorInicial}
+        onSubmit={(valores) => {
+          valores.pagina = 1;
+          buscarCliente(valores);
+        }}
+      >
+        {(formikProps) => (
+          <>
+            <Form>
+              <Button
+                style={{ marginBottom: "1rem" }}
+                onClick={() => {
+                  setMostrarFiltros(!mostrarFiltros);
+                }}
+                className="btn btn-secondary"
+              >
+                <FilterIcon />
+              </Button>
+              {mostrarFiltros ? (
+                <div className="form-inline">
+                  <div className="form-group mb-2">
+                    <FormGroupText
+                      onChange={() => formikProps.submitForm()}
+                      campo="nombreYApellido"
+                      placeholder="Nombre del cliente"
+                    />
+                  </div>
+                  <Button
+                    className="btn btn-danger mb-2"
+                    style={{ marginLeft: "10px" }}
+                    onClick={() => {
+                      formikProps.setValues(valorInicial);
+                      buscarCliente(valorInicial);
+                    }}
+                  >
+                    Limpiar
+                  </Button>
+                </div>
+              ) : null}
+            </Form>
 
-    function modificarURL(valores: filtroClientesProps) {
-        const queryStrings: string[] = []
-        if (valores.nombreYApellido) {
-            queryStrings.push(`nombreYApellido=${valores.nombreYApellido}`)
-        }
-        queryStrings.push(`pagina=${valores.pagina}`)
-        history.push(`/listadoClientes?${queryStrings.join('&')}`)
-    }
-
-    function buscarCliente(valores: filtroClientesProps) {
-        modificarURL(valores)
-        const data = services.filtrar(valores)
-        data.then((respuesta: AxiosResponse<clienteModel[]>) => {
-            console.log(respuesta)
-            const totalDeRegistros = parseInt(
-                respuesta.headers["cantidadtotalregistros"],
-                10
-            );
-            setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-
-            setClientes(respuesta.data);
-        })
-    }
-
-    return (
-        <>
-            <h3 style={{ marginTop: '1rem' }}>Administrar Clientes</h3>
-            <Formik initialValues={valorInicial} onSubmit={valores => {
-                valores.pagina = 1;
-                buscarCliente(valores)
-            }}>
-                {(formikProps) => (
-                    <>
-                        <Form>
-                            <Button style={{ marginBottom: '1rem' }} onClick={() => { setMostrarFiltros(!mostrarFiltros) }} className="btn btn-secondary"><FilterIcon /></Button>
-                            {mostrarFiltros ?
-                                <div className="form-inline">
-                                    <div className="form-group mb-2">
-                                        <FormGroupText onChange={() => formikProps.submitForm()} campo="nombreYApellido" placeholder="Nombre del cliente" />
-                                    </div>
-                                    <Button
-                                        className="btn btn-danger mb-2"
-                                        style={{marginLeft:'10px'}}
-                                        onClick={() => {
-                                            formikProps.setValues(valorInicial)
-                                            buscarCliente(valorInicial)
-                                        }}>Limpiar</Button>
-                                </div> : null}
-                        </Form>
-
-                        <ListadoClientes clientes={clientes} setFlag={handleFlag} />
-                        <Paginacion
-                            cantidadTotalDePaginas={totalDePaginas}
-                            paginaActual={formikProps.values.pagina}
-                            onChange={(nuevaPagina) => {
-                                formikProps.values.pagina = nuevaPagina
-                                buscarCliente(formikProps.values)
-                            }}
-                        />
-                    </>
-                )}
-
-            </Formik>
-        </>
-    )
+            {/* <ListadoClientes clientes={clientes} setFlag={handleFlag} /> */}
+            <Paginacion
+              cantidadTotalDePaginas={totalDePaginas}
+              paginaActual={formikProps.values.pagina}
+              onChange={(nuevaPagina) => {
+                formikProps.values.pagina = nuevaPagina;
+                buscarCliente(formikProps.values);
+              }}
+            />
+          </>
+        )}
+      </Formik>
+    </>
+  );
 }
 
 export interface filtroClientesProps {
-    nombreYApellido: string;
-    pagina: number;
-    recordsPorPagina: number;
+  nombreYApellido: string;
+  pagina: number;
+  recordsPorPagina: number;
 }

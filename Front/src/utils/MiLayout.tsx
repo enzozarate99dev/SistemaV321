@@ -55,19 +55,16 @@ export default function MiLayout(props: MenuProps) {
 
   return (
     <Layout hasSider>
-      <Autorizado
-        autorizado={
-          <>
-            <Menu
-              className="menu"
-              style={{ backgroundColor: "#33384D" }}
-              items={items}
-              inlineCollapsed={false}
-            />
-          </>
-        }
-      />
-
+      {
+        <>
+          <Menu
+            className="menu"
+            style={{ backgroundColor: "#33384D" }}
+            items={items}
+            inlineCollapsed={false}
+          />
+        </>
+      }
       <Layout className="site-layout">
         <Content>
           <div

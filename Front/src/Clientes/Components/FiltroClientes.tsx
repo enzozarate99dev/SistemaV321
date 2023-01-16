@@ -114,7 +114,7 @@ export default function FiltroClientes() {
               ) : null}
             </Form>
 
-            {/* <ListadoClientes clientes={clientes} setFlag={handleFlag} /> */}
+            <ListadoClientes clientes={clientes} setFlag={handleFlag} />
             <Paginacion
               cantidadTotalDePaginas={totalDePaginas}
               paginaActual={formikProps.values.pagina}

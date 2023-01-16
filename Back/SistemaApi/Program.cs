@@ -21,7 +21,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>();
+builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
 
 builder.Services.AddTransient<IFacturas, Facturas>();
 builder.Services.AddAutoMapper(typeof(Program));
@@ -63,6 +63,8 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 app.UseRouting();

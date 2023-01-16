@@ -41,7 +41,7 @@ const rutas = [
 
   {
     path: "/listadoClientes",
-    componente: ListadoClientes,
+    componente: FiltroClientes,
     exact: true,
     esCajero: true,
   },

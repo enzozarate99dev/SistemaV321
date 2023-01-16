@@ -30,14 +30,10 @@ export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
-  // const [edit, setEdit] = useState(false);
   const [info, setInfo] = useState(false);
   const [infoCF, setInfoCF] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState<number>();
-  // const showEdit = () => {
-  //   setEdit(!edit);
-  // };
 
   const showCargarCliente = () => {
     setOpenCliente(!openCliente);
@@ -65,6 +61,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] =
     useState<clienteModel>();
+
+  function formatDate(fecha: string): string {
+    var array = fecha.split("T");
+    return array[0];
+  }
 
   useEffect(() => {
     async function traerProductos() {
@@ -248,6 +249,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
           <Button onClick={() => {}} className="btn btn-transparent">
             <PdfIcon />
           </Button>
+          <Button className="btn btn-primary">Listo</Button>
         </Col>
 
         <Col span={5} style={{ backgroundColor: "#F5F5F5" }}>
@@ -349,152 +351,4 @@ interface propsListadoVentas {
   ventas?: ventasModel[];
   ventasConsFinal?: ventasConsumidorFinalModel[];
   setFlag: () => void;
-}
-
-// async function borrar(id: number) {
-//   try {
-//     services.borrar(id);
-//     props.setFlag();
-//   } catch (error) {
-//     console.log(error.response.data);
-//   }
-// }
-
-// async function borrarCF(id: number) {
-//   try {
-//     servicesCF.borrar(id);
-//     props.setFlag();
-//   } catch (error) {
-//     console.log(error.response.data);
-//   }
-// }
-
-// function formatDate(fecha: string): string {
-//   var array = fecha.split("T");
-//   return array[0];
-// }
-
-// function getPDF(id: number, tipo: string) {
-//   if (tipo == "cf") {
-//     const res = servicesCF.getPDF(id);
-//     res.then((resp: AxiosResponse<string>) => {
-//       window.open(resp.data);
-//     });
-//   } else {
-//     const res = services.getPDF(id);
-//     res.then((resp: AxiosResponse<string>) => {
-//       window.open(resp.data);
-//     });
-//   }
-// }
-
-// const botones = (id: number) => (
-//   <>
-//     <Button
-//       style={{ marginRight: "1rem" }}
-//       className="btn btn-info"
-//       onClick={() => {
-//         showInfo();
-//         setId(id);
-//       }}
-//     >
-//       Detalle
-//     </Button>
-//     <Button
-//       onClick={() => confirmar(() => borrar(id))}
-//       className="btn btn-transparent"
-//     >
-//       <TrashIcon />
-//     </Button>
-//     <Button onClick={() => getPDF(id, "")} className="btn btn-transparent">
-//       <PdfIcon />
-//     </Button>
-//   </>
-// );
-
-// const botonesCF = (id: number) => (
-//   <>
-//     <Button
-//       style={{ marginRight: "1rem" }}
-//       className="btn btn-info"
-//       onClick={() => {
-//         showInfoCF();
-//         setId(id);
-//       }}
-//     >
-//       Detalle
-//     </Button>
-//     <Button
-//       onClick={() => confirmar(() => borrarCF(id))}
-//       className="btn btn-transparent"
-//     >
-//       <TrashIcon />
-//     </Button>
-//     <Button onClick={() => getPDF(id, "cf")} className="btn btn-transparent">
-//       <PdfIcon />
-//     </Button>
-//   </>
-// );
-
-{
-  /* 
-      <Modal
-        title="Cargar Venta"
-        width={1150}
-        open={open}
-        footer={null}
-        centered
-        onCancel={showModal}
-      >
-        <p>
-          <>
-            <Tabs>
-              <Tabs.TabPane tab="Cliente Registrado" key="item-1">
-                <Ventas
-                  setFlagModal={showModal}
-                  setFlagListado={props.setFlag}
-                />
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Consumidor Final" key="item-2">
-                <ConsumidorFinal
-                  setFlagModal={showModal}
-                  setFlagListado={props.setFlag}
-                />
-              </Tabs.TabPane>
-            </Tabs>
-          </>
-        </p>
-      </Modal>
-      <Modal
-        title="Informacion del cliente"
-        width={1150}
-        open={info}
-        footer={null}
-        centered
-        onCancel={showInfo}
-      >
-        <p>
-          <DetalleVentas
-            id={id!}
-            setFlagModal={showInfo}
-            setFlagListado={props.setFlag}
-          />
-        </p>
-      </Modal>
-      <Modal
-        title="Informacion del cliente"
-        width={1150}
-        open={infoCF}
-        footer={null}
-        centered
-        onCancel={showInfoCF}
-      >
-        <p>
-          <DetalleVentasCF
-            id={id!}
-            setFlagModal={showInfoCF}
-            setFlagListado={props.setFlag}
-          />
-        </p>
-</Modal> */
 }

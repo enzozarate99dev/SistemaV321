@@ -19,38 +19,18 @@ import CargarCliente from "../../Clientes/Components/CargarCliente";
 import { urlClientes, urlProductos } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import { ventasModel } from "../../Models/ventas.model";
+import { nuevoVentasModel, ventasModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
 import * as servicesCf from "../../VentasConsFinal/Services/consumidorFinal.services";
 import * as services from "../Services/ventas.services";
+import Swal from "sweetalert2";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
-  const [info, setInfo] = useState(false);
-  const [infoCF, setInfoCF] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [id, setId] = useState<number>();
-
-  const showCargarCliente = () => {
-    setOpenCliente(!openCliente);
-    props.setFlag();
-  };
-
-  const showCargarProducto = () => {
-    setOpenProducto(!openProducto);
-    props.setFlag();
-  };
-  // const showInfo = () => {
-  //   setInfo(!info);
-  // };
-
-  // const showInfoCF = () => {
-  //   setInfoCF(!infoCF);
-  // };
 
   const [productos, setProductos] = useState<productoModel[]>([]);
   const [productoSeleccionado, setProductoSeleccionado] =
@@ -61,6 +41,18 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] =
     useState<clienteModel>();
+
+  const [errores, setErrores] = useState<string[]>([]);
+
+  const showCargarCliente = () => {
+    setOpenCliente(!openCliente);
+    props.setFlag();
+  };
+
+  const showCargarProducto = () => {
+    setOpenProducto(!openProducto);
+    props.setFlag();
+  };
 
   function formatDate(fecha: string): string {
     var array = fecha.split("T");
@@ -163,6 +155,22 @@ export default function ListadoVentas(props: propsListadoVentas) {
       key: "precio",
     },
   ];
+
+  //Ventas
+  function crearVenta(venta: nuevoVentasModel) {
+    console.log(venta);
+    try {
+      services.crear(venta);
+      Swal.fire(
+        "Carga Correcta",
+        "La venta fue cargada correctamente",
+        "success"
+      );
+    } catch (error) {
+      setErrores(error.response.data);
+      console.log(error.response.data);
+    }
+  }
 
   return (
     <>

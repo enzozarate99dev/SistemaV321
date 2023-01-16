@@ -29,10 +29,10 @@ export default function ListadoClientes(props: propsListadoClientes) {
     useState<clienteModel | null>();
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
 
-  // const showModal = () => {
-  //   setOpen(!open);
-  //   props.setFlag();
-  // };
+  const showModal = () => {
+    setOpen(!open);
+    props.setFlag();
+  };
   const showEdit = () => {
     setEdit(!edit);
   };
@@ -98,7 +98,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
   async function borrar(id: number) {
     try {
       services.borrar(id);
-      // props.setFlag();
+      props.setFlag();
     } catch (error) {
       console.log(error.response.data);
     }
@@ -129,7 +129,10 @@ export default function ListadoClientes(props: propsListadoClientes) {
       <Button
         style={{ marginRight: "1rem" }}
         className="btn btn-transparent"
-        onClick={() => {}}
+        onClick={() => {
+          showModal();
+          setId(id);
+        }}
       >
         <EstadoDeudaIcon />
       </Button>
@@ -146,7 +149,53 @@ export default function ListadoClientes(props: propsListadoClientes) {
     <>
       <div className="container">
         <h3>Listado Clientes</h3>
-
+        <Modal
+          title="Informacion del cliente"
+          width={1150}
+          open={info}
+          footer={null}
+          centered
+          onCancel={showInfo}
+        >
+          <p>
+            <InfoCliente
+              id={id!}
+              setFlagModal={showInfo}
+              setFlagListado={props.setFlag}
+            />
+          </p>
+        </Modal>
+        <Modal
+          title="Editar Cliente"
+          width={1150}
+          open={edit}
+          footer={null}
+          centered
+          onCancel={showEdit}
+        >
+          <p>
+            <EditarCliente
+              id={id!}
+              setFlagModal={showEdit}
+              setFlagListado={props.setFlag}
+            />
+          </p>
+        </Modal>
+        <Modal
+          title="Estado de Cuenta"
+          width={1150}
+          open={open}
+          footer={null}
+          centered
+          onCancel={showModal}
+        >
+          <p>
+            <CargarCliente
+              setFlagModal={showModal}
+              setFlagListado={props.setFlag}
+            />
+          </p>
+        </Modal>
         <div>
           <Select
             className="input"
@@ -183,7 +232,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
 interface propsListadoClientes {
   clientes?: clienteModel[];
-  // setFlag: () => void;
+  setFlag: () => void;
 }
 
 //

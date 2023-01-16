@@ -28,7 +28,8 @@ import * as services from "../Services/ventas.services";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
-  const [open, setOpen] = useState(false);
+  const [openCliente, setOpenCliente] = useState(false);
+  const [openProducto, setOpenProducto] = useState(false);
   // const [edit, setEdit] = useState(false);
   const [info, setInfo] = useState(false);
   const [infoCF, setInfoCF] = useState(false);
@@ -38,11 +39,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
   //   setEdit(!edit);
   // };
 
-  const showModal = () => {
-    setOpen(!open);
+  const showCargarCliente = () => {
+    setOpenCliente(!openCliente);
     props.setFlag();
   };
 
+  const showCargarProducto = () => {
+    setOpenProducto(!openProducto);
+    props.setFlag();
+  };
   // const showInfo = () => {
   //   setInfo(!info);
   // };
@@ -192,7 +197,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <Button
                 style={{}}
                 onClick={() => {
-                  showModal();
+                  showCargarProducto();
                 }}
                 className="btn btn-transparent"
               >
@@ -201,14 +206,14 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <Modal
                 title="Cargar Producto"
                 width={1150}
-                open={open}
+                open={openProducto}
                 footer={null}
                 centered
-                onCancel={showModal}
+                onCancel={showCargarProducto}
               >
                 <p>
                   <CargarProducto
-                    setFlagModal={showModal}
+                    setFlagModal={showCargarProducto}
                     setFlagListado={props.setFlag}
                   />
                 </p>
@@ -274,7 +279,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <Button
                 style={{}}
                 onClick={() => {
-                  showModal();
+                  showCargarCliente();
                 }}
                 className="btn btn-transparent"
               >
@@ -283,14 +288,14 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <Modal
                 title="Cargar Cliente"
                 width={1150}
-                open={open}
+                open={openCliente}
                 footer={null}
                 centered
-                onCancel={showModal}
+                onCancel={showCargarCliente}
               >
                 <p>
                   <CargarCliente
-                    setFlagModal={showModal}
+                    setFlagModal={showCargarCliente}
                     setFlagListado={props.setFlag}
                   />
                 </p>

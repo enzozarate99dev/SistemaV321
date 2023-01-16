@@ -14,7 +14,7 @@ export interface clienteModel {
   provincia: string;
   razonSocial: string;
   tipoDocumento: number;
-  deuda: number;
+  deuda?: number;
   label?: string;
   acciones?: any;
 }

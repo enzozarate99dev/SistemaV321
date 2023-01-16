@@ -45,6 +45,7 @@ export default function CargarCliente(props: cargarClienteProps) {
         onSubmit={async (valores) => {
           await crear(valores);
         }}
+        buttonText="CARGAR CLIENTE"
       />
     </>
   );

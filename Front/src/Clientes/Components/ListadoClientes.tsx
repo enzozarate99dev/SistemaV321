@@ -14,6 +14,7 @@ import { urlClientes } from "../../Generales/endpoints";
 import VerIcon from "../../assets/VerIcon";
 import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
 import "../clientesStyles.css";
+import "../../utils/modal.css";
 
 export default function ListadoClientes(props: propsListadoClientes) {
   const [open, setOpen] = useState(false);

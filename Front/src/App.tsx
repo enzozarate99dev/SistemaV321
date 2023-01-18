@@ -43,25 +43,23 @@ function App() {
         <AutenticacionContext.Provider value={{ claims, actualizar }}>
           <Menu />
           <MiLayout>
-            <div style={{ height: "100vh" }}>
-              <Switch>
-                {rutas.map((ruta) => (
-                  <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
-                    {ruta.esCajero && !esCajero() && !esAdmin() ? (
-                      <>No tienes permiso</>
-                    ) : (
-                      <>
-                        {ruta.esAdmin && !esAdmin() ? (
-                          <>No tienes permiso</>
-                        ) : (
-                          <ruta.componente />
-                        )}
-                      </>
-                    )}
-                  </Route>
-                ))}
-              </Switch>
-            </div>
+            <Switch>
+              {rutas.map((ruta) => (
+                <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
+                  {ruta.esCajero && !esCajero() && !esAdmin() ? (
+                    <>No tienes permiso</>
+                  ) : (
+                    <>
+                      {ruta.esAdmin && !esAdmin() ? (
+                        <>No tienes permiso</>
+                      ) : (
+                        <ruta.componente />
+                      )}
+                    </>
+                  )}
+                </Route>
+              ))}
+            </Switch>
           </MiLayout>
         </AutenticacionContext.Provider>
       </BrowserRouter>

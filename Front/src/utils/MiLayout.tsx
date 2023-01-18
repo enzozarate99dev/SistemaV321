@@ -54,7 +54,7 @@ export default function MiLayout(props: MenuProps) {
   } = theme.useToken();
 
   return (
-    <Layout hasSider>
+    <Layout hasSider style={{ minHeight: "100vh" }}>
       {
         <>
           <Menu
@@ -69,8 +69,8 @@ export default function MiLayout(props: MenuProps) {
         <Content>
           <div
             style={{
-              height: "100vh",
               textAlign: "center",
+              minHeight: "100vh",
               background: colorBgContainer,
             }}
           >

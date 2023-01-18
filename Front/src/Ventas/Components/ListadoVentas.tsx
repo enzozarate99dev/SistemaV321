@@ -174,7 +174,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   return (
     <>
-      <Row>
+      <Row style={{ minHeight: "100vh" }}>
         <Col span={7}>
           <div className="container">
             <div

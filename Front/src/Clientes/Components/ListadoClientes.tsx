@@ -145,7 +145,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
   return (
     <>
-      <div className="container">
+      <div className="container" style={{ minHeight: "100vh" }}>
         <h3>Listado Clientes</h3>
         <Modal
           title="Informacion del cliente"
@@ -223,7 +223,6 @@ export default function ListadoClientes(props: propsListadoClientes) {
           pagination={false}
         />
       </div>
-      <div className="container"></div>
     </>
   );
 }

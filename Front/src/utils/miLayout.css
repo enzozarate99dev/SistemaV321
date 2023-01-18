@@ -3,7 +3,7 @@
   margin: 0 5px 0 5px;
 }
 .menu{
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 20px;

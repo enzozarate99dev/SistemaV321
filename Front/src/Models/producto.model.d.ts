@@ -2,6 +2,7 @@ export interface productoModel {
   id: number;
   nombre: string;
   precio: number;
+  precioF: number;
   cantidad: number;
   codigo?: string;
   categoria?: string;

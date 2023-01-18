@@ -60,6 +60,7 @@ export default function Ventas(props: crearVentaProps) {
       nombre: "",
       precio: 0,
       cantidad: 0,
+      precioF: 0,
     };
     for (let i = 0; i < productosDisp.length; i++) {
       if (productosDisp[i].id == valores.productosIds) {

@@ -14,7 +14,6 @@ import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
 import PdfIcon from "../../assets/PdfIcon";
-import ShopIcon from "../../assets/ShopIcon";
 import CargarCliente from "../../Clientes/Components/CargarCliente";
 import { urlClientes, urlProductos } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
@@ -26,6 +25,9 @@ import Button from "../../utils/Button";
 import * as servicesCf from "../../VentasConsFinal/Services/consumidorFinal.services";
 import * as services from "../Services/ventas.services";
 import Swal from "sweetalert2";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import "../../utils/modal.css";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
@@ -38,12 +40,17 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [productosAgregados, setProductosAgregados] = useState<number[]>([]);
   const [productoTabla, setProductoTabla] = useState<productoModel[]>([]);
   const [productosTabla2, setProductosTabla2] = useState<productoModel[]>([]);
+
+  const [subTotal, setSubTotal] = useState(0);
+
   const [clientes, setCliente] = useState<clienteModel[]>([]);
+  const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] =
-    useState<clienteModel>();
+    useState<clienteModel | null>();
 
   const [errores, setErrores] = useState<string[]>([]);
 
+  //Modales
   const showCargarCliente = () => {
     setOpenCliente(!openCliente);
     props.setFlag();
@@ -59,6 +66,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
     return array[0];
   }
 
+  //Obtener productos y clientes
   useEffect(() => {
     async function traerProductos() {
       const result = await axios(`${urlProductos}`);
@@ -77,7 +85,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
       const result = await axios(`${urlClientes}`);
       setCliente(
         result.data.map((cliente: clienteModel) => ({
-          ...cliente,
+          value: cliente.id,
           label: cliente.nombreYApellido,
         }))
       );
@@ -85,9 +93,20 @@ export default function ListadoVentas(props: propsListadoVentas) {
     traerClientes();
   }, []);
 
+  async function selectCliente(id: number) {
+    setClientesAgregados((clientesAgregados) => [...clientesAgregados, id]);
+    const result = await axios(`${urlClientes}/${id}`);
+    const cliente = result.data;
+    setClienteSeleccioando(cliente);
+    console.log(cliente);
+  }
+
+  //Tablas de productos
+
   async function selectProducto(id: number) {
+    //agrega los productos a la tabla 1
     if (productosAgregados.includes(id)) {
-      return;
+      return; //para q no se elijan multiples veces
     }
     setProductosAgregados((productosAgregados) => [...productosAgregados, id]);
     const result = await axios(`${urlProductos}/${id}`);
@@ -97,15 +116,10 @@ export default function ListadoVentas(props: propsListadoVentas) {
     console.log(result.data);
   }
 
-  const selectCliente = (cliente: clienteModel) => {
-    setClienteSeleccioando(cliente);
-    console.log(cliente);
-  };
-
-  const handleClick = () => {
+  function moverProductos() {
     setProductosTabla2([...productosTabla2, ...productoTabla]);
     setProductoTabla([]);
-  };
+  }
 
   const cambiarCantidad = (id: number, cantidad: number) => {
     const newProductosTabla2 = productosTabla2.map((producto) => {
@@ -152,9 +166,25 @@ export default function ListadoVentas(props: propsListadoVentas) {
     {
       title: "Precio Final",
       dataIndex: "precioF",
-      key: "precio",
+      key: "precioF",
     },
   ];
+
+  function exportPdf() {
+    const doc = new jsPDF();
+    doc.text("Lista de Productos", 10, 10);
+
+    autoTable(doc, {
+      head: [["Nombre", "Cantidad", "Precio Unitario", "Precio Final"]],
+      body: productosTabla2.map((p) => [
+        p.nombre,
+        p.cantidad,
+        p.precio,
+        p.precioF,
+      ]),
+    });
+    doc.save("presupuesto.pdf");
+  }
 
   //Ventas
   function crearVenta(venta: nuevoVentasModel) {
@@ -172,6 +202,9 @@ export default function ListadoVentas(props: propsListadoVentas) {
     }
   }
 
+  function calcularSubtotal(productos: productoModel[]) {
+    return productos.reduce((suma, producto) => suma + producto.precioF, 0);
+  }
   return (
     <>
       <Row style={{ minHeight: "100vh" }}>
@@ -237,16 +270,13 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   pagination={false}
                 />
               )}
-              <Button onClick={handleClick} className="btn btn-transparent">
+              <Button onClick={moverProductos} className="btn btn-transparent">
                 <RightCircleOutlined />
               </Button>
             </div>
           </div>
         </Col>
-        {/* <Divider
-          type="vertical"
-          style={{ backgroundColor: "black", height: "100vh" }}
-        /> */}
+
         <Col span={12}>
           <h5>Articulos Cargados</h5>
           <Table
@@ -254,10 +284,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
             columns={columnsTabla2}
             pagination={false}
           />
-          <Button onClick={() => {}} className="btn btn-transparent">
+          <Button onClick={() => exportPdf()} className="btn btn-transparent">
             <PdfIcon />
           </Button>
-          <Button className="btn btn-primary">Listo</Button>
+          <Button
+            className="btn btn-primary"
+            onClick={() => setSubTotal(calcularSubtotal(productosTabla2))}
+          >
+            Listo
+          </Button>
         </Col>
 
         <Col span={5} style={{ backgroundColor: "#F5F5F5" }}>
@@ -296,6 +331,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <AddIcon />
               </Button>
               <Modal
+                bodyStyle={{ backgroundColor: "red" }}
                 title="Cargar Cliente"
                 width={1150}
                 open={openCliente}
@@ -334,14 +370,19 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <p>Datos del Cliente</p>
                 <Input
                   placeholder="Nombre/Razon Social"
-                  value={clienteSeleccionado?.nombreYApellido}
+                  value={
+                    clienteSeleccionado?.nombreYApellido &&
+                    clienteSeleccionado?.razonSocial
+                      ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
+                      : ""
+                  }
                   key={clienteSeleccionado?.id}
                 />
               </div>
               <Divider />
               <div>
                 <p>Importe</p>
-                <p>Subtotal</p>
+                <p>Subtotal: ${subTotal}</p>
               </div>
               <div>
                 <h6>IMPORTE TOTAL</h6>

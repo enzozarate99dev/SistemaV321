@@ -17,9 +17,10 @@ export default function FormularioClientes(props: formularioClientesProps) {
         // email: Yup.string()
         //   .required("Este campo es requerido")
         //   .email("Introducir un email valido"),
-        telefono: Yup.string().required("Este campo es requerido"),
+        // telefono: Yup.string().required("Este campo es requerido"),
+        numeroIngresos: Yup.string().required("Este campo es requerido"),
         domicilio: Yup.string().required("Este campo es requerido"),
-        // codigoPostal: Yup.string().required("Este campo es requerido"),
+        codigoPostal: Yup.string().required("Este campo es requerido"),
         provincia: Yup.string().required("Este campo es requerido"),
         localidad: Yup.string().required("Este campo es requerido"),
         nroDocumento: Yup.string().required("Este campo es requerido"),
@@ -74,28 +75,33 @@ export default function FormularioClientes(props: formularioClientesProps) {
               placeholder="Provincia"
             />
           </div>
-          <div
-            className="col-md-4"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <FormGroupCheckbox campo="percibeIIBB" label="Percibe IIBB" />
-            </div>
-            <div>
-              <FormGroupCheckbox campo="percibeIVA" label="Percibe IVA" />
-            </div>
-          </div>
           <div className="col-md-4">
             <FormGroupText
-              campo="telefono"
-              label="Telefono"
-              placeholder="Telefono"
+              campo="codigoPostal"
+              label="Codigo Postal"
+              placeholder="Codigo Postal"
             />
+          </div>
+          <div
+            className="container"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginInline: "20vw",
+            }}
+          >
+            <div className="col-md-4 container">
+              <FormGroupCheckbox campo="percibeIIBB" label="Percibe IIBB" />
+
+              <FormGroupCheckbox campo="percibeIVA" label="Percibe IVA" />
+            </div>
+            <div className="col-md-6">
+              <FormGroupText
+                campo="numeroIngresos"
+                label="Numero"
+                placeholder="Numero"
+              />
+            </div>
           </div>
 
           {/* <div className="col-md-4">

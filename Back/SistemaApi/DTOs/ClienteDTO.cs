@@ -8,8 +8,8 @@ namespace SistemaApi.DTOs
     {
         public int Id { get; set; }
         public string NombreYApellido { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
+        public string? Email { get; set; }
+        public string? Telefono { get; set; }
         public string Domicilio { get; set; }
         public string CodigoPostal { get; set; }
         public string Localidad { get; set; }
@@ -19,7 +19,7 @@ namespace SistemaApi.DTOs
         public string Provincia { get; set; }
         public string RazonSocial { get; set; }
         public int TipoDocumento { get; set; }
-        public string NroIngresos { get; set; }
+        public string? NroIngresos { get; set; }
         public double? Deuda { get; set; }
     }
 }

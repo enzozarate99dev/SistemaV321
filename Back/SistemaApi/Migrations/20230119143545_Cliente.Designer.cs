@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221213134641_Ventas")]
-    partial class Ventas
+    [Migration("20230119143545_Cliente")]
+    partial class Cliente
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,7 +242,6 @@ namespace SistemaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Localidad")
@@ -255,6 +254,9 @@ namespace SistemaApi.Migrations
 
                     b.Property<string>("NroDocumento")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NroIngresos")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PercibeIIBB")
@@ -272,7 +274,6 @@ namespace SistemaApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TipoDocumento")

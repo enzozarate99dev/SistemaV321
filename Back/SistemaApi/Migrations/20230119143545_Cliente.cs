@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class Ventas : Migration
+    public partial class Cliente : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,8 +55,8 @@ namespace SistemaApi.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreYApellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Domicilio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CodigoPostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Localidad = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -66,6 +66,7 @@ namespace SistemaApi.Migrations
                     Provincia = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RazonSocial = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TipoDocumento = table.Column<int>(type: "int", nullable: false),
+                    NroIngresos = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Deuda = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>

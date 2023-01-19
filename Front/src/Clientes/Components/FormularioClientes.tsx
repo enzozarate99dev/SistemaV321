@@ -11,9 +11,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
       initialValues={props.modelo}
       onSubmit={props.onSubmit}
       validationSchema={Yup.object({
-        nombreYApellido: Yup.string()
-          .required("Este campo es requerido")
-          .max(100, "La longitud maxima es de 100"),
+        nombreYApellido: Yup.string().required("Este campo es requerido").max(100, "La longitud maxima es de 100"),
         // email: Yup.string()
         //   .required("Este campo es requerido")
         //   .email("Introducir un email valido"),
@@ -28,59 +26,27 @@ export default function FormularioClientes(props: formularioClientesProps) {
       })}
     >
       {(formikProps) => (
-        <Form
-          style={{ marginTop: "-1px", backgroundColor: "#D9D9D9" }}
-          className="row g-3 needs-validation"
-          noValidate
-        >
+        <Form style={{ marginTop: "-1px", backgroundColor: "#D9D9D9" }} className="row g-3 needs-validation" noValidate>
           <div className="col-md-4">
-            <FormGroupText
-              campo="nroDocumento"
-              label="Numero de documento"
-              placeholder="Numero de documento"
-            />
+            <FormGroupText campo="nroDocumento" label="Numero de documento" placeholder="Numero de documento" />
           </div>
           <div className="col-md-4">
-            <FormGroupText
-              campo="nombreYApellido"
-              label="Nombre Y Apellido"
-              placeholder="Nombre del cliente"
-            />
+            <FormGroupText campo="nombreYApellido" label="Nombre Y Apellido" placeholder="Nombre del cliente" />
           </div>
           <div className="col-md-4">
-            <FormGroupText
-              campo="razonSocial"
-              label="Razon Social"
-              placeholder="Razon Social"
-            />
+            <FormGroupText campo="razonSocial" label="Razon Social" placeholder="Razon Social" />
           </div>
           <div className="col-md-4">
-            <FormGroupText
-              campo="domicilio"
-              label="Domicilio"
-              placeholder="Domicilio"
-            />
+            <FormGroupText campo="domicilio" label="Domicilio" placeholder="Domicilio" />
           </div>
           <div className="col-md-4">
-            <FormGroupText
-              campo="localidad"
-              label="Localidad"
-              placeholder="Localidad"
-            />
+            <FormGroupText campo="localidad" label="Localidad" placeholder="Localidad" />
           </div>
           <div className="col-md-4">
-            <FormGroupText
-              campo="provincia"
-              label="Provincia"
-              placeholder="Provincia"
-            />
+            <FormGroupText campo="provincia" label="Provincia" placeholder="Provincia" />
           </div>
           <div className="col-md-4">
-            <FormGroupText
-              campo="codigoPostal"
-              label="Codigo Postal"
-              placeholder="Codigo Postal"
-            />
+            <FormGroupText campo="codigoPostal" label="Codigo Postal" placeholder="Codigo Postal" />
           </div>
           <div
             className="container"
@@ -96,12 +62,11 @@ export default function FormularioClientes(props: formularioClientesProps) {
               <FormGroupCheckbox campo="percibeIVA" label="Percibe IVA" />
             </div>
             <div className="col-md-6">
-              <FormGroupText
-                campo="numeroIngresos"
-                label="Numero"
-                placeholder="Numero"
-              />
+              <FormGroupText campo="numeroIngresos" label="Numero" placeholder="Numero" />
             </div>
+          </div>
+          <div className="container" style={{ display: "flex", justifyContent: "center" }}>
+            {props.button}
           </div>
 
           {/* <div className="col-md-4">
@@ -114,18 +79,6 @@ export default function FormularioClientes(props: formularioClientesProps) {
               <option value={7}>CUIL</option>
             </Field>
           </div> */}
-
-          <div
-            className="col-12"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Button disabled={formikProps.isSubmitting} type="submit">
-              {props.buttonText}
-            </Button>
-          </div>
         </Form>
       )}
     </Formik>
@@ -136,5 +89,5 @@ interface formularioClientesProps {
   modelo: clienteCrear;
   onSubmit(valores: clienteCrear, accion: FormikHelpers<clienteCrear>): void;
   setBandera?: () => void;
-  buttonText?: string;
+  button?: JSX.Element;
 }

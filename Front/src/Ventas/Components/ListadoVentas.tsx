@@ -1,15 +1,5 @@
 import { RightCircleOutlined } from "@ant-design/icons";
-import {
-  Col,
-  Divider,
-  Modal,
-  Row,
-  Select,
-  Table,
-  Switch,
-  InputNumber,
-  Input,
-} from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input } from "antd";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
@@ -35,8 +25,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [openProducto, setOpenProducto] = useState(false);
 
   const [productos, setProductos] = useState<productoModel[]>([]);
-  const [productoSeleccionado, setProductoSeleccionado] =
-    useState<productoModel | null>();
+  const [productoSeleccionado, setProductoSeleccionado] = useState<productoModel | null>();
   const [productosAgregados, setProductosAgregados] = useState<number[]>([]);
   const [productoTabla, setProductoTabla] = useState<productoModel[]>([]);
   const [productosTabla2, setProductosTabla2] = useState<productoModel[]>([]);
@@ -45,8 +34,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
-  const [clienteSeleccionado, setClienteSeleccioando] =
-    useState<clienteModel | null>();
+  const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
 
   const [errores, setErrores] = useState<string[]>([]);
 
@@ -176,12 +164,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
     autoTable(doc, {
       head: [["Nombre", "Cantidad", "Precio Unitario", "Precio Final"]],
-      body: productosTabla2.map((p) => [
-        p.nombre,
-        p.cantidad,
-        p.precio,
-        p.precioF,
-      ]),
+      body: productosTabla2.map((p) => [p.nombre, p.cantidad, p.precio, p.precioF]),
     });
     doc.save("presupuesto.pdf");
   }
@@ -191,11 +174,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
     console.log(venta);
     try {
       services.crear(venta);
-      Swal.fire(
-        "Carga Correcta",
-        "La venta fue cargada correctamente",
-        "success"
-      );
+      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
     } catch (error) {
       setErrores(error.response.data);
       console.log(error.response.data);
@@ -224,14 +203,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 style={{ width: 200 }}
                 placeholder="Cargar articulo"
                 optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.label ?? "").includes(input)
-                }
-                filterSort={(optionA, optionB) =>
-                  (optionA?.label ?? "")
-                    .toLowerCase()
-                    .localeCompare((optionB?.label ?? "").toLowerCase())
-                }
+                filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                 listItemHeight={30}
                 listHeight={90}
                 options={productos}
@@ -245,30 +218,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
               >
                 <AddIcon />
               </Button>
-              <Modal
-                title="Cargar Producto"
-                width={1150}
-                open={openProducto}
-                footer={null}
-                centered
-                onCancel={showCargarProducto}
-              >
+              <Modal title="Cargar Producto" width={1150} open={openProducto} footer={null} centered onCancel={showCargarProducto}>
                 <p>
-                  <CargarProducto
-                    setFlagModal={showCargarProducto}
-                    setFlagListado={props.setFlag}
-                  />
+                  <CargarProducto setFlagModal={showCargarProducto} setFlagListado={props.setFlag} />
                 </p>
               </Modal>
             </div>
             <div className="container">
               {productoTabla.length > 0 && (
-                <Table
-                  dataSource={productoTabla}
-                  columns={columnsTabla1}
-                  showHeader={false}
-                  pagination={false}
-                />
+                <Table dataSource={productoTabla} columns={columnsTabla1} showHeader={false} pagination={false} />
               )}
               <Button onClick={moverProductos} className="btn btn-transparent">
                 <RightCircleOutlined />
@@ -279,18 +237,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
         <Col span={12}>
           <h5>Articulos Cargados</h5>
-          <Table
-            dataSource={productosTabla2}
-            columns={columnsTabla2}
-            pagination={false}
-          />
+          <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
           <Button onClick={() => exportPdf()} className="btn btn-transparent">
             <PdfIcon />
           </Button>
-          <Button
-            className="btn btn-primary"
-            onClick={() => setSubTotal(calcularSubtotal(productosTabla2))}
-          >
+          <Button className="btn btn-primary" onClick={() => setSubTotal(calcularSubtotal(productosTabla2))}>
             Listo
           </Button>
         </Col>
@@ -311,14 +262,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 placeholder="Seleccionar cliente"
                 showArrow={false}
                 optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.label ?? "").includes(input)
-                }
-                filterSort={(optionA, optionB) =>
-                  (optionA?.label ?? "")
-                    .toLowerCase()
-                    .localeCompare((optionB?.label ?? "").toLowerCase())
-                }
+                filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                 options={clientes}
               />
               <Button
@@ -330,20 +275,9 @@ export default function ListadoVentas(props: propsListadoVentas) {
               >
                 <AddIcon />
               </Button>
-              <Modal
-                bodyStyle={{ backgroundColor: "red" }}
-                title="Cargar Cliente"
-                width={1150}
-                open={openCliente}
-                footer={null}
-                centered
-                onCancel={showCargarCliente}
-              >
+              <Modal title="Cargar Cliente" width={1150} open={openCliente} footer={null} centered onCancel={showCargarCliente}>
                 <p>
-                  <CargarCliente
-                    setFlagModal={showCargarCliente}
-                    setFlagListado={props.setFlag}
-                  />
+                  <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
                 </p>
               </Modal>
             </div>
@@ -361,18 +295,14 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <Switch style={{ backgroundColor: "#3B4256" }} />
                 <p>R.I</p>
               </div>
-              <Input
-                placeholder="DNI/CUIT"
-                value={clienteSeleccionado?.nroDocumento}
-              />
+              <Input placeholder="DNI/CUIT" value={clienteSeleccionado?.nroDocumento} />
               <Divider />
               <div>
                 <p>Datos del Cliente</p>
                 <Input
                   placeholder="Nombre/Razon Social"
                   value={
-                    clienteSeleccionado?.nombreYApellido &&
-                    clienteSeleccionado?.razonSocial
+                    clienteSeleccionado?.nombreYApellido && clienteSeleccionado?.razonSocial
                       ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
                       : ""
                   }
@@ -386,6 +316,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
               </div>
               <div>
                 <h6>IMPORTE TOTAL</h6>
+                <Input
+                  style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
+                  disabled={true}
+                  value={`$ ${[]}`}
+                ></Input>
               </div>
               <Button>Pagar</Button>
             </div>

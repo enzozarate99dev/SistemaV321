@@ -47,11 +47,7 @@ export default function InfoCliente(props: infoClienteProps) {
   return (
     <div className="container">
       <MostrarErrores errores={errores} />
-      {cliente ? (
-        <FormularioClientes modelo={cliente} onSubmit={() => {}} />
-      ) : (
-        <Cargando />
-      )}
+      {cliente ? <FormularioClientes modelo={cliente} onSubmit={() => {}} /> : <Cargando />}
       {/* <br></br>
       <h2>{cliente?.nombreYApellido}</h2>
       <h4>{cliente?.email}</h4>

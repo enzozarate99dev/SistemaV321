@@ -1,7 +1,9 @@
 import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import { clienteCrear } from "../../Models/clientes.model";
+import Button from "../../utils/Button";
 import Cargando from "../../utils/Cargando";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/clientes.services";
@@ -33,13 +35,21 @@ export default function EditarCliente(props: editarClienteProps) {
     });
   }, [props.id]);
 
-  async function editar(clienteEditar: clienteCrear) {
+  async function editar(modelo: clienteCrear) {
+    console.log(modelo);
     try {
-      services.editar(clienteEditar, props.id);
+      services.editar(modelo, props.id);
       props.setFlagModal!();
       props.setFlagListado!();
+      Swal.fire({
+        title: "Correcto!",
+        text: "Los datos fueron editados correctamente",
+        icon: "success",
+        willClose: () => props.setFlagModal(),
+      });
     } catch (error) {
       setErrores(error.response.data);
+      console.log("boludo");
     }
   }
 
@@ -49,8 +59,13 @@ export default function EditarCliente(props: editarClienteProps) {
       {cliente ? (
         <FormularioClientes
           modelo={cliente}
+          setBandera={props.setFlagModal}
           onSubmit={async (valores) => await editar(valores)}
-          buttonText="EDITAR CLIENTE"
+          button={
+            <Button type="submit" style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}>
+              Editar Cliente
+            </Button>
+          }
         />
       ) : (
         <Cargando />

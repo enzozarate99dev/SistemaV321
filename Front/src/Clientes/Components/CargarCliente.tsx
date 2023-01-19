@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { clienteCrear } from "../../Models/clientes.model";
+import Button from "../../utils/Button";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/clientes.services";
 import FormularioClientes from "./FormularioClientes";
@@ -45,7 +46,11 @@ export default function CargarCliente(props: cargarClienteProps) {
         onSubmit={async (valores) => {
           await crear(valores);
         }}
-        buttonText="CARGAR CLIENTE"
+        button={
+          <Button type="submit" style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}>
+            Cargar Cliente
+          </Button>
+        }
       />
     </>
   );

@@ -24,8 +24,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
   const [clientes, setClientes] = useState<clienteModel[]>([]);
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
-  const [clientesSeleccionado, setClientesSeleccionado] =
-    useState<clienteModel | null>();
+  const [clientesSeleccionado, setClientesSeleccionado] = useState<clienteModel | null>();
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
 
   const showModal = () => {
@@ -85,9 +84,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
     {
       title: "Acciones",
       key: "acciones",
-      render: (_: undefined, cliente: clienteModel) => (
-        <div className="container">{botones(cliente.id)}</div>
-      ),
+      render: (_: undefined, cliente: clienteModel) => <div className="container">{botones(cliente.id)}</div>,
     },
   ];
 
@@ -135,10 +132,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
       >
         <EstadoDeudaIcon />
       </Button>
-      <Button
-        onClick={() => confirmar(() => borrar(id))}
-        className="btn btn-transparent"
-      >
+      <Button onClick={() => confirmar(() => borrar(id))} className="btn btn-transparent">
         <TrashIcon />
       </Button>
     </>
@@ -148,51 +142,19 @@ export default function ListadoClientes(props: propsListadoClientes) {
     <>
       <div className="container" style={{ minHeight: "100vh" }}>
         <h3>Listado Clientes</h3>
-        <Modal
-          title="Informacion del cliente"
-          width={1150}
-          open={info}
-          footer={null}
-          centered
-          onCancel={showInfo}
-        >
+        <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo}>
           <p>
-            <InfoCliente
-              id={id!}
-              setFlagModal={showInfo}
-              setFlagListado={props.setFlag}
-            />
+            <InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
           </p>
         </Modal>
-        <Modal
-          title="Editar Cliente"
-          width={1150}
-          open={edit}
-          footer={null}
-          centered
-          onCancel={showEdit}
-        >
+        <Modal title="Editar Cliente" width={1150} open={edit} footer={null} centered onCancel={showEdit}>
           <p>
-            <EditarCliente
-              id={id!}
-              setFlagModal={showEdit}
-              setFlagListado={props.setFlag}
-            />
+            <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
           </p>
         </Modal>
-        <Modal
-          title="Estado de Cuenta"
-          width={1150}
-          open={open}
-          footer={null}
-          centered
-          onCancel={showModal}
-        >
+        <Modal title="Estado de Cuenta" width={1150} open={open} footer={null} centered onCancel={showModal}>
           <p>
-            <CargarCliente
-              setFlagModal={showModal}
-              setFlagListado={props.setFlag}
-            />
+            <CargarCliente setFlagModal={showModal} setFlagListado={props.setFlag} />
           </p>
         </Modal>
         <div>
@@ -204,25 +166,15 @@ export default function ListadoClientes(props: propsListadoClientes) {
             style={{ width: 200 }}
             placeholder="Buscar cliente "
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label ?? "").includes(input)
-            }
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? "")
-                .toLowerCase()
-                .localeCompare((optionB?.label ?? "").toLowerCase())
-            }
+            filterOption={(input, option) => (option?.label ?? "").includes(input)}
+            filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
             listItemHeight={30}
             listHeight={90}
             options={clientes}
           />
           <Select placeholder="Ordenar por..." className="input" />
         </div>
-        <Table
-          dataSource={clientesTabla}
-          columns={columns}
-          pagination={false}
-        />
+        <Table dataSource={clientesTabla} columns={columns} pagination={false} />
       </div>
     </>
   );
@@ -232,92 +184,3 @@ interface propsListadoClientes {
   clientes?: clienteModel[];
   setFlag: () => void;
 }
-
-//
-// );
-// <Button
-//         style={{
-//           marginBottom: "1rem",
-//           marginLeft: "65.75rem",
-//           marginTop: "-85px",
-//         }}
-//         onClick={() => {
-//           showModal();
-//         }}
-//         className="btn btn-transparent"
-//       >
-//         <AddIcon />
-//       </Button>
-//       <Modal
-//         title="Cargar Cliente"
-//         width={1150}
-//         open={open}
-//         footer={null}
-//         centered
-//         onCancel={showModal}
-//       >
-//         <p>
-//           <CargarCliente
-//             setFlagModal={showModal}
-//             setFlagListado={props.setFlag}
-//           />
-//         </p>
-//       </Modal>
-//       <Modal
-//         title="Editar Cliente"
-//         width={1150}
-//         open={edit}
-//         footer={null}
-//         centered
-//         onCancel={showEdit}
-//       >
-//         <p>
-//           <EditarCliente
-//             id={id!}
-//             setFlagModal={showEdit}
-//             setFlagListado={props.setFlag}
-//           />
-//         </p>
-//       </Modal>
-//       <Modal
-//         title="Informacion del cliente"
-//         width={1150}
-//         open={info}
-//         footer={null}
-//         centered
-//         onCancel={showInfo}
-//       >
-//         <p>
-//           <InfoCliente
-//             id={id!}
-//             setFlagModal={showInfo}
-//             setFlagListado={props.setFlag}
-//           />
-//         </p>
-//       </Modal>
-//       <Verificar listado={props.clientes}>
-//         <>
-//           <table style={{ marginTop: "-15px" }} className="table">
-//             <thead className="table-dark">
-//               <tr>
-//                 <th></th>
-//                 <th>#</th>
-//                 <th>Nombre y Apellido</th>
-//                 <th>Deuda Total</th>
-//                 <th></th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {props.clientes?.map((cliente) => (
-//                 <tr key={cliente.id}>
-//                   <td></td>
-//                   <td>{cliente.id}</td>
-//                   <td>{cliente.nombreYApellido}</td>
-//                   <td>{cliente.deuda}</td>
-//                   <td>{botones(cliente.id)}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </>
-//       </Verificar>

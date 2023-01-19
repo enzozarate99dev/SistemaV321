@@ -10,7 +10,6 @@ namespace SistemaApi.Entidades
         [Required]
         public string NombreYApellido { get; set; }
         [EmailAddress]
-        [Required]
         public string Email { get; set; }
         public string Telefono { get; set; }
         public string Domicilio { get; set; }
@@ -22,6 +21,7 @@ namespace SistemaApi.Entidades
         public string Provincia { get; set; }
         public string RazonSocial { get; set; }
         public int TipoDocumento { get; set; }
+        public string NroIngresos   { get; set; }
         public double? Deuda { get; set; }
         public virtual ICollection<Venta> Ventas { get; set; }
     }

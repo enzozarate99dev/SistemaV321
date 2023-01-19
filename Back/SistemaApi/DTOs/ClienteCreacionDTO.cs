@@ -7,7 +7,6 @@ namespace SistemaApi.DTOs
         [Required]
         public string NombreYApellido { get; set; }
         [EmailAddress]
-        [Required]
         public string Email { get; set; }
         public string Telefono { get; set; }
         public string Domicilio { get; set; }
@@ -19,5 +18,6 @@ namespace SistemaApi.DTOs
         public string Provincia { get; set; }
         public string RazonSocial { get; set; }
         public int TipoDocumento { get; set; }
+        public string NroIngresos { get; set; }
     }
 }

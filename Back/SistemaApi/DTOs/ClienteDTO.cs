@@ -19,6 +19,7 @@ namespace SistemaApi.DTOs
         public string Provincia { get; set; }
         public string RazonSocial { get; set; }
         public int TipoDocumento { get; set; }
+        public string NroIngresos { get; set; }
         public double? Deuda { get; set; }
     }
 }

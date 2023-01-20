@@ -1,4 +1,5 @@
 import { Field, Form, Formik, FormikHelpers } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
 import { clienteCrear } from "../../Models/clientes.model";
 import Button from "../../utils/Button";
@@ -12,10 +13,6 @@ export default function FormularioClientes(props: formularioClientesProps) {
       onSubmit={props.onSubmit}
       validationSchema={Yup.object({
         nombreYApellido: Yup.string().required("Este campo es requerido").max(100, "La longitud maxima es de 100"),
-        // email: Yup.string()
-        //   .required("Este campo es requerido")
-        //   .email("Introducir un email valido"),
-        // telefono: Yup.string().required("Este campo es requerido"),
         nroIngresos: Yup.string().required("Este campo es requerido"),
         domicilio: Yup.string().required("Este campo es requerido"),
         codigoPostal: Yup.string().required("Este campo es requerido"),
@@ -57,10 +54,11 @@ export default function FormularioClientes(props: formularioClientesProps) {
             }}
           >
             <div className="col-md-4 container">
-              <FormGroupCheckbox campo="percibeIIBB" label="Percibe IIBB" />
+              <FormGroupCheckbox campo="percibeIIBB" label="Percibe IIBB" onChange={() => {}} />
 
               <FormGroupCheckbox campo="percibeIVA" label="Percibe IVA" />
             </div>
+
             <div className="col-md-6">
               <FormGroupText campo="nroIngresos" label="Numero" placeholder="Numero" />
             </div>
@@ -72,7 +70,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
                 disabled={formikProps.isSubmitting}
                 style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}
               >
-                {props.button}
+                {props.buttonText}
               </Button>
             </div>
           ) : null}
@@ -97,6 +95,6 @@ interface formularioClientesProps {
   modelo: clienteCrear;
   onSubmit(valores: clienteCrear, accion: FormikHelpers<clienteCrear>): void;
   setBandera?: () => void;
-  button?: string;
+  buttonText?: string;
   buttonExiste: boolean;
 }

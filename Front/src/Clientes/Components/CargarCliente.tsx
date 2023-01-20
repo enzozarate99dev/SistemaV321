@@ -48,7 +48,7 @@ export default function CargarCliente(props: cargarClienteProps) {
           await crear(valores);
         }}
         buttonExiste={true}
-        button="Cargar Cliente"
+        buttonText="Cargar Cliente"
       />
     </>
   );

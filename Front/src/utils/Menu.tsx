@@ -17,23 +17,14 @@ export default function Menu() {
   const history = useHistory();
 
   return (
-    <Navbar
-      collapseOnSelect
-      expand="lg"
-      variant="dark"
-      style={{ backgroundColor: "#33384D" }}
-    >
+    <Navbar collapseOnSelect expand="lg" variant="dark" style={{ backgroundColor: "#33384D" }}>
       <Navbar.Brand style={{ padding: "0 100px" }} href="/">
         <DashboardIcon />
       </Navbar.Brand>
       <Container>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav
-            className="mr-auto my-2 my-lg-0"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          >
+          <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: "100px" }} navbarScroll>
             <Autorizado
               autorizado={
                 <>

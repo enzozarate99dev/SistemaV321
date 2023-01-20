@@ -62,7 +62,7 @@ export default function EditarCliente(props: editarClienteProps) {
           setBandera={props.setFlagModal}
           onSubmit={async (valores) => await editar(valores)}
           buttonExiste={true}
-          button="Editar Cliente"
+          buttonText="Editar Cliente"
         />
       ) : (
         <Cargando />

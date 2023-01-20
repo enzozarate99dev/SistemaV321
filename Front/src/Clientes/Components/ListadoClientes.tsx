@@ -15,6 +15,7 @@ import VerIcon from "../../assets/VerIcon";
 import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
 import "../clientesStyles.css";
 import "../../utils/modal.css";
+import EstadoCuenta from "./EstadoCuenta";
 
 export default function ListadoClientes(props: propsListadoClientes) {
   const [open, setOpen] = useState(false);
@@ -143,19 +144,13 @@ export default function ListadoClientes(props: propsListadoClientes) {
       <div className="clientes">
         <h3>Listado Clientes</h3>
         <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo}>
-          <p>
-            <InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
-          </p>
+          <InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
         </Modal>
         <Modal title="Editar Cliente" width={1150} open={edit} footer={null} centered onCancel={showEdit}>
-          <p>
-            <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
-          </p>
+          <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
         </Modal>
         <Modal title="Estado de Cuenta" width={1150} open={open} footer={null} centered onCancel={showModal}>
-          <p>
-            <CargarCliente setFlagModal={showModal} setFlagListado={props.setFlag} />
-          </p>
+          <EstadoCuenta setFlagModal={showModal} setFlagListado={props.setFlag} />
         </Modal>
         <div>
           <Select

@@ -19,6 +19,7 @@ export default function CargarCliente(props: cargarClienteProps) {
     provincia: "",
     razonSocial: "",
     tipoDocumento: 0,
+    nroIngresos: "",
   };
 
   async function crear(cliente: clienteCrear) {
@@ -46,11 +47,8 @@ export default function CargarCliente(props: cargarClienteProps) {
         onSubmit={async (valores) => {
           await crear(valores);
         }}
-        button={
-          <Button type="submit" style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}>
-            Cargar Cliente
-          </Button>
-        }
+        buttonExiste={true}
+        button="Cargar Cliente"
       />
     </>
   );

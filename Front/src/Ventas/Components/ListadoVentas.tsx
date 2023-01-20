@@ -169,21 +169,10 @@ export default function ListadoVentas(props: propsListadoVentas) {
     doc.save("presupuesto.pdf");
   }
 
-  //Ventas
-  function crearVenta(venta: nuevoVentasModel) {
-    console.log(venta);
-    try {
-      services.crear(venta);
-      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
-    } catch (error) {
-      setErrores(error.response.data);
-      console.log(error.response.data);
-    }
-  }
-
   function calcularSubtotal(productos: productoModel[]) {
     return productos.reduce((suma, producto) => suma + producto.precioF, 0);
   }
+
   return (
     <>
       <Row style={{ minHeight: "100vh" }}>
@@ -236,8 +225,10 @@ export default function ListadoVentas(props: propsListadoVentas) {
         </Col>
 
         <Col span={12}>
-          <h5>Articulos Cargados</h5>
-          <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
+          <div className="container">
+            <h6>Articulos Cargados</h6>
+            <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
+          </div>
           <Button onClick={() => exportPdf()} className="btn btn-transparent">
             <PdfIcon />
           </Button>
@@ -246,9 +237,10 @@ export default function ListadoVentas(props: propsListadoVentas) {
           </Button>
         </Col>
 
-        <Col span={5} style={{ backgroundColor: "#F5F5F5" }}>
+        <Col span={5} style={{ backgroundColor: "#F5F5F5", boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)" }}>
           <div className="container">
             <div
+              className="container"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -281,20 +273,23 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 </p>
               </Modal>
             </div>
-            <div>
-              <p>CONDICION</p>
-              <div
-                style={{
-                  marginInline: 30,
-                  display: "flex",
-                  alignItems: "middle",
-                  justifyContent: "space-between",
-                }}
-              >
-                <p>C.F</p>
-                <Switch style={{ backgroundColor: "#3B4256" }} />
-                <p>R.I</p>
+            <div className="container">
+              <div className="container">
+                <p>CONDICION</p>
+                <div
+                  style={{
+                    marginInline: 30,
+                    display: "flex",
+                    alignItems: "middle",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <p>C.F</p>
+                  <Switch style={{ backgroundColor: "#3B4256" }} />
+                  <p>R.I</p>
+                </div>
               </div>
+
               <Input placeholder="DNI/CUIT" value={clienteSeleccionado?.nroDocumento} />
               <Divider />
               <div>
@@ -314,15 +309,31 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <p>Importe</p>
                 <p>Subtotal: ${subTotal}</p>
               </div>
-              <div>
+              <div className="container">
                 <h6>IMPORTE TOTAL</h6>
-                <Input
-                  style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
-                  disabled={true}
-                  value={`$ ${[]}`}
-                ></Input>
+                <div className="container">
+                  <Input
+                    style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
+                    disabled={true}
+                    value={`$ ${[]}`}
+                  ></Input>
+                </div>
               </div>
-              <Button>Pagar</Button>
+              <div className="container">
+                <Button
+                  style={{
+                    width: 100,
+                    marginTop: "8vh",
+                    backgroundColor: "#fff",
+                    border: "3px solid #11A629",
+                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    color: "#000",
+                  }}
+                >
+                  PAGAR
+                </Button>
+              </div>
             </div>
           </div>
         </Col>

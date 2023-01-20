@@ -22,7 +22,7 @@ namespace SistemaApi.Utilidades
             CreateMap<VentaConsumidorFinal, VentaConsumidorFinalDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
 
-            CreateMap<ClienteCreacionDTO, ClienteEntidad>();
+            CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
             CreateMap<ClienteEntidad, ClienteDTO>().ReverseMap();
 
             CreateMap<ProveedorCreacionDTO, Proveedor>();

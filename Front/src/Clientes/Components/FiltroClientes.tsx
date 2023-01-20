@@ -57,13 +57,8 @@ export default function FiltroClientes() {
     const data = services.filtrar(valores);
     data.then((respuesta: AxiosResponse<clienteModel[]>) => {
       console.log(respuesta);
-      const totalDeRegistros = parseInt(
-        respuesta.headers["cantidadtotalregistros"],
-        10
-      );
-      setTotalDePaginas(
-        Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina)
-      );
+      const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
+      setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
 
       setClientes(respuesta.data);
     });
@@ -71,7 +66,6 @@ export default function FiltroClientes() {
 
   return (
     <>
-      <h3 style={{ marginTop: "1rem" }}>Administrar Clientes</h3>
       <Formik
         initialValues={valorInicial}
         onSubmit={(valores) => {
@@ -82,23 +76,10 @@ export default function FiltroClientes() {
         {(formikProps) => (
           <>
             <Form>
-              <Button
-                style={{ marginBottom: "1rem" }}
-                onClick={() => {
-                  setMostrarFiltros(!mostrarFiltros);
-                }}
-                className="btn btn-secondary"
-              >
-                <FilterIcon />
-              </Button>
               {mostrarFiltros ? (
                 <div className="form-inline">
                   <div className="form-group mb-2">
-                    <FormGroupText
-                      onChange={() => formikProps.submitForm()}
-                      campo="nombreYApellido"
-                      placeholder="Nombre del cliente"
-                    />
+                    <FormGroupText onChange={() => formikProps.submitForm()} campo="nombreYApellido" placeholder="Nombre del cliente" />
                   </div>
                   <Button
                     className="btn btn-danger mb-2"
@@ -115,14 +96,14 @@ export default function FiltroClientes() {
             </Form>
 
             <ListadoClientes clientes={clientes} setFlag={handleFlag} />
-            <Paginacion
+            {/* <Paginacion
               cantidadTotalDePaginas={totalDePaginas}
               paginaActual={formikProps.values.pagina}
               onChange={(nuevaPagina) => {
                 formikProps.values.pagina = nuevaPagina;
                 buscarCliente(formikProps.values);
               }}
-            />
+            /> */}
           </>
         )}
       </Formik>

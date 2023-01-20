@@ -16,7 +16,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
         //   .required("Este campo es requerido")
         //   .email("Introducir un email valido"),
         // telefono: Yup.string().required("Este campo es requerido"),
-        numeroIngresos: Yup.string().required("Este campo es requerido"),
+        nroIngresos: Yup.string().required("Este campo es requerido"),
         domicilio: Yup.string().required("Este campo es requerido"),
         codigoPostal: Yup.string().required("Este campo es requerido"),
         provincia: Yup.string().required("Este campo es requerido"),
@@ -62,12 +62,20 @@ export default function FormularioClientes(props: formularioClientesProps) {
               <FormGroupCheckbox campo="percibeIVA" label="Percibe IVA" />
             </div>
             <div className="col-md-6">
-              <FormGroupText campo="numeroIngresos" label="Numero" placeholder="Numero" />
+              <FormGroupText campo="nroIngresos" label="Numero" placeholder="Numero" />
             </div>
           </div>
-          <div className="container" style={{ display: "flex", justifyContent: "center" }}>
-            {props.button}
-          </div>
+          {props.buttonExiste ? (
+            <div className="container" style={{ display: "flex", justifyContent: "center" }}>
+              <Button
+                type="submit"
+                disabled={formikProps.isSubmitting}
+                style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}
+              >
+                {props.button}
+              </Button>
+            </div>
+          ) : null}
 
           {/* <div className="col-md-4">
             <label htmlFor="tipoDocumento">Tipo de Documento</label>
@@ -89,5 +97,6 @@ interface formularioClientesProps {
   modelo: clienteCrear;
   onSubmit(valores: clienteCrear, accion: FormikHelpers<clienteCrear>): void;
   setBandera?: () => void;
-  button?: JSX.Element;
+  button?: string;
+  buttonExiste: boolean;
 }

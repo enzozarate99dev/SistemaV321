@@ -30,26 +30,26 @@ export default function EditarCliente(props: editarClienteProps) {
         provincia: respuesta.data.provincia,
         razonSocial: respuesta.data.razonSocial,
         tipoDocumento: respuesta.data.tipoDocumento,
+        nroIngresos: respuesta.data.nroIngresos,
       };
       setCliente(modelo);
     });
   }, [props.id]);
 
-  async function editar(modelo: clienteCrear) {
-    console.log(modelo);
+  async function editar(clienteEditar: clienteCrear) {
     try {
-      services.editar(modelo, props.id);
-      props.setFlagModal!();
-      props.setFlagListado!();
+      services.editar(clienteEditar, props.id);
+      props.setFlagModal();
+      props.setFlagListado();
       Swal.fire({
         title: "Correcto!",
         text: "Los datos fueron editados correctamente",
         icon: "success",
         willClose: () => props.setFlagModal(),
       });
+      console.log(clienteEditar);
     } catch (error) {
       setErrores(error.response.data);
-      console.log("boludo");
     }
   }
 
@@ -61,11 +61,8 @@ export default function EditarCliente(props: editarClienteProps) {
           modelo={cliente}
           setBandera={props.setFlagModal}
           onSubmit={async (valores) => await editar(valores)}
-          button={
-            <Button type="submit" style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}>
-              Editar Cliente
-            </Button>
-          }
+          buttonExiste={true}
+          button="Editar Cliente"
         />
       ) : (
         <Cargando />

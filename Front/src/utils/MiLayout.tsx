@@ -49,33 +49,22 @@ const items: MenuProps["items"] = [
 ].map((item) => item);
 
 export default function MiLayout(props: MenuProps) {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
       {
         <>
-          <Menu
-            className="menu"
-            style={{ backgroundColor: "#33384D" }}
-            items={items}
-            inlineCollapsed={false}
-          />
+          <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />
         </>
       }
       <Layout className="site-layout">
-        <Content>
-          <div
-            style={{
-              textAlign: "center",
-              minHeight: "100vh",
-              background: colorBgContainer,
-            }}
-          >
-            {props.children}
-          </div>
+        <Content
+          style={{
+            textAlign: "center",
+            minHeight: "100vh",
+            backgroundColor: "#fff",
+          }}
+        >
+          <div>{props.children}</div>
         </Content>
       </Layout>
     </Layout>

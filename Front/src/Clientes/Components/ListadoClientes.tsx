@@ -140,7 +140,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
   return (
     <>
-      <div className="container" style={{ minHeight: "100vh" }}>
+      <div className="clientes">
         <h3>Listado Clientes</h3>
         <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo}>
           <p>
@@ -174,7 +174,14 @@ export default function ListadoClientes(props: propsListadoClientes) {
           />
           <Select placeholder="Ordenar por..." className="input" />
         </div>
-        <Table dataSource={clientesTabla} columns={columns} pagination={false} />
+        <div className="container">
+          <Table
+            dataSource={clientesTabla}
+            columns={columns}
+            pagination={false}
+            style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: 40 }}
+          />
+        </div>
       </div>
     </>
   );

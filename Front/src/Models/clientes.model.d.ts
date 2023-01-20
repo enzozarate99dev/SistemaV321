@@ -15,6 +15,7 @@ export interface clienteModel {
   razonSocial: string;
   tipoDocumento: number;
   deuda?: number;
+  nroIngresos?: string;
   label?: string;
 }
 
@@ -31,5 +32,5 @@ export interface clienteCrear {
   provincia: string;
   razonSocial: string;
   tipoDocumento?: number;
-  numeroIngresos?: number;
+  nroIngresos?: string;
 }

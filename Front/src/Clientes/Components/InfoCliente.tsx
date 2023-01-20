@@ -31,6 +31,7 @@ export default function InfoCliente(props: infoClienteProps) {
         razonSocial: respuesta.data.razonSocial,
         tipoDocumento: respuesta.data.tipoDocumento,
         id: respuesta.data.id,
+        nroIngresos: respuesta.data.nroIngresos,
       };
       setCliente(modelo);
     });
@@ -47,57 +48,7 @@ export default function InfoCliente(props: infoClienteProps) {
   return (
     <div className="container">
       <MostrarErrores errores={errores} />
-      {cliente ? <FormularioClientes modelo={cliente} onSubmit={() => {}} /> : <Cargando />}
-      {/* <br></br>
-      <h2>{cliente?.nombreYApellido}</h2>
-      <h4>{cliente?.email}</h4>
-      <br></br>
-      <h4>Domico: {cliente?.domicilio}</h4>
-      <h4>Telefono: {cliente?.telefono}</h4>
-      <h4>Deuda: {cliente?.deuda}</h4>
-      <br></br>
-      <h4 className="btn btn-secondary" onClick={handleClick}>
-        Compras hechas por el cliente
-      </h4>
-      {clickeado ? (
-        <div className="container">
-          <label htmlFor="cta">No pagados</label>
-          <input
-            style={{ marginLeft: "0.5rem" }}
-            type="checkbox"
-            name="cta"
-            onClick={handleCheckbox}
-          ></input>
-          <br></br>
-          {!checkbox
-            ? ventasCliente.map((venta, index) => (
-                <>
-                  <Link to={`/ventas/detalle/${venta.id}`}>
-                    Venta {index + 1}
-                  </Link>
-                  <br></br>
-                </>
-              ))
-            : ventasCliente.map((venta, index) => (
-                <>
-                  {venta.adeudada > 0 ? (
-                    <>
-                      <Link to={`/ventas/detalle/${venta.id}`}>
-                        Venta {index + 1}
-                      </Link>
-                      <Link
-                        style={{ marginLeft: "0.5rem" }}
-                        to={`/ventas/cancelar/${venta.id}`}
-                      >
-                        Cancelar esta deuda
-                      </Link>
-                      <br></br>
-                    </>
-                  ) : null}
-                </>
-              ))}
-        </div>
-      ) : null} */}
+      {cliente ? <FormularioClientes modelo={cliente} onSubmit={() => {}} buttonExiste={false} /> : <Cargando />}
     </div>
   );
 }

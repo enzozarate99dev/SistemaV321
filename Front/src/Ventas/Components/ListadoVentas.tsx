@@ -1,5 +1,5 @@
 import { RightCircleOutlined } from "@ant-design/icons";
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input } from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete } from "antd";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../utils/modal.css";
+import TrashIcon from "../../assets/TrashIcon";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
@@ -29,6 +30,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [productosAgregados, setProductosAgregados] = useState<number[]>([]);
   const [productoTabla, setProductoTabla] = useState<productoModel[]>([]);
   const [productosTabla2, setProductosTabla2] = useState<productoModel[]>([]);
+  const [productosFiltro, setProductosFiltro] = useState<productoModel[]>([]);
 
   const [subTotal, setSubTotal] = useState(0);
 
@@ -55,15 +57,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
   }
 
   //Obtener productos y clientes
+
   useEffect(() => {
     async function traerProductos() {
-      const result = await axios(`${urlProductos}`);
-      setProductos(
-        result.data.map((producto: productoModel) => ({
-          value: producto.id,
-          label: producto.nombre,
-        }))
-      );
+      const result = await axios.get(`${urlProductos}`);
+      setProductos(result.data);
     }
     traerProductos();
   }, []);
@@ -104,9 +102,21 @@ export default function ListadoVentas(props: propsListadoVentas) {
     console.log(result.data);
   }
 
-  function moverProductos() {
-    setProductosTabla2([...productosTabla2, ...productoTabla]);
-    setProductoTabla([]);
+  const buscarProd = (value: string) => {
+    if (value.length >= 3) {
+      const filtered = productos.filter((p) => p.nombre.toUpperCase().startsWith(value.toUpperCase()));
+      setProductosFiltro(filtered);
+      setProductoTabla(filtered);
+    } else {
+      setProductoTabla([]);
+    }
+  };
+
+  function moverProductos(id: number) {
+    const prod = productoTabla.find((p) => p.id === id)!;
+
+    setProductosTabla2([...productosTabla2, prod]);
+    setProductoTabla(productoTabla.filter((p) => p.id !== id));
   }
 
   const cambiarCantidad = (id: number, cantidad: number) => {
@@ -117,6 +127,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
       return producto;
     });
     setProductosTabla2(newProductosTabla2);
+    setSubTotal(calcularSubtotal(newProductosTabla2));
+  };
+
+  const quitarProducto = (id: number) => {
+    const prod = productosTabla2.find((p) => p.id === id)!;
+
+    setProductoTabla([...productoTabla, prod]);
+    setProductosTabla2(productosTabla2.filter((p) => p.id !== id));
+    setSubTotal(calcularSubtotal(productosTabla2.filter((p) => p.id !== id)));
   };
 
   const columnsTabla1 = [
@@ -128,6 +147,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
   ];
 
   const columnsTabla2 = [
+    {
+      title: "",
+      key: "accion",
+      render: (producto: productoModel) => (
+        <Button className="btn btn-transparent" onClick={() => quitarProducto(producto.id)}>
+          <TrashIcon />
+        </Button>
+      ),
+    },
     {
       title: "Producto",
       dataIndex: "nombre",
@@ -176,7 +204,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   return (
     <>
       <Row style={{ minHeight: "100vh" }}>
-        <Col span={7}>
+        <Col span={7} style={{ display: "flex" }}>
           <div className="container">
             <div
               style={{
@@ -185,19 +213,17 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 justifyContent: "center",
               }}
             >
-              <Select
-                showSearch
-                onSelect={(id) => selectProducto(id)}
-                showArrow={false}
-                style={{ width: 200 }}
+              <AutoComplete
+                popupClassName="certain-category-search-dropdown"
                 placeholder="Cargar articulo"
-                optionFilterProp="children"
-                filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                dropdownMatchSelectWidth={200}
                 listItemHeight={30}
                 listHeight={90}
-                options={productos}
-              />
+                options={productosFiltro.map((p) => ({ value: p.id, label: p.nombre }))}
+                style={{ width: 250 }}
+                onSearch={buscarProd}
+                open={false}
+              ></AutoComplete>
               <Button
                 style={{}}
                 onClick={() => {
@@ -215,15 +241,25 @@ export default function ListadoVentas(props: propsListadoVentas) {
             </div>
             <div className="container">
               {productoTabla.length > 0 && (
-                <Table dataSource={productoTabla} columns={columnsTabla1} showHeader={false} pagination={false} />
+                <Table
+                  dataSource={productoTabla}
+                  columns={columnsTabla1}
+                  showHeader={false}
+                  pagination={{ pageSize: 5 }}
+                  onRow={(productoTabla: productoModel) => {
+                    return {
+                      onClick: () => moverProductos(productoTabla.id),
+                    };
+                  }}
+                />
               )}
-              <Button onClick={moverProductos} className="btn btn-transparent">
+              {/* <Button onClick={moverProductos} className="btn btn-transparent">
                 <RightCircleOutlined />
-              </Button>
+              </Button> */}
             </div>
           </div>
+          <Divider type="vertical" style={{ backgroundColor: "#33384D", height: "100vh", marginBlock: "10vh" }} />
         </Col>
-
         <Col span={12}>
           <div className="container">
             <h6>Articulos Cargados</h6>

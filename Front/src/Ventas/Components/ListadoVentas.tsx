@@ -1,5 +1,5 @@
 import { RightCircleOutlined } from "@ant-design/icons";
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete } from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Tabs } from "antd";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
@@ -19,16 +19,19 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../utils/modal.css";
 import TrashIcon from "../../assets/TrashIcon";
+import Ventas from "./Ventas";
+import ConsumidorFinal from "../../VentasConsFinal/Components/ConsumidorFinal";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
+  const [openVenta, setOpenVenta] = useState(false);
+  const [openVentaCf, setOpenVentaCf] = useState(false);
 
   const [productos, setProductos] = useState<productoModel[]>([]);
   const [productoSeleccionado, setProductoSeleccionado] = useState<productoModel | null>();
-  const [productosAgregados, setProductosAgregados] = useState<number[]>([]);
-  const [productoTabla, setProductoTabla] = useState<productoModel[]>([]);
+  const [productosTabla1, setProductosTabla1] = useState<productoModel[]>([]);
   const [productosTabla2, setProductosTabla2] = useState<productoModel[]>([]);
   const [productosFiltro, setProductosFiltro] = useState<productoModel[]>([]);
 
@@ -48,6 +51,16 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const showCargarProducto = () => {
     setOpenProducto(!openProducto);
+    props.setFlag();
+  };
+
+  const showCargarVenta = () => {
+    setOpenVenta(!openVenta);
+    props.setFlag();
+  };
+
+  const showCargarVentaCf = () => {
+    setOpenVentaCf(!openVentaCf);
     props.setFlag();
   };
 
@@ -89,34 +102,21 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   //Tablas de productos
 
-  async function selectProducto(id: number) {
-    //agrega los productos a la tabla 1
-    if (productosAgregados.includes(id)) {
-      return; //para q no se elijan multiples veces
-    }
-    setProductosAgregados((productosAgregados) => [...productosAgregados, id]);
-    const result = await axios(`${urlProductos}/${id}`);
-    const producto = result.data;
-    setProductoSeleccionado(producto);
-    setProductoTabla((productoTabla) => [...productoTabla, producto]);
-    console.log(result.data);
-  }
-
   const buscarProd = (value: string) => {
     if (value.length >= 3) {
-      const filtered = productos.filter((p) => p.nombre.toUpperCase().startsWith(value.toUpperCase()));
-      setProductosFiltro(filtered);
-      setProductoTabla(filtered);
+      const filtrados = productos.filter((p) => p.nombre.toUpperCase().startsWith(value.toUpperCase()));
+      setProductosFiltro(filtrados);
+      setProductosTabla1(filtrados);
     } else {
-      setProductoTabla([]);
+      setProductosTabla1([]);
     }
   };
 
   function moverProductos(id: number) {
-    const prod = productoTabla.find((p) => p.id === id)!;
+    const prod = productosTabla1.find((p) => p.id === id)!;
 
     setProductosTabla2([...productosTabla2, prod]);
-    setProductoTabla(productoTabla.filter((p) => p.id !== id));
+    setProductosTabla1(productosTabla1.filter((p) => p.id !== id));
   }
 
   const cambiarCantidad = (id: number, cantidad: number) => {
@@ -133,7 +133,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const quitarProducto = (id: number) => {
     const prod = productosTabla2.find((p) => p.id === id)!;
 
-    setProductoTabla([...productoTabla, prod]);
+    setProductosTabla1([...productosTabla1, prod]);
     setProductosTabla2(productosTabla2.filter((p) => p.id !== id));
     setSubTotal(calcularSubtotal(productosTabla2.filter((p) => p.id !== id)));
   };
@@ -214,11 +214,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
               }}
             >
               <AutoComplete
-                popupClassName="certain-category-search-dropdown"
                 placeholder="Cargar articulo"
                 dropdownMatchSelectWidth={200}
-                listItemHeight={30}
-                listHeight={90}
                 options={productosFiltro.map((p) => ({ value: p.id, label: p.nombre }))}
                 style={{ width: 250 }}
                 onSearch={buscarProd}
@@ -240,9 +237,9 @@ export default function ListadoVentas(props: propsListadoVentas) {
               </Modal>
             </div>
             <div className="container">
-              {productoTabla.length > 0 && (
+              {productosTabla1.length > 0 && (
                 <Table
-                  dataSource={productoTabla}
+                  dataSource={productosTabla1}
                   columns={columnsTabla1}
                   showHeader={false}
                   pagination={{ pageSize: 5 }}
@@ -253,9 +250,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   }}
                 />
               )}
-              {/* <Button onClick={moverProductos} className="btn btn-transparent">
-                <RightCircleOutlined />
-              </Button> */}
             </div>
           </div>
           <Divider type="vertical" style={{ backgroundColor: "#33384D", height: "100vh", marginBlock: "10vh" }} />
@@ -267,9 +261,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
           </div>
           <Button onClick={() => exportPdf()} className="btn btn-transparent">
             <PdfIcon />
-          </Button>
-          <Button className="btn btn-primary" onClick={() => setSubTotal(calcularSubtotal(productosTabla2))}>
-            Listo
           </Button>
         </Col>
 
@@ -304,9 +295,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <AddIcon />
               </Button>
               <Modal title="Cargar Cliente" width={1150} open={openCliente} footer={null} centered onCancel={showCargarCliente}>
-                <p>
-                  <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
-                </p>
+                <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
               </Modal>
             </div>
             <div className="container">
@@ -366,9 +355,22 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     borderRadius: 10,
                     color: "#000",
                   }}
+                  onClick={() => showCargarVenta()}
                 >
                   PAGAR
                 </Button>
+                <Modal title="Cargar venta" width={1150} open={openVenta} footer={null} centered onCancel={showCargarVenta}>
+                  <div>
+                    <Tabs>
+                      <Tabs.TabPane tab="Cliente Reg" key="item-1">
+                        <Ventas setFlagModal={showCargarVenta} setFlagListado={props.setFlag} />
+                      </Tabs.TabPane>
+                      <Tabs.TabPane tab="Consumidor Final" key="item-2">
+                        <ConsumidorFinal setFlagModal={showCargarVenta} setFlagListado={props.setFlag} />
+                      </Tabs.TabPane>
+                    </Tabs>
+                  </div>
+                </Modal>
               </div>
             </div>
           </div>
@@ -382,4 +384,16 @@ interface propsListadoVentas {
   ventas?: ventasModel[];
   ventasConsFinal?: ventasConsumidorFinalModel[];
   setFlag: () => void;
+}
+{
+  /* <>
+                        <Tabs>
+                            <Tabs.TabPane tab="Cliente Registrado" key="item-1">
+                                <Ventas setFlagModal={showModal} setFlagListado={props.setFlag} />
+                            </Tabs.TabPane>
+                            <Tabs.TabPane tab="Consumidor Final" key="item-2">
+                                <ConsumidorFinal setFlagModal={showModal} setFlagListado={props.setFlag} />
+                            </Tabs.TabPane>
+                        </Tabs>
+                    </> */
 }

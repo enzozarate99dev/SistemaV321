@@ -1,6 +1,6 @@
 import { Modal } from "antd";
 import { Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
@@ -70,10 +70,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
       >
         <EditIcon />
       </Button>
-      <Button
-        onClick={() => confirmar(() => borrar(id))}
-        className="btn btn-transparent"
-      >
+      <Button onClick={() => confirmar(() => borrar(id))} className="btn btn-transparent">
         <TrashIcon />
       </Button>
     </>
@@ -92,42 +89,14 @@ export default function ListadoProductos(props: propsListadoProductos) {
       >
         <AddIcon />
       </Button>
-      <Modal
-        title="Cargar Producto"
-        width={1150}
-        open={open}
-        footer={null}
-        centered
-        onCancel={showModal}
-      >
-        <p>
-          <CargarProducto
-            setFlagModal={showModal}
-            setFlagListado={props.setFlag}
-          />
-        </p>
+      <Modal title="Cargar Producto" width={1150} open={open} footer={null} centered onCancel={showModal}>
+        <CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag} />
       </Modal>
-      <Modal
-        title="Editar Producto"
-        width={1150}
-        open={edit}
-        footer={null}
-        centered
-        onCancel={showEdit}
-      >
-        <p>
-          <EditarProducto
-            id={id!}
-            setFlagModal={showEdit}
-            setFlagListado={props.setFlag}
-          />
-        </p>
+      <Modal title="Editar Producto" width={1150} open={edit} footer={null} centered onCancel={showEdit}>
+        <EditarProducto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
       </Modal>
       <Verificar listado={props.productos}>
-        <Formik
-          initialValues={{}}
-          onSubmit={async (valores) => await actualizar(valores)}
-        >
+        <Formik initialValues={{}} onSubmit={async (valores) => await actualizar(valores)}>
           {(formikProps) => (
             <Form>
               <Button
@@ -146,10 +115,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
               >
                 Eliminar Multiple
               </Button>
-              <table
-                style={{ marginTop: "1rem", backgroundColor: "GrayText" }}
-                className="table"
-              >
+              <table style={{ marginTop: "1rem", backgroundColor: "GrayText" }} className="table">
                 <thead className="table-dark">
                   <tr>
                     <th>#</th>
@@ -170,34 +136,17 @@ export default function ListadoProductos(props: propsListadoProductos) {
                       <td>{producto.precio}</td>
                       <td>{producto.cantidad}</td>
                       <td>
-                        <img
-                          width="50"
-                          height="50"
-                          src={producto.foto}
-                          alt="Poster"
-                        />
+                        <img width="50" height="50" src={producto.foto} alt="Poster" />
                       </td>
                       <td>{botones(producto.id)}</td>
                       {actualizarPrecios ? (
                         <td>
-                          <Field
-                            style={{ marginLeft: "30px" }}
-                            name="ids"
-                            id="ids"
-                            value={producto.id.toString()}
-                            type="checkbox"
-                          />
+                          <Field style={{ marginLeft: "30px" }} name="ids" id="ids" value={producto.id.toString()} type="checkbox" />
                         </td>
                       ) : null}
                       {eliminarMultiple ? (
                         <td>
-                          <Field
-                            style={{ marginLeft: "30px" }}
-                            name="ids2"
-                            id="ids2"
-                            value={producto.id.toString()}
-                            type="checkbox"
-                          />
+                          <Field style={{ marginLeft: "30px" }} name="ids2" id="ids2" value={producto.id.toString()} type="checkbox" />
                         </td>
                       ) : null}
                     </tr>
@@ -211,48 +160,20 @@ export default function ListadoProductos(props: propsListadoProductos) {
                     <td></td>
                     {actualizarPrecios ? (
                       <td>
-                        <Field
-                          name="valor"
-                          style={{ width: "70px" }}
-                          className="form-control"
-                          placeholder="%"
-                        />
-                        <div
-                          className="form-check"
-                          style={{ marginTop: "0.5rem" }}
-                        >
-                          <Field
-                            className="form-check-input"
-                            id="aumentar"
-                            name="aumentar"
-                            type="checkbox"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="aumentar"
-                          >
+                        <Field name="valor" style={{ width: "70px" }} className="form-control" placeholder="%" />
+                        <div className="form-check" style={{ marginTop: "0.5rem" }}>
+                          <Field className="form-check-input" id="aumentar" name="aumentar" type="checkbox" />
+                          <label className="form-check-label" htmlFor="aumentar">
                             Aumento
                           </label>
                         </div>
                         <div className="form-check">
-                          <Field
-                            className="form-check-input"
-                            id="descontar"
-                            name="descontar"
-                            type="checkbox"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="descontar"
-                          >
+                          <Field className="form-check-input" id="descontar" name="descontar" type="checkbox" />
+                          <label className="form-check-label" htmlFor="descontar">
                             Descuento
                           </label>
                         </div>
-                        <Button
-                          disabled={formikProps.isSubmitting}
-                          style={{ marginTop: "0.5rem" }}
-                          type="submit"
-                        >
+                        <Button disabled={formikProps.isSubmitting} style={{ marginTop: "0.5rem" }} type="submit">
                           Actualizar
                         </Button>
                       </td>

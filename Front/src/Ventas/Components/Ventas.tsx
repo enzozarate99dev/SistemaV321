@@ -8,11 +8,7 @@ import TrashIcon from "../../assets/TrashIcon";
 import * as cliServices from "../../Clientes/Services/clientes.services";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import {
-  nuevoVentasModel,
-  ventasCrear,
-  ventasPostGetModel,
-} from "../../Models/ventas.model";
+import { nuevoVentasModel, ventasCrear, ventasPostGetModel } from "../../Models/ventas.model";
 import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
 import { valoresPrevProps } from "../../Presupuestos/Components/Presupuesto";
 import Button from "../../utils/Button";
@@ -34,7 +30,6 @@ export default function Ventas(props: crearVentaProps) {
   const [clientes, setClientes] = useState<clienteModel[]>([]);
   const [errores, setErrores] = useState<string[]>([]);
 
-  //estos useffect no hacen falta en listadoventas, solo traen los clientes y los productos
   useEffect(() => {
     const res = services.getProductos();
     res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
@@ -74,9 +69,7 @@ export default function Ventas(props: crearVentaProps) {
     const obj = getProducto(valores);
     if (productosArreglo.includes(obj)) {
       const i = productosArreglo.indexOf(obj);
-      productosArreglo[i].cantidad =
-        parseInt(productosArreglo[i].cantidad.toString()) +
-        parseInt(valores.cantidad.toString());
+      productosArreglo[i].cantidad = parseInt(productosArreglo[i].cantidad.toString()) + parseInt(valores.cantidad.toString());
     } else {
       obj.cantidad = valores.cantidad;
       setProductosArreglo([...productosArreglo, obj]);
@@ -99,10 +92,7 @@ export default function Ventas(props: crearVentaProps) {
   async function convertir(valores: ventasCrear) {
     var arraygeneral = [];
     for (let i = 0; i < productosArreglo.length; i++) {
-      arraygeneral[i] = [
-        productosArreglo[i].id!,
-        productosArreglo[i].cantidad!,
-      ];
+      arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!];
     }
     var venta: nuevoVentasModel = {
       clienteId: valores.clienteId,
@@ -120,11 +110,7 @@ export default function Ventas(props: crearVentaProps) {
     try {
       services.crear(venta);
       props.setFlagListado();
-      Swal.fire(
-        "Carga Correcta",
-        "La venta fue cargada correctamente",
-        "success"
-      );
+      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
     } catch (error) {
       setErrores(error.response.data);
       console.log(error.response.data);
@@ -138,11 +124,7 @@ export default function Ventas(props: crearVentaProps) {
           <>
             <Form>
               <label htmlFor="clienteId">Cliente</label>
-              <select
-                style={{ marginBottom: "5px" }}
-                className="form-control"
-                {...formikProps.getFieldProps(`clienteId`)}
-              >
+              <select style={{ marginBottom: "5px" }} className="form-control" {...formikProps.getFieldProps(`clienteId`)}>
                 <option value="0">--Seleccione un cliente--</option>
                 {clientes.map((cliente) => (
                   <option key={cliente.id} value={cliente.id}>
@@ -158,10 +140,7 @@ export default function Ventas(props: crearVentaProps) {
                 {(formikProps2) => (
                   <>
                     <Form>
-                      <NuevoProductoPresupuesto
-                        formikProps={formikProps2}
-                        productosDisp={productosDisp}
-                      />
+                      <NuevoProductoPresupuesto formikProps={formikProps2} productosDisp={productosDisp} />
                       <Button
                         onClick={() => {
                           formikProps2.submitForm();
@@ -195,10 +174,7 @@ export default function Ventas(props: crearVentaProps) {
                               <td>{producto.cantidad}</td>
                               <td>{producto.cantidad * producto.precio}</td>
                               <td>
-                                <Button
-                                  className="btn btn-transparent"
-                                  onClick={() => quitar(producto.id)}
-                                >
+                                <Button className="btn btn-transparent" onClick={() => quitar(producto.id)}>
                                   <TrashIcon />
                                 </Button>
                               </td>
@@ -223,11 +199,7 @@ export default function Ventas(props: crearVentaProps) {
               <div style={{ marginTop: "-5px" }} className="row g-3">
                 <div className="col-md-6">
                   <label htmlFor="formaDePago">Forma de Pago</label>
-                  <Field
-                    as="select"
-                    className="form-control"
-                    name="formaDePago"
-                  >
+                  <Field as="select" className="form-control" name="formaDePago">
                     <option value={0}>Seleccionar forma de pago</option>
                     <option value={1}>Contado</option>
                     <option value={2}>Cuenta Corriente</option>
@@ -244,17 +216,9 @@ export default function Ventas(props: crearVentaProps) {
                   </Field>
                 </div>
                 <div className="col-md-6">
-                  <label htmlFor="tratamientoImpositivo">
-                    Tratamiento Impositivo
-                  </label>
-                  <Field
-                    as="select"
-                    className="form-control"
-                    name="tratamientoImpositivo"
-                  >
-                    <option value={0}>
-                      Seleccionar tratamiento impositivo
-                    </option>
+                  <label htmlFor="tratamientoImpositivo">Tratamiento Impositivo</label>
+                  <Field as="select" className="form-control" name="tratamientoImpositivo">
+                    <option value={0}>Seleccionar tratamiento impositivo</option>
                     <option value={1}>MONOTRIBUTISTA</option>
                     <option value={2}>RESPONSABLE INSCRIPTO</option>
                     <option value={4}>IVA EXENTO</option>
@@ -264,23 +228,15 @@ export default function Ventas(props: crearVentaProps) {
                 </div>
                 <div style={{ marginTop: "5px" }} className="col-md-6">
                   <label htmlFor="tipoComprobante">Tipo Comprobante</label>
-                  <Field
-                    as="select"
-                    className="form-control"
-                    name="tipoComprobante"
-                  >
+                  <Field as="select" className="form-control" name="tipoComprobante">
                     <option value={0}>Seleccionar tipo de comprobante</option>
                     <option value="FA">FACTURA A</option>
-                    <option value="FA SUJ RET">
-                      OPERACIÓN SUJETA A RETENCIÓN
-                    </option>
+                    <option value="FA SUJ RET">OPERACIÓN SUJETA A RETENCIÓN</option>
                     <option value="NCA">NOTA DE CREDITO A</option>
                     <option value="NDA">NOTA DE DEBITO A</option>
                     <option value="RA">RECIBO A</option>
                     <option value="FB">FACTURA B</option>
-                    <option value="FB8001">
-                      FACTURA B a RI con Informe 8001
-                    </option>
+                    <option value="FB8001">FACTURA B a RI con Informe 8001</option>
                   </Field>
                 </div>
                 <div style={{ marginTop: "5px" }} className="col-md-6">
@@ -297,10 +253,7 @@ export default function Ventas(props: crearVentaProps) {
                 </div>
               </div>
 
-              <Button
-                type="submit"
-                style={{ marginTop: "1rem", marginBottom: "1rem" }}
-              >
+              <Button type="submit" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
                 Guardar
               </Button>
               <Button

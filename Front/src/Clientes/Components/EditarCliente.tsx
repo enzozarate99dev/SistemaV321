@@ -1,8 +1,9 @@
 import { AxiosResponse } from "axios";
+import { FormikHelpers } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { clienteCrear } from "../../Models/clientes.model";
+import { clienteCrear, clienteModel } from "../../Models/clientes.model";
 import Button from "../../utils/Button";
 import Cargando from "../../utils/Cargando";
 import MostrarErrores from "../../utils/MostrarErrores";
@@ -45,7 +46,11 @@ export default function EditarCliente(props: editarClienteProps) {
         title: "Correcto!",
         text: "Los datos fueron editados correctamente",
         icon: "success",
+        showConfirmButton: false,
         willClose: () => props.setFlagModal(),
+        customClass: {
+          popup: "cliente-alert",
+        },
       });
       console.log(clienteEditar);
     } catch (error) {

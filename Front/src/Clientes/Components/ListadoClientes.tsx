@@ -1,4 +1,4 @@
-import { Modal, Select, Table } from "antd";
+import { AutoComplete, Modal, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
@@ -24,8 +24,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const [id, setId] = useState<number>();
 
   const [clientes, setClientes] = useState<clienteModel[]>([]);
-  const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
-  const [clientesSeleccionado, setClientesSeleccionado] = useState<clienteModel | null>();
+  // const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState<clienteModel>({} as clienteModel);
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
 
   const showModal = () => {
@@ -39,6 +39,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const showInfo = () => {
     setInfo(!info);
   };
+
   useEffect(() => {
     async function traerClientes() {
       const result = await axios(`${urlClientes}`);
@@ -48,18 +49,10 @@ export default function ListadoClientes(props: propsListadoClientes) {
           label: cliente.nombreYApellido,
         }))
       );
+      setClientesTabla(result.data);
     }
     traerClientes();
   }, []);
-
-  async function selectCleinte(id: number) {
-    setClientesAgregados((clientesAgregados) => [...clientesAgregados, id]);
-    const result = await axios(`${urlClientes}/${id}`);
-    const producto = result.data;
-    setClientesSeleccionado(producto);
-    setClientesTabla((clientesTabla) => [...clientesTabla, producto]);
-    console.log(result.data);
-  }
 
   const columns = [
     {
@@ -89,9 +82,6 @@ export default function ListadoClientes(props: propsListadoClientes) {
     },
   ];
 
-  function logear(id: number) {
-    console.log("adadasd");
-  }
   async function borrar(id: number) {
     try {
       services.borrar(id);
@@ -153,27 +143,22 @@ export default function ListadoClientes(props: propsListadoClientes) {
           <EstadoCuenta setFlagModal={showModal} setFlagListado={props.setFlag} />
         </Modal>
         <div>
-          <Select
+          <AutoComplete
             className="input"
-            showSearch
-            onSelect={(id) => selectCleinte(id)}
-            showArrow={false}
-            style={{ width: 200 }}
-            placeholder="Buscar cliente "
-            optionFilterProp="children"
-            filterOption={(input, option) => (option?.label ?? "").includes(input)}
-            filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
-            listItemHeight={30}
-            listHeight={90}
+            placeholder="Buscar cliente"
+            dropdownMatchSelectWidth={200}
             options={clientes}
-          />
+            style={{ width: 200 }}
+            onSearch={() => {}}
+            open={false}
+          ></AutoComplete>
           <Select placeholder="Ordenar por..." className="input" />
         </div>
         <div className="container">
           <Table
             dataSource={clientesTabla}
             columns={columns}
-            pagination={false}
+            pagination={{ pageSize: 5 }}
             style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: 40 }}
           />
         </div>

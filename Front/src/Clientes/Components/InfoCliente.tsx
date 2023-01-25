@@ -35,15 +35,15 @@ export default function InfoCliente(props: infoClienteProps) {
       };
       setCliente(modelo);
     });
-  }, [props.id]);
+  }, []);
 
   // este sirve para el estado de cuenta
-  useEffect(() => {
-    const res = ventasServices.ventasCliente(props.id);
-    res.then((respuesta: AxiosResponse<ventasModel[]>) => {
-      setVentasCliente(respuesta.data);
-    });
-  }, [props.id]);
+  // useEffect(() => {
+  //   const res = ventasServices.ventasCliente(props.id);
+  //   res.then((respuesta: AxiosResponse<ventasModel[]>) => {
+  //     setVentasCliente(respuesta.data);
+  //   });
+  // }, [props.id]);
 
   return (
     <div className="container">

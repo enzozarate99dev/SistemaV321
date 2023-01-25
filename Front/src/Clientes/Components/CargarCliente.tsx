@@ -5,6 +5,7 @@ import Button from "../../utils/Button";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/clientes.services";
 import FormularioClientes from "./FormularioClientes";
+import "../clientesStyles.css";
 
 export default function CargarCliente(props: cargarClienteProps) {
   const [errores, setErrores] = useState<string[]>([]);
@@ -28,9 +29,12 @@ export default function CargarCliente(props: cargarClienteProps) {
       services.crear(cliente);
       props.setFlagListado();
       Swal.fire({
-        title: "Carga Correcta!",
-        text: "El cliente fue añadido correctamente",
+        title: "CLIENTE CARGADO !",
         icon: "success",
+        showConfirmButton: false,
+        customClass: {
+          popup: "cliente-alert",
+        },
         willClose: () => props.setFlagModal(),
       });
     } catch (error) {

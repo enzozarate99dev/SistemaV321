@@ -1,5 +1,5 @@
 import { RightCircleOutlined } from "@ant-design/icons";
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Tabs } from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Tabs, Steps, theme } from "antd";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
@@ -21,12 +21,14 @@ import "../../utils/modal.css";
 import TrashIcon from "../../assets/TrashIcon";
 import Ventas from "./Ventas";
 import ConsumidorFinal from "../../VentasConsFinal/Components/ConsumidorFinal";
+import FormaDePago from "./FormaDePago";
+import Montos from "./Montos";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
-  const [openVenta, setOpenVenta] = useState(false);
+  const [openFormaDePago, setOpenFormaDePago] = useState(false);
   const [openVentaCf, setOpenVentaCf] = useState(false);
 
   const [productos, setProductos] = useState<productoModel[]>([]);
@@ -43,6 +45,9 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const [errores, setErrores] = useState<string[]>([]);
 
+  const [current, setCurrent] = useState(0);
+  const [formadePago, setFormadePago] = useState<number>();
+
   //Modales
   const showCargarCliente = () => {
     setOpenCliente(!openCliente);
@@ -55,7 +60,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   };
 
   const showCargarVenta = () => {
-    setOpenVenta(!openVenta);
+    setOpenFormaDePago(!openFormaDePago);
     props.setFlag();
   };
 
@@ -200,6 +205,33 @@ export default function ListadoVentas(props: propsListadoVentas) {
   function calcularSubtotal(productos: productoModel[]) {
     return productos.reduce((suma, producto) => suma + producto.precioF, 0);
   }
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const steps = [
+    {
+      title: "First",
+      content: <FormaDePago formadePago={formadePago} setFormaDePago={setFormadePago} onSuccess={next} />,
+    },
+    {
+      title: "Second",
+      content: <Montos />,
+    },
+  ];
+
+  const items = steps.map((item) => ({ key: item.title, title: item.title }));
+
+  const { token } = theme.useToken();
+
+  const contentStyle: React.CSSProperties = {
+    textAlign: "center",
+  };
 
   return (
     <>
@@ -359,16 +391,27 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 >
                   PAGAR
                 </Button>
-                <Modal title="Cargar venta" width={1150} open={openVenta} footer={null} centered onCancel={showCargarVenta}>
+                <Modal title="Cargar venta" width={1150} open={openFormaDePago} footer={null} centered onCancel={showCargarVenta}>
                   <div>
-                    <Tabs>
+                    {/* <Tabs>
                       <Tabs.TabPane tab="Cliente Reg" key="item-1">
                         <Ventas setFlagModal={showCargarVenta} setFlagListado={props.setFlag} />
                       </Tabs.TabPane>
                       <Tabs.TabPane tab="Consumidor Final" key="item-2">
                         <ConsumidorFinal setFlagModal={showCargarVenta} setFlagListado={props.setFlag} />
                       </Tabs.TabPane>
-                    </Tabs>
+                    </Tabs> */}
+                    <Steps current={current} items={items} />
+                    <div style={contentStyle}>{steps[current].content}</div>
+                    <div style={{ marginTop: 24 }}>
+                      {current < steps.length - 1 && <Button onClick={() => next()}>Next</Button>}
+                      {current === steps.length - 1 && <Button onClick={() => console.log("Processing complete!")}>Done</Button>}
+                      {current > 0 && (
+                        <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
+                          Previous
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </Modal>
               </div>
@@ -384,6 +427,7 @@ interface propsListadoVentas {
   ventas?: ventasModel[];
   ventasConsFinal?: ventasConsumidorFinalModel[];
   setFlag: () => void;
+  onSuccess?: any;
 }
 {
   /* <>

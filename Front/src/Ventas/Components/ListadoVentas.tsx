@@ -1,28 +1,25 @@
-import { RightCircleOutlined } from "@ant-design/icons";
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Tabs, Steps, theme } from "antd";
-import axios, { AxiosResponse } from "axios";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Steps, theme } from "antd";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
 import PdfIcon from "../../assets/PdfIcon";
 import CargarCliente from "../../Clientes/Components/CargarCliente";
-import { urlClientes, urlProductos } from "../../Generales/endpoints";
+import { urlClientes, urlProductos, urlVentas } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasModel } from "../../Models/ventas.model";
+import { nuevoVentasModel, ventasCrear, ventasModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
-import * as servicesCf from "../../VentasConsFinal/Services/consumidorFinal.services";
 import * as services from "../Services/ventas.services";
-import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../utils/modal.css";
 import TrashIcon from "../../assets/TrashIcon";
-import Ventas from "./Ventas";
-import ConsumidorFinal from "../../VentasConsFinal/Components/ConsumidorFinal";
 import FormaDePago from "./FormaDePago";
 import Montos from "./Montos";
+import PagoCredito from "./PagoCredito";
+import Swal from "sweetalert2";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
@@ -38,12 +35,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [productosFiltro, setProductosFiltro] = useState<productoModel[]>([]);
 
   const [subTotal, setSubTotal] = useState(0);
+  const [descuento, setDescuento] = useState(0);
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
-
-  const [errores, setErrores] = useState<string[]>([]);
 
   const [current, setCurrent] = useState(0);
   const [formadePago, setFormadePago] = useState<number>();
@@ -202,8 +198,14 @@ export default function ListadoVentas(props: propsListadoVentas) {
     doc.save("presupuesto.pdf");
   }
 
+  //Venta
   function calcularSubtotal(productos: productoModel[]) {
     return productos.reduce((suma, producto) => suma + producto.precioF, 0);
+  }
+
+  function calcularDescuento(porcentaje: number) {
+    const totalConDescuento = subTotal - subTotal * (porcentaje / 100);
+    setDescuento(totalConDescuento);
   }
 
   const next = () => {
@@ -217,11 +219,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const steps = [
     {
       title: "First",
-      content: <FormaDePago formadePago={formadePago} setFormaDePago={setFormadePago} onSuccess={next} />,
+      content: <FormaDePago formadePago={formadePago!} setFormaDePago={setFormadePago} onSuccess={next} />,
     },
     {
       title: "Second",
-      content: <Montos />,
+      content: formadePago === 3 ? <PagoCredito /> : <Montos />,
     },
   ];
 
@@ -232,6 +234,30 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const contentStyle: React.CSSProperties = {
     textAlign: "center",
   };
+
+  async function finalizarVenta() {
+    var arraygeneral = [];
+    for (let i = 0; i < productosTabla2.length; i++) {
+      arraygeneral[i] = [productosTabla2[i].id!, productosTabla2[i].cantidad!];
+    }
+    var venta: nuevoVentasModel = {
+      clienteId: clienteSeleccionado!.id,
+      productosIds: arraygeneral,
+      formaDePago: formadePago!,
+      tipoComprobante: "",
+      iva: 0,
+    };
+    crear(venta);
+  }
+  function crear(venta: nuevoVentasModel) {
+    console.log(venta);
+    try {
+      services.crear(venta);
+      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
 
   return (
     <>
@@ -369,10 +395,13 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <div className="container">
                 <h6>IMPORTE TOTAL</h6>
                 <div className="container">
+                  <Button onClick={() => calcularDescuento(15)}>15</Button>
+                  <Button onClick={() => calcularDescuento(20)}>20</Button>
+                  <Button onClick={() => calcularDescuento(30)}>30</Button>
                   <Input
                     style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
                     disabled={true}
-                    value={`$ ${[]}`}
+                    value={`$ ${descuento}`}
                   ></Input>
                 </div>
               </div>
@@ -393,19 +422,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 </Button>
                 <Modal title="Cargar venta" width={1150} open={openFormaDePago} footer={null} centered onCancel={showCargarVenta}>
                   <div>
-                    {/* <Tabs>
-                      <Tabs.TabPane tab="Cliente Reg" key="item-1">
-                        <Ventas setFlagModal={showCargarVenta} setFlagListado={props.setFlag} />
-                      </Tabs.TabPane>
-                      <Tabs.TabPane tab="Consumidor Final" key="item-2">
-                        <ConsumidorFinal setFlagModal={showCargarVenta} setFlagListado={props.setFlag} />
-                      </Tabs.TabPane>
-                    </Tabs> */}
                     <Steps current={current} items={items} />
                     <div style={contentStyle}>{steps[current].content}</div>
                     <div style={{ marginTop: 24 }}>
                       {current < steps.length - 1 && <Button onClick={() => next()}>Next</Button>}
-                      {current === steps.length - 1 && <Button onClick={() => console.log("Processing complete!")}>Done</Button>}
+                      {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>}
                       {current > 0 && (
                         <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
                           Previous

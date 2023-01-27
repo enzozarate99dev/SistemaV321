@@ -41,7 +41,7 @@ export interface nuevoVentasModel {
   clienteId: number;
   productosIds: number[][];
   formaDePago: number;
-  tratamientoImpositivo: number;
+  tratamientoImpositivo?: number;
   tipoComprobante: string;
   iva: number;
 }

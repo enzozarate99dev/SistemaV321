@@ -66,6 +66,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
         onClick={() => {
           showEdit();
           setId(id);
+          console.log(id);
         }}
       >
         <EditIcon />

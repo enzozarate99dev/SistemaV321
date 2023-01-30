@@ -20,6 +20,7 @@ import FormaDePago from "./FormaDePago";
 import Montos from "./Montos";
 import PagoCredito from "./PagoCredito";
 import Swal from "sweetalert2";
+import "./ventaStyles.css";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
@@ -36,6 +37,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const [subTotal, setSubTotal] = useState(0);
   const [descuento, setDescuento] = useState(0);
+  const [descuentoAplicado, setDescuentoAplicado] = useState(false);
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
@@ -204,8 +206,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
   }
 
   function calcularDescuento(porcentaje: number) {
-    const totalConDescuento = subTotal - subTotal * (porcentaje / 100);
-    setDescuento(totalConDescuento);
+    if (descuentoAplicado) {
+      //para que se aplique descuento dependiendo de onClick
+      setDescuento(0);
+      setDescuentoAplicado(false);
+    } else {
+      const totalConDescuento = subTotal - subTotal * (porcentaje / 100);
+      setDescuento(totalConDescuento);
+      setDescuentoAplicado(true);
+    }
   }
 
   const next = () => {
@@ -228,8 +237,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
   ];
 
   const items = steps.map((item) => ({ key: item.title, title: item.title }));
-
-  const { token } = theme.useToken();
 
   const contentStyle: React.CSSProperties = {
     textAlign: "center",
@@ -392,24 +399,53 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <p>Importe</p>
                 <p>Subtotal: ${subTotal}</p>
               </div>
-              <div className="container">
-                <h6>IMPORTE TOTAL</h6>
-                <div className="container">
-                  <Button onClick={() => calcularDescuento(15)}>15</Button>
-                  <Button onClick={() => calcularDescuento(20)}>20</Button>
-                  <Button onClick={() => calcularDescuento(30)}>30</Button>
+              <div className="container  ">
+                <div className="d-flex justify-content-between">
+                  <Button
+                    style={
+                      descuentoAplicado
+                        ? { background: "#fff", border: "1px solid #1DCA94", borderRadius: 5, color: "black" }
+                        : { background: "#D9D9D9", border: "1px solid #000000", borderRadius: 5, color: "black" }
+                    }
+                    onClick={() => calcularDescuento(15)}
+                  >
+                    15
+                  </Button>
+                  <Button
+                    style={
+                      descuentoAplicado
+                        ? { background: "#fff", border: "1px solid #1DCA94", borderRadius: 5, color: "black" }
+                        : { background: "#D9D9D9", border: "1px solid #000000", borderRadius: 5, color: "black" }
+                    }
+                    onClick={() => calcularDescuento(20)}
+                  >
+                    20
+                  </Button>
+                  <Button
+                    style={
+                      descuentoAplicado
+                        ? { background: "#fff", border: "1px solid #1DCA94", borderRadius: 5, color: "black" }
+                        : { background: "#D9D9D9", border: "1px solid #000000", borderRadius: 5, color: "black" }
+                    }
+                    onClick={() => calcularDescuento(30)}
+                  >
+                    30
+                  </Button>
+                </div>
+                <div className="container mt-4">
+                  <h6>IMPORTE TOTAL</h6>
+
                   <Input
                     style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
                     disabled={true}
-                    value={`$ ${descuento}`}
+                    value={`$ ${descuento || subTotal}`}
                   ></Input>
                 </div>
               </div>
-              <div className="container">
+              <div className="container mt-4">
                 <Button
                   style={{
                     width: 100,
-                    marginTop: "8vh",
                     backgroundColor: "#fff",
                     border: "3px solid #11A629",
                     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",

@@ -1,12 +1,6 @@
 export default function Button(props: buttonProps) {
   return (
-    <button
-      type={props.type}
-      style={props.style}
-      className={props.className}
-      disabled={props.disabled}
-      onClick={props.onClick}
-    >
+    <button type={props.type} style={props.style} className={props.className} disabled={props.disabled} onClick={props.onClick}>
       {props.children}
     </button>
   );

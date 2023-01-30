@@ -300,20 +300,23 @@ namespace SistemaApi.Controllers
                 venta.Adeudada = 0;
                 cliente.Deuda += 0;
             }
-            var objeto = await CrearRequest(cliente, ventaCreacionDTO);
-            var idComp = await facturas.GenerarFactura(objeto);
-            if(idComp != -1)
-            {
-                venta.IdComprobante = (int)idComp;
-                venta.ConfirmacionAfip = 0;
-                context.Add(venta);
-                await context.SaveChangesAsync();
-                return NoContent();
-            }
+            context.Add(venta);
+            await context.SaveChangesAsync();
+            return NoContent();
+            /* var objeto = await CrearRequest(cliente, ventaCreacionDTO);
+             var idComp = await facturas.GenerarFactura(objeto);
+             if(idComp != -1)
+             {
+                 venta.IdComprobante = (int)idComp;
+                 venta.ConfirmacionAfip = 0;
+                 context.Add(venta);
+                 await context.SaveChangesAsync();
+                 return NoContent();
+             }
             else
-            {
-                return BadRequest("Error al generar comprobante Facturante.com");
-            }                             
+             {
+                 return BadRequest("Error al generar comprobante Facturante.com");
+             } */
         }
 
         [HttpGet("PostGet")]
@@ -359,7 +362,7 @@ namespace SistemaApi.Controllers
             return NoContent();
         }
 
-        private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
+       /* private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
         {
             CrearComprobanteRequest request = new CrearComprobanteRequest();
             request.Autenticacion = new Autenticacion();
@@ -429,6 +432,6 @@ namespace SistemaApi.Controllers
          
             return request;
 
-        }
+        } */
     }
 }

@@ -16,9 +16,10 @@ import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
 import "../clientesStyles.css";
 import "../../utils/modal.css";
 import EstadoCuenta from "./EstadoCuenta";
+import AddIcon from "../../assets/AddIcon";
 
 export default function ListadoClientes(props: propsListadoClientes) {
-  const [open, setOpen] = useState(false);
+  const [cuenta, setCuenta] = useState(false);
   const [edit, setEdit] = useState(false);
   const [info, setInfo] = useState(false);
   const [id, setId] = useState<number>();
@@ -28,21 +29,23 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const [clienteSeleccionado, setClienteSeleccionado] = useState<clienteModel>({} as clienteModel);
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
 
-  const showModal = () => {
-    setOpen(!open);
+  const showCuenta = () => {
+    setCuenta(!cuenta);
     props.setFlag();
   };
   const showEdit = () => {
     setEdit(!edit);
+    props.setFlag();
   };
 
   const showInfo = () => {
     setInfo(!info);
+    props.setFlag();
   };
 
   useEffect(() => {
     async function traerClientes() {
-      const result = await axios(`${urlClientes}`);
+      const result = await axios.get(`${urlClientes}`);
       setClientes(
         result.data.map((cliente: clienteModel) => ({
           value: cliente.id,
@@ -117,7 +120,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
         style={{ marginRight: "1rem" }}
         className="btn btn-transparent"
         onClick={() => {
-          showModal();
+          showCuenta();
           setId(id);
         }}
       >
@@ -129,6 +132,12 @@ export default function ListadoClientes(props: propsListadoClientes) {
     </>
   );
 
+  useEffect(() => {
+    if (!info) {
+      setId(id);
+    }
+  }, [info]);
+
   return (
     <>
       <div className="clientes">
@@ -139,8 +148,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
         <Modal title="Editar Cliente" width={1150} open={edit} footer={null} centered onCancel={showEdit}>
           <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
         </Modal>
-        <Modal title="Estado de Cuenta" width={1150} open={open} footer={null} centered onCancel={showModal}>
-          <EstadoCuenta setFlagModal={showModal} setFlagListado={props.setFlag} />
+        <Modal title="Estado de Cuenta" width={1150} open={cuenta} footer={null} centered onCancel={showCuenta}>
+          <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} />
         </Modal>
         <div>
           <AutoComplete

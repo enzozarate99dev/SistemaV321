@@ -2,8 +2,8 @@ export default function TarjetaCredito() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
+      width="36"
+      height="36"
       fill="currentColor"
       className="bi bi-credit-card-2-front"
       viewBox="0 0 16 16"

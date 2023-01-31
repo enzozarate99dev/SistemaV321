@@ -1,4 +1,4 @@
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Steps, theme } from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Steps } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
@@ -21,6 +21,7 @@ import Montos from "./Montos";
 import PagoCredito from "./PagoCredito";
 import Swal from "sweetalert2";
 import "./ventaStyles.css";
+import Circle from "../../assets/Circle";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
@@ -221,22 +222,36 @@ export default function ListadoVentas(props: propsListadoVentas) {
     setCurrent(current + 1);
   };
 
-  const prev = () => {
-    setCurrent(current - 1);
+  const onChange = (value: number) => {
+    setCurrent(value);
   };
 
   const steps = [
     {
-      title: "First",
+      title: "",
       content: <FormaDePago formadePago={formadePago!} setFormaDePago={setFormadePago} onSuccess={next} />,
     },
     {
-      title: "Second",
-      content: formadePago === 3 ? <PagoCredito /> : <Montos />,
+      title: "",
+      content: formadePago === 3 ? <PagoCredito /> : <Montos montoAPagar={descuento || subTotal} formaDePago={formadePago!} />,
     },
   ];
 
-  const items = steps.map((item) => ({ key: item.title, title: item.title }));
+  const items = steps.map((item, index) => (
+    <Steps.Step
+      key={item.title}
+      icon={
+        <div
+          style={{
+            backgroundColor: current === index ? "#1DCA94" : "#6A7580",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+          }}
+        ></div>
+      }
+    />
+  ));
 
   const contentStyle: React.CSSProperties = {
     textAlign: "center",
@@ -399,8 +414,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <p>Importe</p>
                 <p>Subtotal: ${subTotal}</p>
               </div>
-              <div className="container  ">
-                <div className="d-flex justify-content-between">
+              <div className="mt-4">
+                <div className="d-flex justify-content-between ">
                   <Button
                     style={
                       descuentoAplicado
@@ -409,7 +424,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     }
                     onClick={() => calcularDescuento(15)}
                   >
-                    15
+                    15%
                   </Button>
                   <Button
                     style={
@@ -419,7 +434,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     }
                     onClick={() => calcularDescuento(20)}
                   >
-                    20
+                    20%
                   </Button>
                   <Button
                     style={
@@ -429,7 +444,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     }
                     onClick={() => calcularDescuento(30)}
                   >
-                    30
+                    30%
                   </Button>
                 </div>
                 <div className="container mt-4">
@@ -456,18 +471,23 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 >
                   PAGAR
                 </Button>
-                <Modal title="Cargar venta" width={1150} open={openFormaDePago} footer={null} centered onCancel={showCargarVenta}>
+                <Modal
+                  title="Cargar venta"
+                  width={980}
+                  // style={{ height: 579 }}
+                  open={openFormaDePago}
+                  footer={null}
+                  centered
+                  onCancel={showCargarVenta}
+                >
                   <div>
-                    <Steps current={current} items={items} />
+                    <Steps current={current} onChange={onChange}>
+                      {items}
+                    </Steps>
                     <div style={contentStyle}>{steps[current].content}</div>
-                    <div style={{ marginTop: 24 }}>
-                      {current < steps.length - 1 && <Button onClick={() => next()}>Next</Button>}
+                    <div style={{ marginTop: 24, display: "flex", justifyContent: "end" }}>
+                      {current < steps.length - 1 && <Button onClick={() => next()}>Siguiente</Button>}
                       {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>}
-                      {current > 0 && (
-                        <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
-                          Previous
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </Modal>

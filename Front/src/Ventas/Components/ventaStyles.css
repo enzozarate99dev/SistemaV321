@@ -4,3 +4,15 @@
   border: 3px solid #33384C;
   border-radius: 7px
 }
+
+p{
+  margin-bottom: 0 !important;
+}
+
+.text{
+  width: 200px;
+  text-align: end;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  
+}

@@ -13,7 +13,7 @@ export default function CargarProducto(props: cargarProductoProps) {
   async function crear(producto: productoCrear) {
     try {
       services.crear(producto);
-      // props.setFlagListado();
+      props.setFlagListado();
       Swal.fire({
         title: "Carga Correcta!",
         text: "El producto fue añadido correctamente",
@@ -35,7 +35,7 @@ export default function CargarProducto(props: cargarProductoProps) {
           codigo: "",
           descripcion: "",
         }}
-        // setBandera={props.setFlagModal}
+        setBandera={props.setFlagModal}
         onSubmit={async (valores) => {
           await crear(valores);
         }}

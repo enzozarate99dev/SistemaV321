@@ -82,5 +82,5 @@ export default function FormularioProductos(props: formularioProductosProps) {
 interface formularioProductosProps {
   modelo: productoCrear;
   onSubmit(valores: productoCrear, accion: FormikHelpers<productoCrear>): void;
-  // setBandera?: () => void;
+  setBandera?: () => void;
 }

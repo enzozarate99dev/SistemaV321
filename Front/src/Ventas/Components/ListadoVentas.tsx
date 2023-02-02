@@ -22,6 +22,7 @@ import PagoCredito from "./PagoCredito";
 import Swal from "sweetalert2";
 import "./ventaStyles.css";
 import Circle from "../../assets/Circle";
+import "./ventaStyles.css";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
@@ -46,6 +47,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const [current, setCurrent] = useState(0);
   const [formadePago, setFormadePago] = useState<number>();
+
+  const [botonActivo, setBotonActivo] = useState(false);
 
   //Modales
   const showCargarCliente = () => {
@@ -171,7 +174,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
       key: "cantidad",
       render: (cantidad: number, record: productoModel) => (
         <InputNumber
-          defaultValue={1}
+          defaultValue={0}
           min={1}
           max={productoSeleccionado?.cantidad}
           onChange={(value) => cambiarCantidad(record.id, value ? value : 1)}

@@ -16,3 +16,16 @@ p{
   margin-bottom: 1rem;
   
 }
+
+.ant-steps-item-title:after {
+  background-color: #6A7580 !important;
+  height: 0.5rem !important;
+  margin: 0 !important;
+}
+.ant-steps-horizontal {
+  width: 50% !important;
+  margin-left: 25% !important;
+}
+.ant-steps-item-icon{
+  margin: 0 !important;
+}

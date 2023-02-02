@@ -43,6 +43,10 @@ export default function ListadoClientes(props: propsListadoClientes) {
     props.setFlag();
   };
 
+  const resetForm = () => {
+    console.log("reset");
+  };
+
   useEffect(() => {
     async function traerClientes() {
       const result = await axios.get(`${urlClientes}`);
@@ -142,7 +146,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
     <>
       <div className="clientes">
         <h3>Listado Clientes</h3>
-        <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo}>
+        <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo} afterClose={resetForm}>
           <InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
         </Modal>
         <Modal title="Editar Cliente" width={1150} open={edit} footer={null} centered onCancel={showEdit}>

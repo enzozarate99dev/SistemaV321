@@ -75,6 +75,14 @@ export default function FormularioClientes(props: formularioClientesProps) {
             </div>
           ) : null}
 
+          <Button
+            onClick={() => {
+              formikProps.resetForm();
+            }}
+          >
+            limpiar
+          </Button>
+
           {/* <div className="col-md-4">
             <label htmlFor="tipoDocumento">Tipo de Documento</label>
             <Field className="form-control" as="select" name="tipoDocumento">

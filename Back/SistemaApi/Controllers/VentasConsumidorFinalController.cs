@@ -122,7 +122,7 @@ namespace SistemaApi.Controllers
             }
             foreach (var tuple in ventaCreacioncfDTO.ProductosIds)
             {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == tuple[0]);
                 if (tuple[1] > producto.Cantidad)
                 {
                     return BadRequest("No hay suficientes unidades del producto");
@@ -132,7 +132,7 @@ namespace SistemaApi.Controllers
             {
                 var id = tuple[0];
                 var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
                 producto.Cantidad = producto.Cantidad - cantidad;
                 total = total + (producto.Precio * cantidad);
             }
@@ -229,7 +229,7 @@ namespace SistemaApi.Controllers
             for (var i = 0; i < longitud; i++)
             {
                 request.Items[i] = new ComprobanteItem();
-                var prod = await context.Productos.FirstOrDefaultAsync(x => x.Id == ventaCreacionCFDTO.ProductosIds[i][0]);
+                var prod = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == ventaCreacionCFDTO.ProductosIds[i][0]);
                 request.Items[i].Bonificacion = 0;
                 request.Items[i].Cantidad = ventaCreacionCFDTO.ProductosIds[i][1];
                 request.Items[i].Codigo = prod.Codigo;

@@ -71,7 +71,7 @@ namespace SistemaApi.Controllers
             }
             foreach (var tuple in presupuestoCreacionDTO.ProductosIds)
             {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == tuple[0]);
                 if (tuple[1] > producto.Cantidad)
                 {
                     return BadRequest("No hay suficientes unidades del producto");
@@ -81,7 +81,7 @@ namespace SistemaApi.Controllers
             {
                 var id = tuple[0];
                 var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
                 producto.Cantidad = producto.Cantidad - cantidad;
                 total = total + (producto.Precio * cantidad);
             }
@@ -110,7 +110,7 @@ namespace SistemaApi.Controllers
             }
             foreach (var tuple in presupuestoCreacionDTO.ProductosIds)
             {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == tuple[0]);
                 if (tuple[1] > producto.Cantidad)
                 {
                     return BadRequest("No hay suficientes unidades del producto");
@@ -121,7 +121,7 @@ namespace SistemaApi.Controllers
             {
                 var idP = tuple[0];
                 var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == idP);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == idP);
                 producto.Cantidad = producto.Cantidad - cantidad;
                 total = total + (producto.Precio * cantidad);
             }

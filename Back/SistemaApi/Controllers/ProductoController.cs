@@ -29,7 +29,7 @@ namespace SistemaApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ProductoDTO>>> Get()
         {
-            var productos = await context.Productos.OrderBy(x => x.Id).ToListAsync();
+            var productos = await context.Productos.OrderBy(x => x.Id_producto).ToListAsync();
             var resultado = mapper.Map<List<ProductoDTO>>(productos);
             return resultado; 
         }
@@ -38,7 +38,7 @@ namespace SistemaApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProductoDTO>> Get(int id)
         {
-            var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id); 
+            var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id); 
 
             if (producto == null) { return NotFound(); }
 
@@ -70,7 +70,7 @@ namespace SistemaApi.Controllers
 
             await HttpContext.InsertarParametrosPaginacionEnCabecera(productosQueryable);
 
-            var productos = await productosQueryable.Paginar(productoFiltrarDTO.PaginacionDTO).OrderBy(x=> x.Id).ToListAsync();
+            var productos = await productosQueryable.Paginar(productoFiltrarDTO.PaginacionDTO).OrderBy(x=> x.Id_producto).ToListAsync();
             var resultado = mapper.Map<List<ProductoDTO>>(productos);
             return resultado;
         }
@@ -93,7 +93,7 @@ namespace SistemaApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] ProductoCreacionDTO productoCreacionDTO)
         {
-            var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id);
+            var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
 
             if (producto == null)
             {
@@ -111,7 +111,7 @@ namespace SistemaApi.Controllers
             var productos = new List<Producto>();
             foreach(var id in actualizarDTO.Ids)
             {
-                var objeto = await context.Productos.FirstOrDefaultAsync(x=>x.Id==id);
+                var objeto = await context.Productos.FirstOrDefaultAsync(x=>x.Id_producto == id);
                 productos.Add(objeto);
             }
             if (actualizarDTO.Aumentar && !actualizarDTO.Descontar)
@@ -138,7 +138,7 @@ namespace SistemaApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id);
+            var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
 
             if (producto == null)
             {

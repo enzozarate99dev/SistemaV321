@@ -23,7 +23,7 @@ namespace SistemaApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ClienteDTO>>> GetTodos()
         {
-            var clientes = await context.Clientes.Include(x => x.Ventas).ThenInclude(y => y.VentaProducto).ThenInclude(z => z.Producto).ToListAsync();
+            var clientes = await context.Clientes.Include(x => x.Ventas).ThenInclude(y => y.Venta_Lines).ThenInclude(z => z.Producto).ToListAsync();
             return mapper.Map<List<ClienteDTO>>(clientes);
         }
 
@@ -46,7 +46,7 @@ namespace SistemaApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ClienteDTO>> Get(int id)
         {
-            var cliente = await context.Clientes.Include(x=>x.Ventas).ThenInclude(y=>y.VentaProducto).ThenInclude(z=>z.Producto).FirstOrDefaultAsync(x => x.Id == id);
+            var cliente = await context.Clientes.Include(x=>x.Ventas).ThenInclude(y=>y.Venta_Lines).ThenInclude(z=>z.Producto).FirstOrDefaultAsync(x => x.Id_cliente== id);
 
             if (cliente == null) { return NotFound(); }
 
@@ -68,7 +68,7 @@ namespace SistemaApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, [FromBody] ClienteCreacionDTO clienteCreacionDTO)
         {
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == id);
 
             if (cliente == null)
             {
@@ -83,7 +83,7 @@ namespace SistemaApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == id);
 
             if (cliente == null)
             {

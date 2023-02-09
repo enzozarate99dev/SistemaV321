@@ -6,7 +6,8 @@ namespace SistemaApi.Entidades
 {
     public class ClienteEntidad
     {
-        public int Id { get; set; }
+        [Key]
+        public int Id_cliente { get; set; }
         [Required]
         public string NombreYApellido { get; set; }
         [EmailAddress]

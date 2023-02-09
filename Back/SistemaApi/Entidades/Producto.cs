@@ -4,7 +4,8 @@ namespace SistemaApi.Entidades
 {
     public class Producto
     {
-        public int Id { get; set; }
+        [Key]
+        public int Id_producto { get; set; }
         [Required]
         [StringLength(100)]
         public string Nombre { get; set; }
@@ -14,9 +15,10 @@ namespace SistemaApi.Entidades
         public string Categoria { get; set; }
         public string Descripcion { get; set; }
         public string? Foto { get; set; }
-        public List<VentaProducto> VentaProducto { get; set; }
-        public List<VentaCFProducto> VentaCFProducto { get; set; }
+        /*public List<VentaProducto> VentaProducto { get; set; }*/
+       /* public List<VentaCFProducto> VentaCFProducto { get; set; }
         public List<PresupuestoProducto> PresupuestoProducto { get; set; }
-        public List<CompraProducto> CompraProducto { get; set; }
+        public List<CompraProducto> CompraProducto { get; set; }*/
+        public virtual VentaLine Venta_line { get; set; }
     }
 }

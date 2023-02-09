@@ -13,13 +13,50 @@ namespace SistemaApi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<VentaProducto>()
-                .HasKey(x => new { x.ProductoId, x.VentaId });
+            /*modelBuilder.Entity<VentaProducto>()
+                .HasKey(x => new { x.ProductoId, x.VentaId });*/
+
+       
             modelBuilder.Entity<Venta>(e => {
-                e.HasOne(x => x.Cliente).WithMany(y => y.Ventas).HasForeignKey(z => z.ClienteId).HasConstraintName("Venta1");
+                e.HasOne(x => x.Cliente).WithMany(y => y.Ventas).HasForeignKey(x => x.Id_cliente).HasConstraintName("Venta1");
                 });
+            
+           
+
+            modelBuilder.Entity<VentaLine>(e => {
+                e.HasOne(x => x.Venta).WithMany(y => y.Venta_Lines).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_line1");
+            });
+
+            modelBuilder.Entity<VentaOrder>(e =>
+            {
+                e.HasOne(x => x.Venta).WithMany(y => y.Venta_Orders).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_order1");
+            });
+
+            modelBuilder.Entity<VentaOrderPago>()
+                .HasKey(x => new { x.PagoId, x.Venta_orderId });
+            modelBuilder.Entity<VentaOrderPago>()
+                .HasOne(x => x.Pago)
+                .WithMany(y => y.Venta_Order_Pagos)
+                .HasForeignKey(x => x.PagoId);
+            modelBuilder.Entity<VentaOrderPago>()
+                .HasOne(x => x.Venta_Order)
+                .WithMany(y => y.Venta_Order_Pagos)
+                .HasForeignKey(x => x.Venta_orderId);
+
+
+            modelBuilder.Entity<Producto>()
+                .HasOne(x => x.Venta_line)
+                .WithOne(y => y.Producto)
+                .HasForeignKey<VentaLine>(y => y.Id_venta_line);
+
+         
+
+            modelBuilder.Entity<MetodoDePago>(e => {
+                e.HasOne(x => x.Pagos).WithMany(y => y.MetodosDePago).HasForeignKey(x => x.Id_pago).HasConstraintName("MetodoPago1");
+            });
 
             modelBuilder.Entity<VentaCFProducto>()
+
                 .HasKey(x => new { x.VentaCFId, x.ProductoId });
 
             modelBuilder.Entity<PresupuestoProducto>()
@@ -37,7 +74,10 @@ namespace SistemaApi
         }
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
-        public DbSet<VentaProducto> VentaProductos { get; set; }
+        public DbSet<VentaLine> Venta_Lines { get; set; }
+        public DbSet<VentaOrder> Venta_Orders { get; set; }
+        public DbSet<VentaOrderPago> Venta_Order_Pagos { get; set; }
+    /*    public DbSet<VentaProducto> VentaProductos { get; set; }*/
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }
@@ -46,5 +86,7 @@ namespace SistemaApi
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraProducto> CompraProductos { get; set; }
+        public DbSet<Pagos> Pagos { get; set; }
+        public DbSet<MetodoDePago> MetodoDePagos { get; set; }
     }
 }

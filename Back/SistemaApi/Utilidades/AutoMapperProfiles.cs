@@ -182,9 +182,9 @@ namespace SistemaApi.Utilidades
         {
             var resultado = new List<ProductoDTO>();
 
-            if (venta.Venta_Lines != null)
+            if (venta.VentaLines != null)
             {
-                foreach (var producto in venta.Venta_Lines)
+                foreach (var producto in venta.VentaLines)
                 {
                     resultado.Add(new ProductoDTO()
                     {

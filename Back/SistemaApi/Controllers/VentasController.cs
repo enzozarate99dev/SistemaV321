@@ -47,13 +47,15 @@ namespace SistemaApi.Controllers
             return mapper.Map<List<VentaDTO>>(ventas);
         }*/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas()
+        public async Task<ActionResult<List<VentaDTO>>> GetVentas()
         {
+            logger.LogInformation("prueba logger");
+
             var ventas = await context.Ventas
                 .Include(v => v.Cliente)
-                .Include(v => v.Venta_Lines)
+                .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
-                .Include(v => v.Venta_Orders)
+                .Include(v => v.VentaOrders)
                     .ThenInclude(vo => vo.Venta_Order_Pagos)
                         .ThenInclude(vop => vop.Pago)
                             .ThenInclude(p => p.MetodosDePago)
@@ -229,7 +231,7 @@ namespace SistemaApi.Controllers
         public async Task<ActionResult<VentaDTO>> Get(int id)
         {
             var venta = await context.Ventas
-                .Include(x => x.Venta_Lines)
+                .Include(x => x.VentaLines)
                     .ThenInclude(x => x.Producto)
                 .FirstOrDefaultAsync(x=>x.Id_venta == id);
 
@@ -281,7 +283,7 @@ namespace SistemaApi.Controllers
             var venta = mapper.Map<Venta>(ventaCreacionDTO);
             double precioTotal = 0;
 
-            foreach (var ventaLine in venta.Venta_Lines)
+            foreach (var ventaLine in venta.VentaLines)
             {
                 precioTotal += ventaLine.PrecioUnitario * ventaLine.Cantidad;
             }

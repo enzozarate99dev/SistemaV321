@@ -34,3 +34,14 @@ export interface actualizar {
   aumentar?: boolean;
   descontar?: boolean;
 }
+
+export interface productoDTO {
+  id_producto: number;
+  nombre: string;
+  precio: number;
+  cantidad: number;
+  codigo: string;
+  categoria: string;
+  descripcion: string;
+  foto?: string;
+}

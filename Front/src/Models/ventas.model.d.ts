@@ -1,7 +1,7 @@
 import { TupleType } from "typescript";
 import { number } from "yup";
 import { clienteModel } from "./clientes.model";
-import { productoModel } from "./producto.model";
+import { productoDTO, productoModel } from "./producto.model";
 
 export interface ventasModel {
   id: number;
@@ -49,33 +49,40 @@ export interface nuevoVentasModel {
 //nuevas interfaces
 export interface ventaCreacion {
   id_cliente: number;
-  fechaDeVenta?: Date;
+  fechaDeVenta: Date;
   tratamientoImpositivo: number;
-  venta_Lines: ventaLineCreacion[];
+  ventaLines: ventaLineCreacion[];
   ventaOrders?: VentaOrders[];
 }
 
 export interface ventaLine {
   id_ventaLine: number;
   id_venta: number;
-  precioUnitario?: number;
-  cantidad?: number;
-  iva?: number;
+  precioUnitario: number;
+  cantidad: number;
+  iva: number;
   producto: productoModel[];
 }
 
 export interface ventaLineCreacion {
   id_producto: number;
-  precioUnitario?: number;
-  cantidad?: number;
-  iva?: number;
-  producto: productoModel[];
+  precioUnitario: number;
+  cantidad: number;
+  iva: number;
+  producto: productoDTO[];
 }
 
 export interface ventaOrders {
   id_venta_order: number;
   id_venta: number;
-  fechaOrder?: Date;
+  fechaOrder: Date;
+  tipoComprobante: string;
+  ventaOrderPagos: ventaOrderPagos[];
+}
+
+export interface ventaOrderCreacion {
+  id_venta: number;
+  fechaOrder: Date;
   tipoComprobante: string;
   ventaOrderPagos: ventaOrderPagos[];
 }
@@ -87,7 +94,7 @@ export interface ventaOrderPagos {
 }
 export interface pagos {
   precioTotalAPagar: number;
-  fechaDePago: Date;
+  fechaDePago?: Date;
   metodoDePago: metodosDePago[];
 }
 export interface metodosDePago {

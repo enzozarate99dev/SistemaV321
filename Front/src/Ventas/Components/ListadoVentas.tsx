@@ -7,7 +7,7 @@ import CargarCliente from "../../Clientes/Components/CargarCliente";
 import { urlClientes, urlProductos, urlVentas } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventaCreacion, ventaLine, ventaLineCreacion, ventasCrear, ventasModel } from "../../Models/ventas.model";
+import { nuevoVentasModel, ventaCreacion, ventaLine, ventaLineCreacion, ventaOrderCreacion, ventasModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
@@ -45,7 +45,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
 
-  const [ventaLineCreacion, setVentaLine] = useState<ventaLineCreacion[]>([]);
+  const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
+  const [ventaOrderCreacion, setVentaOrderCreacion] = useState<ventaOrderCreacion[]>([]);
 
   const [current, setCurrent] = useState(0);
   const [formadePago, setFormadePago] = useState<number>();
@@ -261,7 +262,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   };
 
   useEffect(() => {
-    setVentaLine(
+    setVentaLineCreacion(
       productosTabla2.map((p) => ({
         id_producto: p.id_producto,
         precioUnitario: p.precio,
@@ -272,19 +273,26 @@ export default function ListadoVentas(props: propsListadoVentas) {
             id_producto: p.id_producto,
             nombre: p.nombre,
             precio: p.precio,
-            precioF: 0,
             cantidad: p.cantidad,
+            codigo: " ",
+            categoria: " ",
+            descripcion: " ",
           },
         ],
       }))
     );
   }, [productosTabla2]);
 
+  // useEffect(() =>{
+  //   setVentaOrderCreacion()
+  // })
+
   async function finalizarVenta() {
     var venta: ventaCreacion = {
       id_cliente: clienteSeleccionado!.id_cliente,
       tratamientoImpositivo: 1,
-      venta_Lines: ventaLineCreacion,
+      fechaDeVenta: new Date(),
+      ventaLines: ventaLineCreacion,
     };
     crear(venta);
   }

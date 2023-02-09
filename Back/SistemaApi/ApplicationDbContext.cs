@@ -24,12 +24,12 @@ namespace SistemaApi
            
 
             modelBuilder.Entity<VentaLine>(e => {
-                e.HasOne(x => x.Venta).WithMany(y => y.Venta_Lines).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_line1");
+                e.HasOne(x => x.Venta).WithMany(y => y.VentaLines).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_line1");
             });
 
             modelBuilder.Entity<VentaOrder>(e =>
             {
-                e.HasOne(x => x.Venta).WithMany(y => y.Venta_Orders).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_order1");
+                e.HasOne(x => x.Venta).WithMany(y => y.VentaOrders).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_order1");
             });
 
             modelBuilder.Entity<VentaOrderPago>()

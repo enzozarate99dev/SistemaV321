@@ -18,8 +18,8 @@ namespace SistemaApi.Entidades
         public double Adeudada { get; set; }
         /*public List<VentaProducto> VentaProducto { get; set; }*/
         public virtual ClienteEntidad Cliente { get; set; }
-        public virtual ICollection<VentaLine> Venta_Lines { get; set; }
-        public virtual ICollection<VentaOrder> ? Venta_Orders { get; set; }
+        public virtual ICollection<VentaLine> VentaLines { get; set; }
+        public virtual ICollection<VentaOrder> ? VentaOrders { get; set; }
 
     }
 }

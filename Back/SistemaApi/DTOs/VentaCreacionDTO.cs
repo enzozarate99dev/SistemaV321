@@ -10,7 +10,7 @@ namespace SistemaApi.DTOs
         public int Id_cliente { get; set; }
         public DateTime FechaDeVenta { get; set; }
         public double TratamientoImpositivo { get; set; }
-        public ICollection<VentaLineCreacionDTO> Venta_Lines { get; set; }
+        public ICollection<VentaLineCreacionDTO> VentaLines { get; set; }
         public ICollection<VentaOrderCreacionDTO> ? VentaOrders { get; set; }
 
     }

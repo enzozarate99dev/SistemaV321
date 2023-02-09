@@ -7,7 +7,7 @@ import CargarCliente from "../../Clientes/Components/CargarCliente";
 import { urlClientes, urlProductos, urlVentas } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasModel } from "../../Models/ventas.model";
+import { nuevoVentasModel, ventaCreacion, ventaLine, ventaLineCreacion, ventasCrear, ventasModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
@@ -45,6 +45,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
 
+  const [ventaLineCreacion, setVentaLine] = useState<ventaLineCreacion[]>([]);
+
   const [current, setCurrent] = useState(0);
   const [formadePago, setFormadePago] = useState<number>();
 
@@ -77,7 +79,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
   }
 
   //Obtener productos y clientes
-
   useEffect(() => {
     async function traerProductos() {
       const result = await axios.get(`${urlProductos}`);
@@ -91,7 +92,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
       const result = await axios(`${urlClientes}`);
       setCliente(
         result.data.map((cliente: clienteModel) => ({
-          value: cliente.id,
+          value: cliente.id_cliente,
           label: cliente.nombreYApellido,
         }))
       );
@@ -108,7 +109,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
   }
 
   //Tablas de productos
-
   const buscarProd = (value: string) => {
     if (value.length >= 3) {
       const filtrados = productos.filter((p) => p.nombre.toUpperCase().startsWith(value.toUpperCase()));
@@ -120,15 +120,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
   };
 
   function moverProductos(id: number) {
-    const prod = productosTabla1.find((p) => p.id === id)!;
+    const prod = productosTabla1.find((p) => p.id_producto === id)!;
 
     setProductosTabla2([...productosTabla2, prod]);
-    setProductosTabla1(productosTabla1.filter((p) => p.id !== id));
+    setProductosTabla1(productosTabla1.filter((p) => p.id_producto !== id));
   }
 
   const cambiarCantidad = (id: number, cantidad: number) => {
     const newProductosTabla2 = productosTabla2.map((producto) => {
-      if (producto.id === id) {
+      if (producto.id_producto === id) {
         return { ...producto, cantidad, precioF: producto.precio * cantidad };
       }
       return producto;
@@ -138,11 +138,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
   };
 
   const quitarProducto = (id: number) => {
-    const prod = productosTabla2.find((p) => p.id === id)!;
+    const prod = productosTabla2.find((p) => p.id_producto === id)!;
 
     setProductosTabla1([...productosTabla1, prod]);
-    setProductosTabla2(productosTabla2.filter((p) => p.id !== id));
-    setSubTotal(calcularSubtotal(productosTabla2.filter((p) => p.id !== id)));
+    setProductosTabla2(productosTabla2.filter((p) => p.id_producto !== id));
+    setSubTotal(calcularSubtotal(productosTabla2.filter((p) => p.id_producto !== id)));
   };
 
   const columnsTabla1 = [
@@ -158,7 +158,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
       title: "",
       key: "accion",
       render: (producto: productoModel) => (
-        <Button className="btn btn-transparent" onClick={() => quitarProducto(producto.id)}>
+        <Button className="btn btn-transparent" onClick={() => quitarProducto(producto.id_producto)}>
           <TrashIcon />
         </Button>
       ),
@@ -177,7 +177,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
           defaultValue={0}
           min={1}
           max={productoSeleccionado?.cantidad}
-          onChange={(value) => cambiarCantidad(record.id, value ? value : 1)}
+          onChange={(value) => cambiarCantidad(record.id_producto, value ? value : 1)}
         />
       ),
     },
@@ -204,7 +204,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
     doc.save("presupuesto.pdf");
   }
 
-  //Venta
+  //Ventas
   function calcularSubtotal(productos: productoModel[]) {
     return productos.reduce((suma, producto) => suma + producto.precioF, 0);
   }
@@ -260,21 +260,35 @@ export default function ListadoVentas(props: propsListadoVentas) {
     textAlign: "center",
   };
 
+  useEffect(() => {
+    setVentaLine(
+      productosTabla2.map((p) => ({
+        id_producto: p.id_producto,
+        precioUnitario: p.precio,
+        cantidad: p.cantidad,
+        iva: 0,
+        producto: [
+          {
+            id_producto: p.id_producto,
+            nombre: p.nombre,
+            precio: p.precio,
+            precioF: 0,
+            cantidad: p.cantidad,
+          },
+        ],
+      }))
+    );
+  }, [productosTabla2]);
+
   async function finalizarVenta() {
-    var arraygeneral = [];
-    for (let i = 0; i < productosTabla2.length; i++) {
-      arraygeneral[i] = [productosTabla2[i].id!, productosTabla2[i].cantidad!];
-    }
-    var venta: nuevoVentasModel = {
-      clienteId: clienteSeleccionado!.id,
-      productosIds: arraygeneral,
-      formaDePago: formadePago!,
-      tipoComprobante: "",
-      iva: 0,
+    var venta: ventaCreacion = {
+      id_cliente: clienteSeleccionado!.id_cliente,
+      tratamientoImpositivo: 1,
+      venta_Lines: ventaLineCreacion,
     };
     crear(venta);
   }
-  function crear(venta: nuevoVentasModel) {
+  function crear(venta: ventaCreacion) {
     console.log(venta);
     try {
       services.crear(venta);
@@ -299,7 +313,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <AutoComplete
                 placeholder="Cargar articulo"
                 dropdownMatchSelectWidth={200}
-                options={productosFiltro.map((p) => ({ value: p.id, label: p.nombre }))}
+                options={productosFiltro.map((p) => ({ value: p.id_producto, label: p.nombre }))}
                 style={{ width: 250 }}
                 onSearch={buscarProd}
                 open={false}
@@ -328,7 +342,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   pagination={{ pageSize: 5 }}
                   onRow={(productoTabla: productoModel) => {
                     return {
-                      onClick: () => moverProductos(productoTabla.id),
+                      onClick: () => moverProductos(productoTabla.id_producto),
                     };
                   }}
                 />
@@ -409,7 +423,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                       ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
                       : ""
                   }
-                  key={clienteSeleccionado?.id}
+                  key={clienteSeleccionado?.id_cliente}
                 />
               </div>
               <Divider />
@@ -508,16 +522,4 @@ interface propsListadoVentas {
   ventasConsFinal?: ventasConsumidorFinalModel[];
   setFlag: () => void;
   onSuccess?: any;
-}
-{
-  /* <>
-                        <Tabs>
-                            <Tabs.TabPane tab="Cliente Registrado" key="item-1">
-                                <Ventas setFlagModal={showModal} setFlagListado={props.setFlag} />
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab="Consumidor Final" key="item-2">
-                                <ConsumidorFinal setFlagModal={showModal} setFlagListado={props.setFlag} />
-                            </Tabs.TabPane>
-                        </Tabs>
-                    </> */
 }

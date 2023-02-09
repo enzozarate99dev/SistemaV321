@@ -38,12 +38,27 @@ namespace SistemaApi.Controllers
             comprobantesClient = new ComprobantesClient(ComprobantesClient.EndpointConfiguration.BasicHttpBinding_IComprobantes);
         }
 
-       
-        [HttpGet]
+
+       /* [HttpGet]
         public async Task<ActionResult<List<VentaDTO>>> Get()
         {
             logger.LogInformation("prueba logger");
-            var ventas = await context.Ventas.Include(x=>x.VentaProducto).ThenInclude(x=>x.Producto).ToListAsync();
+            var ventas = await context.Ventas.Include(x => x.Venta_Lines).ToListAsync();
+            return mapper.Map<List<VentaDTO>>(ventas);
+        }*/
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<VentaDTO>>> GetVentas()
+        {
+            var ventas = await context.Ventas
+                .Include(v => v.Cliente)
+                .Include(v => v.Venta_Lines)
+                    .ThenInclude(vl => vl.Producto)
+                .Include(v => v.Venta_Orders)
+                    .ThenInclude(vo => vo.Venta_Order_Pagos)
+                        .ThenInclude(vop => vop.Pago)
+                            .ThenInclude(p => p.MetodosDePago)
+                .ToListAsync();
+
             return mapper.Map<List<VentaDTO>>(ventas);
         }
 
@@ -54,10 +69,10 @@ namespace SistemaApi.Controllers
             return list;
         }
 
-        [HttpGet("pdf/{id:int}")]
+   /*     [HttpGet("pdf/{id:int}")]
         public async Task<ActionResult<string>> URLPDF(int id)
         {
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
             if(venta == null)
             {
                 return BadRequest("No existe la venta");
@@ -71,9 +86,9 @@ namespace SistemaApi.Controllers
             request.IdComprobante = venta.IdComprobante;
             DetalleComprobanteResponse detResponse = await comprobantesClient.DetalleComprobanteAsync(request);
             return detResponse.Comprobante.URLPDF;
-        }
+        }*/
 
-        [HttpPost("webhook")]
+       /* [HttpPost("webhook")]
         [Consumes("application/xml")]
         public async Task<ActionResult> WebHookFunc([FromBody] DetalleComprobante detalleComprobante)
         {
@@ -83,7 +98,7 @@ namespace SistemaApi.Controllers
             logger.LogInformation(detalleComprobante.IdComprobante.ToString());
 
 
-            /*var venta = await context.Ventas.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.Comprobante.IdComprobante);
+            *//*var venta = await context.Ventas.FirstOrDefaultAsync(x => x.IdComprobante == detalleComprobante.Comprobante.IdComprobante);
             if (venta == null)
             {
                 return BadRequest("La venta no existe");
@@ -96,19 +111,19 @@ namespace SistemaApi.Controllers
             {
                 venta.ConfirmacionAfip = 3;
             }
-            await context.SaveChangesAsync();*/
+            await context.SaveChangesAsync();*//*
 
             return NoContent();
-        }
+        }*/
 
         [HttpGet("ventasCliente/{id:int}")]
         public async Task<ActionResult<List<VentaDTO>>> Ventas(int id)
         {
-            var ventas = await context.Ventas.Where(x => x.ClienteId == id).ToListAsync();
+            var ventas = await context.Ventas.Where(x => x.Id_cliente == id).ToListAsync();
             return mapper.Map<List<VentaDTO>>(ventas);
         }
 
-        [HttpGet("chart")]
+     /*   [HttpGet("chart")]
         public async Task<ActionResult<int[]>> Chart()
         {
             var ventas = await context.Ventas.OrderBy(x => x.FechaDeVenta.Date).ToListAsync();
@@ -127,9 +142,9 @@ namespace SistemaApi.Controllers
                 resultado[ventacf.FechaDeVenta.Month - 1]++;
             }
             return resultado;
-        }
+        }*/
 
-        [HttpGet("chartSemanal")]
+       /* [HttpGet("chartSemanal")]
         public async Task<ActionResult<List<SemanalDTO>>> Semanal()
         {
             var ventas = await context.Ventas.Where(x => x.FechaDeVenta.Date >= (DateTime.Today.AddDays(-6)).Date).ToListAsync();
@@ -166,12 +181,12 @@ namespace SistemaApi.Controllers
                 dto.Add(obj);
             }
             return dto;
-        }
+        }*/
 
-        [HttpGet("chartProductos")]
+       /* [HttpGet("chartProductos")]
         public async Task<ActionResult<List<ProductoChartDTO>>> ChartProductos()
         {
-            var ventas = await context.Ventas.Include(x => x.VentaProducto).ThenInclude(y => y.Producto).OrderBy(x=>x.Id).ToListAsync();
+            var ventas = await context.Ventas.Include(x => x.Venta_Lines).ThenInclude(y => y.Producto).OrderBy(x=>x.Id_venta).ToListAsync();
             var ventascf = await context.VentaConsumidorFinal.Include(x => x.VentaCFProducto).ThenInclude(y => y.Producto).OrderBy(x => x.Id).ToListAsync();
             var productos = await context.Productos.ToListAsync();
             var list = new List<ProductoChartDTO>();
@@ -181,17 +196,17 @@ namespace SistemaApi.Controllers
             string[] nombres = new string[productos.Count];
             for(var i=0; i<productos.Count; i++)
             {
-                ids.Add(productos[i].Id);
+                ids.Add(productos[i].Id_producto);
                 categorias[i] = productos[i].Categoria;
                 nombres[i] = productos[i].Nombre;
                 cantidades[i] = 0;
             }
             foreach(var venta in ventas)
             {
-                foreach(var producto in venta.VentaProducto)
+                foreach(var producto in venta.Venta_Lines)
                 {
-                    var ind = ids.FindIndex(x => x == producto.ProductoId);
-                    cantidades[ind]+=producto.Unidades;
+                    var ind = ids.FindIndex(x => x == producto.Id_producto);
+                    cantidades[ind]+=producto.Cantidad;
                 }
             }
             foreach (var venta in ventascf)
@@ -208,12 +223,15 @@ namespace SistemaApi.Controllers
                 list.Add(obj);
             }
             return list;
-        }
+        }*/
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VentaDTO>> Get(int id)
         {
-            var venta = await context.Ventas.Include(x => x.VentaProducto).ThenInclude(x => x.Producto).FirstOrDefaultAsync(x=>x.Id == id);
+            var venta = await context.Ventas
+                .Include(x => x.Venta_Lines)
+                    .ThenInclude(x => x.Producto)
+                .FirstOrDefaultAsync(x=>x.Id_venta == id);
 
             if (venta == null) { return NotFound(); }
 
@@ -221,47 +239,69 @@ namespace SistemaApi.Controllers
             return dto;
         }
 
-        [HttpGet("filtrar")]
-        public async Task<ActionResult<List<VentaDTO>>> Filtrar([FromQuery] VentaFiltrarDTO ventaFiltrarDTO)
+        /* [HttpGet("filtrar")]
+         public async Task<ActionResult<List<VentaDTO>>> Filtrar([FromQuery] VentaFiltrarDTO ventaFiltrarDTO)
+         {
+             if (ventaFiltrarDTO.Consumidor && !ventaFiltrarDTO.Registrado)
+             {
+                 return new List<VentaDTO>();
+             }
+             else
+             {
+                 var ventasQueryable = context.Ventas.AsQueryable();
+                 if (ventaFiltrarDTO.ClienteId != 0)
+                 {
+                     ventasQueryable = ventasQueryable.Where(x => x.Id_cliente == ventaFiltrarDTO.ClienteId);
+                 }
+
+                 if (ventaFiltrarDTO.ProductoId != 0)
+                 {
+                     ventasQueryable = ventasQueryable
+                         .Where(x => x.Venta_Lines.Select(y => y.Id_producto)
+                         .Contains(ventaFiltrarDTO.ProductoId));
+                 }
+
+                 if (ventaFiltrarDTO.FechaDeVenta != null)
+                 {
+
+                     ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date <= ventaFiltrarDTO.FechaDeVenta.Value.Date);
+                 }
+
+                 await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
+
+                 var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).Include(y=>y.Cliente).OrderBy(x=>x.Id_cliente).ToListAsync();
+
+                 return mapper.Map<List<VentaDTO>>(ventas);
+             }       
+         }*/
+        [HttpPost]
+        public async Task<ActionResult<VentaCreacionDTO>> PostVenta(VentaCreacionDTO ventaCreacionDTO)
         {
-            if (ventaFiltrarDTO.Consumidor && !ventaFiltrarDTO.Registrado)
+
+            var venta = mapper.Map<Venta>(ventaCreacionDTO);
+            double precioTotal = 0;
+
+            foreach (var ventaLine in venta.Venta_Lines)
             {
-                return new List<VentaDTO>();
+                precioTotal += ventaLine.PrecioUnitario * ventaLine.Cantidad;
             }
-            else
-            {
-                var ventasQueryable = context.Ventas.AsQueryable();
-                if (ventaFiltrarDTO.ClienteId != 0)
-                {
-                    ventasQueryable = ventasQueryable.Where(x => x.ClienteId == ventaFiltrarDTO.ClienteId);
-                }
 
-                if (ventaFiltrarDTO.ProductoId != 0)
-                {
-                    ventasQueryable = ventasQueryable
-                        .Where(x => x.VentaProducto.Select(y => y.ProductoId)
-                        .Contains(ventaFiltrarDTO.ProductoId));
-                }
+            venta.PrecioTotal = precioTotal;
 
-                if (ventaFiltrarDTO.FechaDeVenta != null)
-                {
+            context.Ventas.Add(venta);
+            await context.SaveChangesAsync();
 
-                    ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date <= ventaFiltrarDTO.FechaDeVenta.Value.Date);
-                }
 
-                await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
-
-                var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).Include(y=>y.Cliente).OrderBy(x=>x.ClienteId).ToListAsync();
-                
-                return mapper.Map<List<VentaDTO>>(ventas);
-            }       
+            
+            
+            return NoContent();
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult> Post([FromBody] VentaCreacionDTO ventaCreacionDTO)
         {
             double total = 0;
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == ventaCreacionDTO.ClienteId);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == ventaCreacionDTO.ClienteId);
             if(cliente == null)
             {
                 return BadRequest("El cliente no esta registrado");
@@ -273,7 +313,7 @@ namespace SistemaApi.Controllers
             }
             foreach (var tuple in ventaCreacionDTO.ProductosIds)
             {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == tuple[0]);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == tuple[0]);
                 if (tuple[1] > producto.Cantidad)
                 {
                     return BadRequest("No hay suficientes unidades del producto");
@@ -283,14 +323,14 @@ namespace SistemaApi.Controllers
             {
                 var id = tuple[0];
                 var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id == id);
+                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
                 producto.Cantidad = producto.Cantidad - cantidad;
                 total = total + (producto.Precio * cantidad);
             }
             var venta = mapper.Map<Venta>(ventaCreacionDTO);
             venta.PrecioTotal = total + (total * (ventaCreacionDTO.Iva / 100));
             venta.FechaDeVenta = DateTime.Now;
-            if (venta.FormaDePago == 2)
+            *//*if (venta.FormaDePago == 2)
             {
                 venta.Adeudada = total;
                 cliente.Deuda += total;
@@ -299,10 +339,10 @@ namespace SistemaApi.Controllers
             {
                 venta.Adeudada = 0;
                 cliente.Deuda += 0;
-            }
+            }*//*
             context.Add(venta);
             await context.SaveChangesAsync();
-            return NoContent();
+            return NoContent();*/
             /* var objeto = await CrearRequest(cliente, ventaCreacionDTO);
              var idComp = await facturas.GenerarFactura(objeto);
              if(idComp != -1)
@@ -319,7 +359,7 @@ namespace SistemaApi.Controllers
              } */
         }
 
-        [HttpGet("PostGet")]
+     /*   [HttpGet("PostGet")]
         public async Task<ActionResult<VentasPostGetDTO>> PostGet()
         {
             var productos = await context.Productos
@@ -328,13 +368,13 @@ namespace SistemaApi.Controllers
                 .ToListAsync();
             var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
             return new VentasPostGetDTO() { Productos = productosDTO };
-        }
+        }*/
 
-        [HttpPut("cancelar/{id:int}")]
+       /* [HttpPut("cancelar/{id:int}")]
         public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
         {
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id == venta.ClienteId);
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == venta.Id_cliente);
 
             if (venta == null)
             {
@@ -350,7 +390,7 @@ namespace SistemaApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id == id);
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
 
             if (venta == null)
             {
@@ -360,7 +400,7 @@ namespace SistemaApi.Controllers
             context.Remove(venta);
             await context.SaveChangesAsync();
             return NoContent();
-        }
+        }*/
 
        /* private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
         {
@@ -434,4 +474,4 @@ namespace SistemaApi.Controllers
 
         } */
     }
-}
+

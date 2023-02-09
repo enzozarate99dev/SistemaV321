@@ -131,23 +131,35 @@ export default function ListadoProductos(props: propsListadoProductos) {
                 </thead>
                 <tbody className="">
                   {props.productos?.map((producto) => (
-                    <tr key={producto.id}>
-                      <td>{producto.id}</td>
+                    <tr key={producto.id_producto}>
+                      <td>{producto.id_producto}</td>
                       <td>{producto.nombre}</td>
                       <td>{producto.precio}</td>
                       <td>{producto.cantidad}</td>
                       <td>
                         <img width="50" height="50" src={producto.foto} alt="Poster" />
                       </td>
-                      <td>{botones(producto.id)}</td>
+                      <td>{botones(producto.id_producto)}</td>
                       {actualizarPrecios ? (
                         <td>
-                          <Field style={{ marginLeft: "30px" }} name="ids" id="ids" value={producto.id.toString()} type="checkbox" />
+                          <Field
+                            style={{ marginLeft: "30px" }}
+                            name="ids"
+                            id="ids"
+                            value={producto.id_producto.toString()}
+                            type="checkbox"
+                          />
                         </td>
                       ) : null}
                       {eliminarMultiple ? (
                         <td>
-                          <Field style={{ marginLeft: "30px" }} name="ids2" id="ids2" value={producto.id.toString()} type="checkbox" />
+                          <Field
+                            style={{ marginLeft: "30px" }}
+                            name="ids2"
+                            id="ids2"
+                            value={producto.id_producto.toString()}
+                            type="checkbox"
+                          />
                         </td>
                       ) : null}
                     </tr>

@@ -5,7 +5,7 @@ import { clienteModel } from "../../Models/clientes.model";
 
 export default function CrearVentas(props: crearVentasProps) {
   const modelo: ventasCrear = {
-    clienteId: 0,
+    id_cliente: 0,
     formaDePago: 0,
     tratamientoImpositivo: 0,
     tipoComprobante: "",

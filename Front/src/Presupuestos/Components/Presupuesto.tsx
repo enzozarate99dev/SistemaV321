@@ -40,14 +40,14 @@ export default function Presupuesto(props: crearPresupuestoProps) {
 
   function getProducto(valores: valoresPrevProps): productoModel {
     var retorno: productoModel = {
-      id: 0,
+      id_producto: 0,
       nombre: "",
       precio: 0,
       cantidad: 0,
       precioF: 0,
     };
     for (let i = 0; i < productosDisp.length; i++) {
-      if (productosDisp[i].id == valores.productosIds) {
+      if (productosDisp[i].id_producto == valores.productosIds) {
         retorno = productosDisp[i];
       }
     }
@@ -59,9 +59,7 @@ export default function Presupuesto(props: crearPresupuestoProps) {
     const obj = getProducto(valores);
     if (productosArreglo.includes(obj)) {
       const i = productosArreglo.indexOf(obj);
-      productosArreglo[i].cantidad =
-        parseInt(productosArreglo[i].cantidad.toString()) +
-        parseInt(valores.cantidad.toString());
+      productosArreglo[i].cantidad = parseInt(productosArreglo[i].cantidad.toString()) + parseInt(valores.cantidad.toString());
     } else {
       obj.cantidad = valores.cantidad;
       setProductosArreglo([...productosArreglo, obj]);
@@ -69,7 +67,7 @@ export default function Presupuesto(props: crearPresupuestoProps) {
   }
 
   async function quitar(id: number) {
-    const newProds = productosArreglo.filter((prod) => prod.id !== id);
+    const newProds = productosArreglo.filter((prod) => prod.id_producto !== id);
     setProductosArreglo(newProds);
   }
 
@@ -84,7 +82,7 @@ export default function Presupuesto(props: crearPresupuestoProps) {
   async function convertir(valores: presupuestoProps) {
     var arraygeneral = [];
     for (let i = 0; i < productosArreglo.length; i++) {
-      arraygeneral[i] = [productosArreglo[i].id, productosArreglo[i].cantidad!];
+      arraygeneral[i] = [productosArreglo[i].id_producto, productosArreglo[i].cantidad!];
     }
     var presupuesto: presupuestoCrear = {
       nombre: valores.nombre,
@@ -98,11 +96,7 @@ export default function Presupuesto(props: crearPresupuestoProps) {
     try {
       presServices.crear(presupuesto);
       props.setFlagListado();
-      Swal.fire(
-        "Carga Correcta",
-        "El presupuesto fue cargado correctamente",
-        "success"
-      );
+      Swal.fire("Carga Correcta", "El presupuesto fue cargado correctamente", "success");
     } catch (error) {
       setErrores(error.response.data);
     }
@@ -131,10 +125,7 @@ export default function Presupuesto(props: crearPresupuestoProps) {
                 {(formikProps2) => (
                   <>
                     <Form>
-                      <NuevoProductoPresupuesto
-                        formikProps={formikProps2}
-                        productosDisp={productosDisp}
-                      />
+                      <NuevoProductoPresupuesto formikProps={formikProps2} productosDisp={productosDisp} />
                       <Button
                         onClick={() => {
                           formikProps2.submitForm();
@@ -161,21 +152,14 @@ export default function Presupuesto(props: crearPresupuestoProps) {
                         </thead>
                         <tbody>
                           {productosArreglo.map((producto) => (
-                            <tr key={producto.id}>
-                              <td>{producto.id}</td>
+                            <tr key={producto.id_producto}>
+                              <td>{producto.id_producto}</td>
                               <td>{producto.nombre}</td>
                               <td>{producto.precio.toFixed(2)}</td>
                               <td>{producto.cantidad}</td>
+                              <td>{(producto.cantidad * producto.precio).toFixed(2)}</td>
                               <td>
-                                {(producto.cantidad * producto.precio).toFixed(
-                                  2
-                                )}
-                              </td>
-                              <td>
-                                <Button
-                                  className="btn btn-transparent"
-                                  onClick={() => quitar(producto.id)}
-                                >
+                                <Button className="btn btn-transparent" onClick={() => quitar(producto.id_producto)}>
                                   <TrashIcon />
                                 </Button>
                               </td>
@@ -199,24 +183,13 @@ export default function Presupuesto(props: crearPresupuestoProps) {
               {/* <Button onClick={() => setDescuento(!descuento)}>Aplicar Descuento</Button> */}
               <div className="col-md-4">
                 <div className="input-group has-validation">
-                  <FormGroupText
-                    style={{ width: "150px" }}
-                    campo="descuento"
-                    label="Descuento"
-                  />
-                  <span
-                    style={{ height: "38px", marginTop: "32px" }}
-                    className="input-group-text"
-                    id="inputGroupPrepend"
-                  >
+                  <FormGroupText style={{ width: "150px" }} campo="descuento" label="Descuento" />
+                  <span style={{ height: "38px", marginTop: "32px" }} className="input-group-text" id="inputGroupPrepend">
                     %
                   </span>
                 </div>
               </div>
-              <Button
-                onClick={() => formikProps.submitForm()}
-                style={{ marginTop: "1rem", marginBottom: "1rem" }}
-              >
+              <Button onClick={() => formikProps.submitForm()} style={{ marginTop: "1rem", marginBottom: "1rem" }}>
                 Crear Presupuesto
               </Button>
               <Link

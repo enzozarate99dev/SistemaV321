@@ -52,7 +52,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
       const result = await axios.get(`${urlClientes}`);
       setClientes(
         result.data.map((cliente: clienteModel) => ({
-          value: cliente.id,
+          value: cliente.id_cliente,
           label: cliente.nombreYApellido,
         }))
       );
@@ -85,7 +85,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
     {
       title: "Acciones",
       key: "acciones",
-      render: (_: undefined, cliente: clienteModel) => <div className="container">{botones(cliente.id)}</div>,
+      render: (_: undefined, cliente: clienteModel) => <div className="container">{botones(cliente.id_cliente)}</div>,
     },
   ];
 

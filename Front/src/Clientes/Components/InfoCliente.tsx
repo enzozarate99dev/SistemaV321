@@ -30,7 +30,7 @@ export default function InfoCliente(props: infoClienteProps) {
         provincia: respuesta.data.provincia,
         razonSocial: respuesta.data.razonSocial,
         tipoDocumento: respuesta.data.tipoDocumento,
-        id: respuesta.data.id,
+        id_cliente: respuesta.data.id_cliente,
         nroIngresos: respuesta.data.nroIngresos,
       };
       setCliente(modelo);

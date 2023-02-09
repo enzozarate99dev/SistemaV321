@@ -7,10 +7,7 @@ import * as Yup from "yup";
 import TrashIcon from "../../assets/TrashIcon";
 import { productoModel } from "../../Models/producto.model";
 import { ventasPostGetModel } from "../../Models/ventas.model";
-import {
-  nuevoVentasCFModel,
-  ventasConsumidorFinalCrear,
-} from "../../Models/ventasCf.model";
+import { nuevoVentasCFModel, ventasConsumidorFinalCrear } from "../../Models/ventasCf.model";
 import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
 import { valoresPrevProps } from "../../Presupuestos/Components/Presupuesto";
 import Button from "../../utils/Button";
@@ -47,14 +44,14 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
 
   function getProducto(valores: valoresPrevProps): productoModel {
     var retorno: productoModel = {
-      id: 0,
+      id_producto: 0,
       nombre: "",
       precio: 0,
       cantidad: 0,
       precioF: 0,
     };
     for (let i = 0; i < productosDisp.length; i++) {
-      if (productosDisp[i].id == valores.productosIds) {
+      if (productosDisp[i].id_producto == valores.productosIds) {
         retorno = productosDisp[i];
       }
     }
@@ -65,9 +62,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
     const obj = getProducto(valores);
     if (productosArreglo.includes(obj)) {
       const i = productosArreglo.indexOf(obj);
-      productosArreglo[i].cantidad =
-        parseInt(productosArreglo[i].cantidad.toString()) +
-        parseInt(valores.cantidad.toString());
+      productosArreglo[i].cantidad = parseInt(productosArreglo[i].cantidad.toString()) + parseInt(valores.cantidad.toString());
     } else {
       obj.cantidad = valores.cantidad;
       setProductosArreglo([...productosArreglo, obj]);
@@ -75,7 +70,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
   }
 
   async function quitar(id: number) {
-    const newProds = productosArreglo.filter((prod) => prod.id !== id);
+    const newProds = productosArreglo.filter((prod) => prod.id_producto !== id);
     setProductosArreglo(newProds);
   }
 
@@ -90,7 +85,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
   async function convertir(valores: ventasConsumidorFinalCrear) {
     var arraygeneral = [];
     for (let i = 0; i < productosArreglo.length; i++) {
-      arraygeneral[i] = [productosArreglo[i].id, productosArreglo[i].cantidad];
+      arraygeneral[i] = [productosArreglo[i].id_producto, productosArreglo[i].cantidad];
     }
     var venta: nuevoVentasCFModel = {
       nombreCliente: valores.nombreCliente,
@@ -106,11 +101,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
     try {
       servicesCF.crear(venta);
       props.setFlagListado();
-      Swal.fire(
-        "Carga Correcta",
-        "La venta fue cargada correctamente",
-        "success"
-      );
+      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
     } catch (error) {
       setErrores(error.response.data);
     }
@@ -131,10 +122,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
                 {(formikProps2) => (
                   <>
                     <Form>
-                      <NuevoProductoPresupuesto
-                        formikProps={formikProps2}
-                        productosDisp={productosDisp}
-                      />
+                      <NuevoProductoPresupuesto formikProps={formikProps2} productosDisp={productosDisp} />
                       <Button
                         onClick={() => {
                           formikProps2.submitForm();
@@ -161,17 +149,14 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
                         </thead>
                         <tbody>
                           {productosArreglo.map((producto) => (
-                            <tr key={producto.id}>
-                              <td>{producto.id}</td>
+                            <tr key={producto.id_producto}>
+                              <td>{producto.id_producto}</td>
                               <td>{producto.nombre}</td>
                               <td>{producto.precio}</td>
                               <td>{producto.cantidad}</td>
                               <td>{producto.cantidad * producto.precio}</td>
                               <td>
-                                <Button
-                                  className="btn btn-transparent"
-                                  onClick={() => quitar(producto.id)}
-                                >
+                                <Button className="btn btn-transparent" onClick={() => quitar(producto.id_producto)}>
                                   <TrashIcon />
                                 </Button>
                               </td>
@@ -195,11 +180,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
               <div style={{ marginTop: "-5px" }} className="row g-3">
                 <div className="col-md-6">
                   <label htmlFor="formaDePago">Forma de Pago</label>
-                  <Field
-                    as="select"
-                    className="form-control"
-                    name="formaDePago"
-                  >
+                  <Field as="select" className="form-control" name="formaDePago">
                     <option value={0}>Seleccionar forma de pago</option>
                     <option value={1}>Contado</option>
                     <option value={3}>Tarjeta de Debito</option>
@@ -216,11 +197,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
                 </div>
                 <div style={{ marginTop: "5px" }} className="col-md-6">
                   <label htmlFor="tipoComprobante">Tipo Comprobante</label>
-                  <Field
-                    as="select"
-                    className="form-control"
-                    name="tipoComprobante"
-                  >
+                  <Field as="select" className="form-control" name="tipoComprobante">
                     <option value={0}>Seleccionar tipo de comprobante</option>
                     <option value="FB">FACTURA B</option>
                   </Field>
@@ -238,10 +215,7 @@ export default function ConsumidorFinal(props: crearVentaCFProps) {
                   </Field>
                 </div>
               </div>
-              <Button
-                type="submit"
-                style={{ marginTop: "1rem", marginBottom: "1rem" }}
-              >
+              <Button type="submit" style={{ marginTop: "1rem", marginBottom: "1rem" }}>
                 Guardar
               </Button>
               <Button

@@ -18,7 +18,7 @@ import * as services from "../Services/ventas.services";
 
 export default function Ventas(props: crearVentaProps) {
   const modelo: ventasCrear = {
-    clienteId: 0,
+    id_cliente: 0,
     formaDePago: 0,
     tratamientoImpositivo: 0,
     tipoComprobante: "",
@@ -51,14 +51,14 @@ export default function Ventas(props: crearVentaProps) {
 
   function getProducto(valores: valoresPrevProps): productoModel {
     var retorno: productoModel = {
-      id: 0,
+      id_producto: 0,
       nombre: "",
       precio: 0,
       cantidad: 0,
       precioF: 0,
     };
     for (let i = 0; i < productosDisp.length; i++) {
-      if (productosDisp[i].id == valores.productosIds) {
+      if (productosDisp[i].id_producto == valores.productosIds) {
         retorno = productosDisp[i];
       }
     }
@@ -77,7 +77,7 @@ export default function Ventas(props: crearVentaProps) {
   }
 
   async function quitar(id: number) {
-    const newProds = productosArreglo.filter((prod) => prod.id !== id);
+    const newProds = productosArreglo.filter((prod) => prod.id_producto !== id);
     setProductosArreglo(newProds);
   }
 
@@ -89,38 +89,36 @@ export default function Ventas(props: crearVentaProps) {
     return total;
   }
 
-  async function convertir(valores: ventasCrear) {
-    var arraygeneral = [];
-    for (let i = 0; i < productosArreglo.length; i++) {
-      arraygeneral[i] = [productosArreglo[i].id!, productosArreglo[i].cantidad!];
-    }
-    var venta: nuevoVentasModel = {
-      clienteId: valores.clienteId,
-      productosIds: arraygeneral,
-      formaDePago: valores.formaDePago,
-      tratamientoImpositivo: valores.tratamientoImpositivo,
-      tipoComprobante: valores.tipoComprobante,
-      iva: valores.iva,
-    };
-    crear(venta);
-  }
+  // async function convertir(valores: ventasCrear) {
+  //   var arraygeneral = [];
+  //   for (let i = 0; i < productosArreglo.length; i++) {
+  //     arraygeneral[i] = [productosArreglo[i].id_producto!, productosArreglo[i].cantidad!];
+  //   }
+  //   var venta: nuevoVentasModel = {
+  //     clienteId: valores.id_cliente,
+  //     productosIds: arraygeneral,
+  //     formaDePago: valores.formaDePago,
+  //     tratamientoImpositivo: valores.tratamientoImpositivo,
+  //     tipoComprobante: valores.tipoComprobante,
+  //     iva: valores.iva,
+  //   };
+  //   crear(venta);
+  // }
 
-  function crear(venta: nuevoVentasModel) {
-    console.log(venta);
-    try {
-      services.crear(venta);
-      props.setFlagListado();
-      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
-    } catch (error) {
-      setErrores(error.response.data);
-      console.log(error.response.data);
-    }
-  }
+  // function crear(venta: nuevoVentasModel) {
+  //   console.log(venta);
+  //   try {
+  //     services.crear(venta);
+  //     props.setFlagListado();
+  //     Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
+  //   } catch (error) {
+  //     setErrores(error.response.data);
+  //     console.log(error.response.data);
+  //   }
+  // }
 
   return (
-    <>
-      <Formik initialValues={modelo} onSubmit={(valores) => convertir(valores)}></Formik>
-    </>
+    <>{/* <Formik initialValues={modelo} onSubmit={(valores) => convertir(valores)}></Formik> */}</>
 
     // <>
     //   <Formik initialValues={modelo} onSubmit={(valores) => convertir(valores)}>

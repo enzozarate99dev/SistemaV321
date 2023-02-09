@@ -4,7 +4,7 @@ namespace SistemaApi.DTOs
 {
     public class ProductoDTO
     {
-        public int Id { get; set; }
+        public int Id_producto { get; set; }
         public string Nombre { get; set; }
         public double Precio { get; set; }
         public int Cantidad { get; set; }

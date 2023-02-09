@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaApi;
 
@@ -11,9 +12,10 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230206164457_venta-order")]
+    partial class ventaorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -357,10 +359,18 @@ namespace SistemaApi.Migrations
                     b.Property<DateTime>("FechaDePago")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id_venta")
+                        .HasColumnType("int");
+
                     b.Property<double>("PrecioTotal")
                         .HasColumnType("float");
 
+                    b.Property<int?>("VentaId_venta")
+                        .HasColumnType("int");
+
                     b.HasKey("Id_pago");
+
+                    b.HasIndex("VentaId_venta");
 
                     b.ToTable("Pagos");
                 });
@@ -488,14 +498,24 @@ namespace SistemaApi.Migrations
                     b.Property<double>("Adeudada")
                         .HasColumnType("float");
 
+                    b.Property<int>("ConfirmacionAfip")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("IdComprobante")
+                        .HasColumnType("int");
 
                     b.Property<int>("Id_cliente")
                         .HasColumnType("int");
 
                     b.Property<double?>("PrecioTotal")
                         .HasColumnType("float");
+
+                    b.Property<string>("TipoComprobante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TratamientoImpositivo")
                         .HasColumnType("int");
@@ -509,13 +529,16 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta_line", b =>
                 {
-                    b.Property<int>("Id_venta_line")
+                    b.Property<int>("Id_producto")
                         .HasColumnType("int");
 
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
+                    b.Property<double>("Cantidad")
+                        .HasColumnType("float");
 
                     b.Property<int>("Id_venta")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id_venta_line")
                         .HasColumnType("int");
 
                     b.Property<double>("Iva")
@@ -524,9 +547,7 @@ namespace SistemaApi.Migrations
                     b.Property<double>("PrecioUnitario")
                         .HasColumnType("float");
 
-                    b.HasKey("Id_venta_line");
-
-                    b.HasIndex("Id_venta");
+                    b.HasKey("Id_producto");
 
                     b.ToTable("Venta_Lines");
                 });
@@ -621,6 +642,24 @@ namespace SistemaApi.Migrations
                     b.ToTable("VentaConsumidorFinal");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.VentaProducto", b =>
+                {
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VentaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Unidades")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductoId", "VentaId");
+
+                    b.HasIndex("VentaId");
+
+                    b.ToTable("VentaProductos");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -693,7 +732,7 @@ namespace SistemaApi.Migrations
                         .IsRequired();
 
                     b.HasOne("SistemaApi.Entidades.Producto", "Producto")
-                        .WithMany()
+                        .WithMany("CompraProducto")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -715,6 +754,13 @@ namespace SistemaApi.Migrations
                     b.Navigation("Pagos");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Pagos", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Venta", null)
+                        .WithMany("Pagos")
+                        .HasForeignKey("VentaId_venta");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Presupuestos", "Presupuesto")
@@ -724,7 +770,7 @@ namespace SistemaApi.Migrations
                         .IsRequired();
 
                     b.HasOne("SistemaApi.Entidades.Producto", "Producto")
-                        .WithMany()
+                        .WithMany("PresupuestoProducto")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -748,18 +794,18 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta_line", b =>
                 {
+                    b.HasOne("SistemaApi.Entidades.Producto", "Producto")
+                        .WithOne("Venta_line")
+                        .HasForeignKey("SistemaApi.Entidades.Venta_line", "Id_producto")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SistemaApi.Entidades.Venta", "Venta")
                         .WithMany("Venta_Lines")
-                        .HasForeignKey("Id_venta")
+                        .HasForeignKey("Id_producto")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("Venta_line1");
-
-                    b.HasOne("SistemaApi.Entidades.Producto", "Producto")
-                        .WithOne("Venta_line")
-                        .HasForeignKey("SistemaApi.Entidades.Venta_line", "Id_venta_line")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Producto");
 
@@ -800,7 +846,7 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.VentaCFProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Producto", "Producto")
-                        .WithMany()
+                        .WithMany("VentaCFProducto")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -814,6 +860,25 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
 
                     b.Navigation("VentaCF");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaProducto", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Producto", "Producto")
+                        .WithMany("VentaProducto")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaApi.Entidades.Venta", "Venta")
+                        .WithMany("VentaProducto")
+                        .HasForeignKey("VentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("Venta");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
@@ -840,6 +905,14 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Producto", b =>
                 {
+                    b.Navigation("CompraProducto");
+
+                    b.Navigation("PresupuestoProducto");
+
+                    b.Navigation("VentaCFProducto");
+
+                    b.Navigation("VentaProducto");
+
                     b.Navigation("Venta_line")
                         .IsRequired();
                 });
@@ -851,6 +924,10 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
+                    b.Navigation("Pagos");
+
+                    b.Navigation("VentaProducto");
+
                     b.Navigation("Venta_Lines");
 
                     b.Navigation("Venta_Orders");

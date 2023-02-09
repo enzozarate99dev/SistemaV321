@@ -12,15 +12,18 @@ namespace SistemaApi.Utilidades
             CreateMap<ProductoCreacionDTO, Producto>()
                 .ForMember(x => x.Foto, options => options.Ignore());
 
-            CreateMap<VentaCreacionDTO, Venta>()
-                .ForMember(x => x.VentaProducto, opciones => opciones.MapFrom(MapearVentaProducto));
-            CreateMap<Venta, VentaDTO>()
+     /*       CreateMap<VentaCreacionDTO, Venta>()
+                .ForMember(x => x.Venta_Lines, opciones => opciones.MapFrom(MapearVentaProducto));*/
+          /*  CreateMap<Venta, VentaDTO>()
                 .ForMember(x => x.Productos, options => options.MapFrom(MapearVentaProducto));
-
+*/
             CreateMap<VentaCreacionCFDTO, VentaConsumidorFinal>()
                 .ForMember(x => x.VentaCFProducto, opciones => opciones.MapFrom(MapearVentaCFProducto));
             CreateMap<VentaConsumidorFinal, VentaConsumidorFinalDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
+
+            CreateMap<Venta, VentaDTO>();
+            CreateMap<VentaCreacionDTO, Venta>().ReverseMap();
 
             CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
             CreateMap<ClienteEntidad, ClienteDTO>().ReverseMap();
@@ -49,7 +52,7 @@ namespace SistemaApi.Utilidades
                 {
                     resultado.Add(new ProductoDTO()
                     {
-                        Id = producto.Producto.Id,
+                        Id_producto = producto.Producto.Id_producto,
                         Nombre = producto.Producto.Nombre,
                         Cantidad = producto.Unidades,
                         Precio = producto.Producto.Precio,
@@ -89,7 +92,7 @@ namespace SistemaApi.Utilidades
                 {
                     resultado.Add(new ProductoDTO()
                     {
-                        Id = producto.Producto.Id,
+                        Id_producto = producto.Producto.Id_producto,
                         Nombre = producto.Producto.Nombre,
                         Cantidad = producto.Unidades,
                         Precio = producto.Producto.Precio,
@@ -129,7 +132,7 @@ namespace SistemaApi.Utilidades
                 {
                     resultado.Add(new ProductoDTO()
                     {
-                        Id = producto.Producto.Id,
+                        Id_producto = producto.Producto.Id_producto,
                         Nombre = producto.Producto.Nombre,
                         Cantidad = producto.Unidades,
                         Precio = producto.Producto.Precio,
@@ -159,35 +162,35 @@ namespace SistemaApi.Utilidades
             return resultado;
         }
 
-        private List<VentaProducto> MapearVentaProducto(VentaCreacionDTO ventaCreacionDTO,
+     /*   private List<Venta_line> MapearVentaProducto(VentaCreacionDTO ventaCreacionDTO,
                 Venta venta)
         {
-            var resultado = new List<VentaProducto>();
+            var resultado = new List<Venta_line>();
 
             if (ventaCreacionDTO.ProductosIds == null) { return resultado; }
 
 
             foreach (var tuple in ventaCreacionDTO.ProductosIds)
             {
-                resultado.Add(new VentaProducto() { ProductoId = tuple[0], Unidades = tuple[1] });
+                resultado.Add(new Venta_line() { Id_producto = tuple[0], Cantidad = tuple[1] });
             }
 
             return resultado;
-        }
+        }*/
 
         private List<ProductoDTO> MapearVentaProducto(Venta venta, VentaDTO ventaDTO)
         {
             var resultado = new List<ProductoDTO>();
 
-            if (venta.VentaProducto != null)
+            if (venta.Venta_Lines != null)
             {
-                foreach (var producto in venta.VentaProducto)
+                foreach (var producto in venta.Venta_Lines)
                 {
                     resultado.Add(new ProductoDTO()
                     {
-                        Id = producto.Producto.Id,
+                        Id_producto = producto.Producto.Id_producto,
                         Nombre = producto.Producto.Nombre,
-                        Cantidad = producto.Unidades,
+                        Cantidad = producto.Cantidad,
                         Precio = producto.Producto.Precio,
                         Categoria = producto.Producto.Categoria,
                         Codigo = producto.Producto.Codigo,

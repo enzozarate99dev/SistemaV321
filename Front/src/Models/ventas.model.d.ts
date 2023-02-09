@@ -22,7 +22,7 @@ export interface listadoVentas {
 }
 
 export interface ventasCrear {
-  clienteId: number;
+  id_cliente: number;
   formaDePago: number;
   tratamientoImpositivo: number;
   tipoComprobante: string;
@@ -44,4 +44,53 @@ export interface nuevoVentasModel {
   tratamientoImpositivo?: number;
   tipoComprobante: string;
   iva: number;
+}
+
+//nuevas interfaces
+export interface ventaCreacion {
+  id_cliente: number;
+  fechaDeVenta?: Date;
+  tratamientoImpositivo: number;
+  venta_Lines: ventaLineCreacion[];
+  ventaOrders?: VentaOrders[];
+}
+
+export interface ventaLine {
+  id_ventaLine: number;
+  id_venta: number;
+  precioUnitario?: number;
+  cantidad?: number;
+  iva?: number;
+  producto: productoModel[];
+}
+
+export interface ventaLineCreacion {
+  id_producto: number;
+  precioUnitario?: number;
+  cantidad?: number;
+  iva?: number;
+  producto: productoModel[];
+}
+
+export interface ventaOrders {
+  id_venta_order: number;
+  id_venta: number;
+  fechaOrder?: Date;
+  tipoComprobante: string;
+  ventaOrderPagos: ventaOrderPagos[];
+}
+
+export interface ventaOrderPagos {
+  pagoId: number;
+  ventaOrderId: number;
+  pago: pagos[];
+}
+export interface pagos {
+  precioTotalAPagar: number;
+  fechaDePago: Date;
+  metodoDePago: metodosDePago[];
+}
+export interface metodosDePago {
+  id_pago: number;
+  formaDePago: string;
 }

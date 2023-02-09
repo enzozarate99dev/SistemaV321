@@ -1,7 +1,7 @@
 import { ventasModel } from "./ventas.model";
 
 export interface clienteModel {
-  id: number;
+  id_cliente: number;
   nombreYApellido: string;
   email: string;
   telefono: string;

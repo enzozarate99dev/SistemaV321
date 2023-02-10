@@ -7,7 +7,15 @@ import CargarCliente from "../../Clientes/Components/CargarCliente";
 import { urlClientes, urlProductos, urlVentas } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventaCreacion, ventaLine, ventaLineCreacion, ventaOrderCreacion, ventasModel } from "../../Models/ventas.model";
+import {
+  nuevoVentasModel,
+  ventaCreacion,
+  ventaLine,
+  ventaLineCreacion,
+  ventaOrderCreacion,
+  ventaOrderPagos,
+  ventasModel,
+} from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
@@ -23,13 +31,12 @@ import Swal from "sweetalert2";
 import "./ventaStyles.css";
 import Circle from "../../assets/Circle";
 import "./ventaStyles.css";
+import RealizarVenta from "./RealizarVenta";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
-  const [openFormaDePago, setOpenFormaDePago] = useState(false);
-  const [openVentaCf, setOpenVentaCf] = useState(false);
 
   const [productos, setProductos] = useState<productoModel[]>([]);
   const [productoSeleccionado, setProductoSeleccionado] = useState<productoModel | null>();
@@ -38,7 +45,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [productosFiltro, setProductosFiltro] = useState<productoModel[]>([]);
 
   const [subTotal, setSubTotal] = useState(0);
-  const [descuento, setDescuento] = useState(0);
+  const [totalConDescuento, setTotalConDescuento] = useState(0);
   const [descuentoAplicado, setDescuentoAplicado] = useState(false);
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
@@ -46,12 +53,18 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
-  const [ventaOrderCreacion, setVentaOrderCreacion] = useState<ventaOrderCreacion[]>([]);
+  // const [ventaOrderCreacion, setVentaOrderCreacion] = useState<ventaOrderCreacion[]>([]);
+  // const [ventaOrdenPagosCreacion, setVentaOrdenPagosCreacion] = useState<ventaOrderPagos[]>([]);
 
-  const [current, setCurrent] = useState(0);
-  const [formadePago, setFormadePago] = useState<number>();
+  // const [current, setCurrent] = useState(0);
+  // const [formadePago, setFormadePago] = useState<string>();
 
-  const [botonActivo, setBotonActivo] = useState(false);
+  const [flag, setFlag] = useState(false);
+
+  const handleFlag = () => {
+    setFlag(!flag);
+    console.log(flag);
+  };
 
   //Modales
   const showCargarCliente = () => {
@@ -63,21 +76,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
     setOpenProducto(!openProducto);
     props.setFlag();
   };
-
-  const showCargarVenta = () => {
-    setOpenFormaDePago(!openFormaDePago);
-    props.setFlag();
-  };
-
-  const showCargarVentaCf = () => {
-    setOpenVentaCf(!openVentaCf);
-    props.setFlag();
-  };
-
-  function formatDate(fecha: string): string {
-    var array = fecha.split("T");
-    return array[0];
-  }
 
   //Obtener productos y clientes
   useEffect(() => {
@@ -213,53 +211,61 @@ export default function ListadoVentas(props: propsListadoVentas) {
   function calcularDescuento(porcentaje: number) {
     if (descuentoAplicado) {
       //para que se aplique descuento dependiendo de onClick
-      setDescuento(0);
+      setTotalConDescuento(0);
       setDescuentoAplicado(false);
     } else {
       const totalConDescuento = subTotal - subTotal * (porcentaje / 100);
-      setDescuento(totalConDescuento);
+      setTotalConDescuento(totalConDescuento);
       setDescuentoAplicado(true);
     }
   }
 
-  const next = () => {
-    setCurrent(current + 1);
-  };
+  // const next = () => {
+  //   setCurrent(current + 1);
+  // };
 
-  const onChange = (value: number) => {
-    setCurrent(value);
-  };
+  // const onChange = (value: number) => {
+  //   setCurrent(value);
+  // };
 
-  const steps = [
-    {
-      title: "",
-      content: <FormaDePago formadePago={formadePago!} setFormaDePago={setFormadePago} onSuccess={next} />,
-    },
-    {
-      title: "",
-      content: formadePago === 3 ? <PagoCredito /> : <Montos montoAPagar={descuento || subTotal} formaDePago={formadePago!} />,
-    },
-  ];
+  // const steps = [
+  //   {
+  //     title: "",
+  //     content: (
+  //       <FormaDePago
+  //         formadePago={formadePago!}
+  //         setFormaDePago={setFormadePago}
+  //         precioTotalAPagar={descuento || subTotal}
+  //         ventaOrderPagos={ventaOrdenPagosCreacion}
+  //         onSuccess={next}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "",
+  //     content: formadePago === "3" ? <PagoCredito /> : <Montos montoAPagar={descuento || subTotal} formaDePago={formadePago!} />,
+  //   },
+  // ];
 
-  const items = steps.map((item, index) => (
-    <Steps.Step
-      key={item.title}
-      icon={
-        <div
-          style={{
-            backgroundColor: current === index ? "#1DCA94" : "#6A7580",
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-          }}
-        ></div>
-      }
-    />
-  ));
+  // const items = steps.map((item, index) => (
+  //   <Steps.Step
+  //     key={item.title}
+  //     icon={
+  //       <div
+  //         style={{
+  //           backgroundColor: current === index ? "#1DCA94" : "#6A7580",
+  //           width: 40,
+  //           height: 40,
+  //           borderRadius: "50%",
+  //         }}
+  //       ></div>
+  //     }
+  //   />
+  // ));
 
-  const contentStyle: React.CSSProperties = {
-    textAlign: "center",
-  };
+  // const contentStyle: React.CSSProperties = {
+  //   textAlign: "center",
+  // };
 
   useEffect(() => {
     setVentaLineCreacion(
@@ -281,11 +287,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
         ],
       }))
     );
+    console.log(ventaLineCreacion);
   }, [productosTabla2]);
-
-  // useEffect(() =>{
-  //   setVentaOrderCreacion()
-  // })
 
   async function finalizarVenta() {
     var venta: ventaCreacion = {
@@ -294,10 +297,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
       fechaDeVenta: new Date(),
       ventaLines: ventaLineCreacion,
     };
+
     crear(venta);
+    console.log(venta);
   }
   function crear(venta: ventaCreacion) {
-    console.log(venta);
     try {
       services.crear(venta);
       Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
@@ -478,12 +482,14 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   <Input
                     style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
                     disabled={true}
-                    value={`$ ${descuento || subTotal}`}
+                    value={`$ ${totalConDescuento || subTotal}`}
                   ></Input>
                 </div>
               </div>
               <div className="container mt-4">
-                <Button
+                <RealizarVenta setFlag={handleFlag} productos={productosTabla2} />
+
+                {/* <Button
                   style={{
                     width: 100,
                     backgroundColor: "#fff",
@@ -495,8 +501,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   onClick={() => showCargarVenta()}
                 >
                   PAGAR
-                </Button>
-                <Modal
+                </Button> */}
+                {/* <Modal
                   title="Cargar venta"
                   width={980}
                   // style={{ height: 579 }}
@@ -515,7 +521,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                       {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>}
                     </div>
                   </div>
-                </Modal>
+                </Modal> */}
               </div>
             </div>
           </div>

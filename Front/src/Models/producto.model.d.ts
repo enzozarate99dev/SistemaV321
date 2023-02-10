@@ -10,6 +10,16 @@ export interface productoModel {
   foto?: string;
   label?: string;
 }
+export interface productoDTO {
+  id_producto: number;
+  nombre: string;
+  precio: number;
+  cantidad: number;
+  codigo: string;
+  categoria: string;
+  descripcion: string;
+  foto?: string;
+}
 
 export interface homePage {
   disponibles: productoModel[];
@@ -33,15 +43,4 @@ export interface actualizar {
   valor?: number;
   aumentar?: boolean;
   descontar?: boolean;
-}
-
-export interface productoDTO {
-  id_producto: number;
-  nombre: string;
-  precio: number;
-  cantidad: number;
-  codigo: string;
-  categoria: string;
-  descripcion: string;
-  foto?: string;
 }

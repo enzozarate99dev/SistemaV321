@@ -4,12 +4,36 @@ import TarjetaCredito from "../../assets/TarjetaCredito";
 import TarjetaDebito from "../../assets/TarjetaDebito";
 import Button from "../../utils/Button";
 import "./ventaStyles.css";
+import { metodosDePago, pagos, ventaOrderPagos } from "../../Models/ventas.model";
+import { useEffect, useState } from "react";
 
 export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoProps) {
-  const onClick = (value: number) => {
+  const [metodoPago, setMetodoPago] = useState<metodosDePago[]>([]);
+  const [pago, setPago] = useState<pagos[]>([]);
+
+  const onClick = (value: string) => {
     setFormaDePago(value);
     onSuccess();
   };
+
+  // useEffect(() => {
+  //   setPago([
+  //     ...pago,
+  //     {
+  //       precioTotalAPagar: precioTotalAPagar,
+  //       fechaDePago: new Date(),
+  //       metodoDePago: [
+  //         ...metodoPago,
+  //         {
+  //           id_pago: pago.length + 1,
+  //           formaDePago: formadePago,
+  //         },
+  //       ],
+  //     },
+  //   ]);
+  //   console.log(pago);
+  // }, [formadePago]);
+
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>
       <div className="d-flex align-items-start mx-5">
@@ -24,7 +48,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
               borderRadius: 10,
               color: "#6A7580",
             }}
-            onClick={() => onClick(1)}
+            onClick={() => onClick("1")}
           >
             <Dinero />
             <p>CONTADO</p>
@@ -41,7 +65,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
               borderRadius: 10,
               color: "#6A7580",
             }}
-            onClick={() => onClick(2)}
+            onClick={() => onClick("2")}
           >
             <TarjetaDebito />
             <p>DEBITO</p>
@@ -58,7 +82,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
               borderRadius: 10,
               color: "#6A7580",
             }}
-            onClick={() => onClick(3)}
+            onClick={() => onClick("3")}
           >
             <TarjetaCredito />
             <p>CREDITO</p>
@@ -78,7 +102,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
               borderRadius: 10,
               color: "#6A7580",
             }}
-            onClick={() => onClick(4)}
+            onClick={() => onClick("4")}
           >
             <p> Mercado Pago</p>
           </Button>
@@ -94,7 +118,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
               borderRadius: 10,
               color: "#6A7580",
             }}
-            onClick={() => onClick(5)}
+            onClick={() => onClick("5")}
           >
             <Banco />
             <p>TRANSFERENCIA</p>
@@ -106,7 +130,8 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
 }
 
 interface formadePagoProps {
-  formadePago: number;
-  setFormaDePago(formaDePago: number): void;
+  formadePago: string;
+  setFormaDePago(formaDePago: string): void;
   onSuccess(): void;
+  ventaOrderPagos?: ventaOrderPagos[];
 }

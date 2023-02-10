@@ -1,12 +1,14 @@
 import { Input } from "antd";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import FormaDePago from "./FormaDePago";
 
 export default function Montos(props: montosProps) {
   const [contado, setContado] = useState(0);
   const [debito, setDebito] = useState(0);
   const [mp, setMP] = useState(0);
   const [transf, setTransf] = useState(0);
+
   function calcularMonto() {
     const total = contado + debito + mp + transf;
 
@@ -74,5 +76,5 @@ export default function Montos(props: montosProps) {
 
 interface montosProps {
   montoAPagar: number;
-  formaDePago: number;
+  formaDePago: string;
 }

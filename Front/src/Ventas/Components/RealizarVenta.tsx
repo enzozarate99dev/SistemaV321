@@ -1,11 +1,14 @@
 import { Modal, Steps } from "antd";
 import { useEffect, useState } from "react";
 import { productoModel } from "../../Models/producto.model";
-import { ventaOrderPagos, ventaLineCreacion } from "../../Models/ventas.model";
+import { ventaOrderPagos, ventaLineCreacion, ventaCreacionDTO, ventaOrderCreacion } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
 import FormaDePago from "./FormaDePago";
 import Montos from "./Montos";
+import * as services from "../Services/ventas.services";
 import PagoCredito from "./PagoCredito";
+import Swal from "sweetalert2";
+import { clienteModel } from "../../Models/clientes.model";
 
 export default function RealizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
@@ -13,11 +16,17 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const [current, setCurrent] = useState(0);
   const [formadePago, setFormadePago] = useState<string>();
 
-  const [subTotal, setSubTotal] = useState(0);
-  const [totalConDescuento, setDescuento] = useState(0);
-
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
+  const [ventaOrderCreacion, setVentaOrderCreacion] = useState<ventaOrderCreacion[]>([]);
   const [ventaOrdenPagosCreacion, setVentaOrdenPagosCreacion] = useState<ventaOrderPagos[]>([]);
+
+  const modelo: ventaCreacionDTO = {
+    id_cliente: 0,
+    tratamientoImpositivo: 0,
+    fechaDeVenta: new Date(),
+    ventaLines: [],
+    ventaOrders: [],
+  };
 
   const showCargarVenta = () => {
     setOpenFormaDePago(!openFormaDePago);
@@ -46,7 +55,7 @@ export default function RealizarVenta(props: realizarVentaProps) {
     },
     {
       title: "",
-      content: formadePago === "3" ? <PagoCredito /> : <Montos montoAPagar={totalConDescuento || subTotal} formaDePago={formadePago!} />,
+      content: formadePago === "credito" ? <PagoCredito /> : <Montos montoAPagar={props.montoAPagar} formaDePago={formadePago!} />,
     },
   ];
 
@@ -91,7 +100,36 @@ export default function RealizarVenta(props: realizarVentaProps) {
       }))
     );
     console.log(props.productos);
-  }, []);
+  }, [props.productos]);
+
+  async function finalizarVenta() {
+    var venta: ventaCreacionDTO = {
+      id_cliente: props.clientes.id_cliente,
+      tratamientoImpositivo: 1,
+      fechaDeVenta: new Date(),
+      ventaLines: ventaLineCreacion,
+      ventaOrders: ventaOrderCreacion,
+    };
+    crearVenta(venta);
+    console.log(venta);
+  }
+
+  function crearVentaOrder(ventaOrder: ventaOrderCreacion) {
+    try {
+      services.crearVentaOrder(ventaOrder);
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  }
+
+  function crearVenta(venta: ventaCreacionDTO) {
+    try {
+      services.crearVenta(venta);
+      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
 
   return (
     <>
@@ -124,7 +162,7 @@ export default function RealizarVenta(props: realizarVentaProps) {
           <div style={contentStyle}>{steps[current].content}</div>
           <div style={{ marginTop: 24, display: "flex", justifyContent: "end" }}>
             {current < steps.length - 1 && <Button onClick={() => next()}>Siguiente</Button>}
-            {current === steps.length - 1 && <Button onClick={() => {}}>REALIZAR VENTA</Button>}
+            {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>}
           </div>
         </div>
       </Modal>
@@ -134,4 +172,6 @@ export default function RealizarVenta(props: realizarVentaProps) {
 export interface realizarVentaProps {
   setFlag: () => void;
   productos: productoModel[];
+  montoAPagar: number;
+  clientes: any;
 }

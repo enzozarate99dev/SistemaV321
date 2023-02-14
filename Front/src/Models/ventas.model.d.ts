@@ -47,7 +47,7 @@ export interface nuevoVentasModel {
 }
 
 //nuevas interfaces
-export interface ventaCreacion {
+export interface ventaCreacionDTO {
   id_cliente: number;
   fechaDeVenta: Date;
   tratamientoImpositivo: number;
@@ -69,7 +69,7 @@ export interface ventaLineCreacion {
   precioUnitario: number;
   cantidad: number;
   iva: number;
-  producto: productoDTO[];
+  producto: productoModel[];
 }
 
 export interface ventaOrders {

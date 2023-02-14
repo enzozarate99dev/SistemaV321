@@ -5,50 +5,50 @@ import TarjetaDebito from "../../assets/TarjetaDebito";
 import Button from "../../utils/Button";
 import "./ventaStyles.css";
 import { metodosDePago, pagos, ventaOrderPagos } from "../../Models/ventas.model";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import "./ventaStyles.css";
 
 export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoProps) {
   const [metodoPago, setMetodoPago] = useState<metodosDePago[]>([]);
   const [pago, setPago] = useState<pagos[]>([]);
+  const [botonSeleccionado, setBotonSeleccionado] = useState(true);
 
   const onClick = (value: string) => {
     setFormaDePago(value);
-    onSuccess();
+    console.log(value);
   };
 
-  // useEffect(() => {
-  //   setPago([
-  //     ...pago,
-  //     {
-  //       precioTotalAPagar: precioTotalAPagar,
-  //       fechaDePago: new Date(),
-  //       metodoDePago: [
-  //         ...metodoPago,
-  //         {
-  //           id_pago: pago.length + 1,
-  //           formaDePago: formadePago,
-  //         },
-  //       ],
-  //     },
-  //   ]);
-  //   console.log(pago);
-  // }, [formadePago]);
+  const pagoCredito = (value: string) => {
+    setFormaDePago(value);
+    onSuccess();
+  };
 
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>
       <div className="d-flex align-items-start mx-5">
         <div className="container">
           <Button
-            className="btn btn-transparent"
-            style={{
-              height: 148,
-              width: 148,
-              backgroundColor: "#FBFBFB",
-              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: 10,
-              color: "#6A7580",
+            className="btn btn-transparent boton"
+            style={
+              botonSeleccionado
+                ? {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    color: "#6A7580",
+                  }
+                : {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    color: "#6A7580",
+                  }
+            }
+            onClick={() => {
+              onClick("contado");
             }}
-            onClick={() => onClick("1")}
           >
             <Dinero />
             <p>CONTADO</p>
@@ -56,16 +56,28 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
         </div>
         <div className="container">
           <Button
-            className="btn btn-transparent"
-            style={{
-              height: 148,
-              width: 148,
-              backgroundColor: "#FBFBFB",
-              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: 10,
-              color: "#6A7580",
+            className="btn btn-transparent boton"
+            style={
+              botonSeleccionado
+                ? {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    color: "#6A7580",
+                  }
+                : {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    color: "#6A7580",
+                  }
+            }
+            onClick={() => {
+              onClick("debito");
+              // seleccionado();
             }}
-            onClick={() => onClick("2")}
           >
             <TarjetaDebito />
             <p>DEBITO</p>
@@ -73,16 +85,28 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
         </div>
         <div className="container">
           <Button
-            className="btn btn-transparent"
-            style={{
-              height: 148,
-              width: 148,
-              backgroundColor: "#FBFBFB",
-              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: 10,
-              color: "#6A7580",
+            className="btn btn-transparent boton"
+            style={
+              botonSeleccionado
+                ? {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    color: "#6A7580",
+                  }
+                : {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    color: "#6A7580",
+                  }
+            }
+            onClick={() => {
+              pagoCredito("credito");
+              // seleccionado();
             }}
-            onClick={() => onClick("3")}
           >
             <TarjetaCredito />
             <p>CREDITO</p>
@@ -93,32 +117,56 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
       <div className="d-flex mx-5 px-5 ">
         <div className="container">
           <Button
-            className="btn btn-transparent"
-            style={{
-              height: 148,
-              width: 148,
-              backgroundColor: "#FBFBFB",
-              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: 10,
-              color: "#6A7580",
+            className="btn btn-transparent boton"
+            style={
+              botonSeleccionado
+                ? {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    color: "#6A7580",
+                  }
+                : {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    color: "#6A7580",
+                  }
+            }
+            onClick={() => {
+              onClick("mercadoPago");
+              // seleccionado();
             }}
-            onClick={() => onClick("4")}
           >
             <p> Mercado Pago</p>
           </Button>
         </div>
         <div className="container">
           <Button
-            className="btn btn-transparent"
-            style={{
-              height: 148,
-              width: 148,
-              backgroundColor: "#FBFBFB",
-              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: 10,
-              color: "#6A7580",
+            className="btn btn-transparent boton"
+            style={
+              botonSeleccionado
+                ? {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    color: "#6A7580",
+                  }
+                : {
+                    height: 148,
+                    width: 148,
+                    backgroundColor: "#FBFBFB",
+                    color: "#6A7580",
+                  }
+            }
+            onClick={() => {
+              onClick("transferencia");
+              // seleccionado();
             }}
-            onClick={() => onClick("5")}
           >
             <Banco />
             <p>TRANSFERENCIA</p>

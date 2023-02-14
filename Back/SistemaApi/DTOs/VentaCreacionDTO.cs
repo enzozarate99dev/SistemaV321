@@ -11,7 +11,7 @@ namespace SistemaApi.DTOs
         public DateTime FechaDeVenta { get; set; }
         public double TratamientoImpositivo { get; set; }
         public ICollection<VentaLineCreacionDTO> VentaLines { get; set; }
-        public ICollection<VentaOrderCreacionDTO>  VentaOrders { get; set; }
+        public ICollection<VentaOrderCreacionDTO> ?   VentaOrders { get; set; }
 
     }
 }

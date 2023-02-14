@@ -1,21 +1,13 @@
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete, Steps } from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
 import PdfIcon from "../../assets/PdfIcon";
 import CargarCliente from "../../Clientes/Components/CargarCliente";
-import { urlClientes, urlProductos, urlVentas } from "../../Generales/endpoints";
+import { urlClientes, urlProductos } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import {
-  nuevoVentasModel,
-  ventaCreacion,
-  ventaLine,
-  ventaLineCreacion,
-  ventaOrderCreacion,
-  ventaOrderPagos,
-  ventasModel,
-} from "../../Models/ventas.model";
+import { ventaCreacionDTO, ventaLineCreacion, ventasModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
@@ -24,12 +16,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../utils/modal.css";
 import TrashIcon from "../../assets/TrashIcon";
-import FormaDePago from "./FormaDePago";
-import Montos from "./Montos";
-import PagoCredito from "./PagoCredito";
 import Swal from "sweetalert2";
 import "./ventaStyles.css";
-import Circle from "../../assets/Circle";
 import "./ventaStyles.css";
 import RealizarVenta from "./RealizarVenta";
 
@@ -198,14 +186,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
     autoTable(doc, {
       head: [["Nombre", "Cantidad", "Precio Unitario", "Precio Final"]],
-      body: productosTabla2.map((p) => [p.nombre, p.cantidad, p.precio, p.precioF]),
+      body: productosTabla2.map((p) => [p.nombre, p.cantidad, p.precio, p.precioF!]),
     });
     doc.save("presupuesto.pdf");
   }
 
   //Ventas
   function calcularSubtotal(productos: productoModel[]) {
-    return productos.reduce((suma, producto) => suma + producto.precioF, 0);
+    return productos.reduce((suma, producto) => suma + producto.precioF!, 0);
+    console.log(productosTabla2);
   }
 
   function calcularDescuento(porcentaje: number) {
@@ -220,95 +209,48 @@ export default function ListadoVentas(props: propsListadoVentas) {
     }
   }
 
-  // const next = () => {
-  //   setCurrent(current + 1);
-  // };
+  // useEffect(() => {
+  //   setVentaLineCreacion(
+  //     productosTabla2.map((p) => ({
+  //       id_producto: p.id_producto,
+  //       precioUnitario: p.precio,
+  //       cantidad: p.cantidad,
+  //       iva: 0,
+  //       producto: [
+  //         {
+  //           id_producto: p.id_producto,
+  //           nombre: p.nombre,
+  //           precio: p.precio,
+  //           cantidad: p.cantidad,
+  //           codigo: " ",
+  //           categoria: " ",
+  //           descripcion: " ",
+  //         },
+  //       ],
+  //     }))
+  //   );
+  //   console.log(ventaLineCreacion);
+  // }, [productosTabla2]);
 
-  // const onChange = (value: number) => {
-  //   setCurrent(value);
-  // };
+  // async function finalizarVenta() {
+  //   var venta: ventaCreacion = {
+  //     id_cliente: clienteSeleccionado!.id_cliente,
+  //     tratamientoImpositivo: 1,
+  //     fechaDeVenta: new Date(),
+  //     ventaLines: ventaLineCreacion,
+  //   };
 
-  // const steps = [
-  //   {
-  //     title: "",
-  //     content: (
-  //       <FormaDePago
-  //         formadePago={formadePago!}
-  //         setFormaDePago={setFormadePago}
-  //         precioTotalAPagar={descuento || subTotal}
-  //         ventaOrderPagos={ventaOrdenPagosCreacion}
-  //         onSuccess={next}
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     title: "",
-  //     content: formadePago === "3" ? <PagoCredito /> : <Montos montoAPagar={descuento || subTotal} formaDePago={formadePago!} />,
-  //   },
-  // ];
-
-  // const items = steps.map((item, index) => (
-  //   <Steps.Step
-  //     key={item.title}
-  //     icon={
-  //       <div
-  //         style={{
-  //           backgroundColor: current === index ? "#1DCA94" : "#6A7580",
-  //           width: 40,
-  //           height: 40,
-  //           borderRadius: "50%",
-  //         }}
-  //       ></div>
-  //     }
-  //   />
-  // ));
-
-  // const contentStyle: React.CSSProperties = {
-  //   textAlign: "center",
-  // };
-
-  useEffect(() => {
-    setVentaLineCreacion(
-      productosTabla2.map((p) => ({
-        id_producto: p.id_producto,
-        precioUnitario: p.precio,
-        cantidad: p.cantidad,
-        iva: 0,
-        producto: [
-          {
-            id_producto: p.id_producto,
-            nombre: p.nombre,
-            precio: p.precio,
-            cantidad: p.cantidad,
-            codigo: " ",
-            categoria: " ",
-            descripcion: " ",
-          },
-        ],
-      }))
-    );
-    console.log(ventaLineCreacion);
-  }, [productosTabla2]);
-
-  async function finalizarVenta() {
-    var venta: ventaCreacion = {
-      id_cliente: clienteSeleccionado!.id_cliente,
-      tratamientoImpositivo: 1,
-      fechaDeVenta: new Date(),
-      ventaLines: ventaLineCreacion,
-    };
-
-    crear(venta);
-    console.log(venta);
-  }
-  function crear(venta: ventaCreacion) {
-    try {
-      services.crear(venta);
-      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  }
+  //   crear(venta);
+  //   console.log(venta);
+  // }
+  // function crear(venta: ventaCreacionDTO) {
+  //   try {
+  //     services.crear(venta);
+  //     Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //   }
+  // }
 
   return (
     <>
@@ -487,41 +429,12 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 </div>
               </div>
               <div className="container mt-4">
-                <RealizarVenta setFlag={handleFlag} productos={productosTabla2} />
-
-                {/* <Button
-                  style={{
-                    width: 100,
-                    backgroundColor: "#fff",
-                    border: "3px solid #11A629",
-                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                    borderRadius: 10,
-                    color: "#000",
-                  }}
-                  onClick={() => showCargarVenta()}
-                >
-                  PAGAR
-                </Button> */}
-                {/* <Modal
-                  title="Cargar venta"
-                  width={980}
-                  // style={{ height: 579 }}
-                  open={openFormaDePago}
-                  footer={null}
-                  centered
-                  onCancel={showCargarVenta}
-                >
-                  <div>
-                    <Steps current={current} onChange={onChange}>
-                      {items}
-                    </Steps>
-                    <div style={contentStyle}>{steps[current].content}</div>
-                    <div style={{ marginTop: 24, display: "flex", justifyContent: "end" }}>
-                      {current < steps.length - 1 && <Button onClick={() => next()}>Siguiente</Button>}
-                      {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>}
-                    </div>
-                  </div>
-                </Modal> */}
+                <RealizarVenta
+                  setFlag={handleFlag}
+                  productos={productosTabla2}
+                  montoAPagar={totalConDescuento | subTotal}
+                  clientes={clienteSeleccionado}
+                />
               </div>
             </div>
           </div>

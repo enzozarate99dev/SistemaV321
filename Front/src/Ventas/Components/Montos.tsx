@@ -1,6 +1,7 @@
 import { Input } from "antd";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import Button from "../../utils/Button";
 import FormaDePago from "./FormaDePago";
 
 export default function Montos(props: montosProps) {
@@ -18,9 +19,6 @@ export default function Montos(props: montosProps) {
         title: "Error!",
         text: "La cantidad no puede superar el monto de la venta",
         icon: "error",
-        onOpen: () => {
-          Swal.clickConfirm();
-        },
       });
     } else if (total < props.montoAPagar) {
       console.log(`la deuda es ${props.montoAPagar - total}`);
@@ -28,8 +26,11 @@ export default function Montos(props: montosProps) {
       console.log("se guardo la venta");
     }
   }
+
   return (
     <div className="container">
+      <Button onClick={() => calcularMonto()}> asdasd</Button>
+
       <div className="d-flex justify-content-center align-items-center">
         <div className="text">CONTADO</div>
         <Input
@@ -37,7 +38,8 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setContado(parseInt(e.target.value))}
-          onPressEnter={() => calcularMonto()}
+          // onPressEnter={() => calcularMonto()}
+          disabled={props.formaDePago !== "contado"}
         />
       </div>
       <div className="d-flex justify-content-center align-items-center">
@@ -47,6 +49,7 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setDebito(parseInt(e.target.value))}
+          disabled={props.formaDePago !== "debito"}
           onPressEnter={() => calcularMonto()}
         />
       </div>
@@ -57,6 +60,7 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setMP(parseInt(e.target.value))}
+          disabled={props.formaDePago !== "mercadoPago"}
           onPressEnter={() => calcularMonto()}
         />
       </div>
@@ -67,6 +71,7 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setTransf(parseInt(e.target.value))}
+          disabled={props.formaDePago !== "transferencia"}
           onPressEnter={() => calcularMonto()}
         />
       </div>

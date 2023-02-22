@@ -15,10 +15,6 @@ namespace SistemaApi.Utilidades
             CreateMap<ProductoCreacionDTO, Producto>()
                 .ForMember(x => x.Foto, options => options.Ignore());
 
-           /* CreateMap<VentaCreacionDTO, Venta>()
-                .ForMember(x => x.Venta_Lines, opciones => opciones.MapFrom(MapearVentaProducto));*/
-           /* CreateMap<Venta, VentaDTO>()
-                .ForMember(x => x.Productos, options => options.MapFrom(MapearVentaProducto));*/
 
             CreateMap<VentaCreacionCFDTO, VentaConsumidorFinal>()
                 .ForMember(x => x.VentaCFProducto, opciones => opciones.MapFrom(MapearVentaCFProducto));
@@ -33,8 +29,7 @@ namespace SistemaApi.Utilidades
             CreateMap<VentaLine, VentaLineCreacionDTO>();
             CreateMap<VentaLineCreacionDTO, VentaLine>();
 
-            CreateMap<VentaOrder, VentaOrderCreacionDTO>();
-            CreateMap<VentaOrderCreacionDTO, VentaOrder>().ReverseMap(); ;
+           
 
             CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
             CreateMap<ClienteEntidad, ClienteDTO>().ReverseMap();

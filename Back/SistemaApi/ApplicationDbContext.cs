@@ -31,25 +31,9 @@ namespace SistemaApi
                 .HasForeignKey<VentaLine>(v => v.ProductoId);
                
 
-            modelBuilder.Entity<VentaOrder>(e =>
-            {
-                e.HasOne(x => x.Venta).WithMany(y => y.VentaOrders).HasForeignKey(x => x.VentaId).HasConstraintName("Venta_order1");
-            });
+          
 
-            modelBuilder.Entity<VentaOrderPago>()
-                .HasKey(x => new { x.PagoId, x.Venta_orderId });
-            modelBuilder.Entity<VentaOrderPago>()
-                .HasOne(x => x.Pago)
-                .WithMany(y => y.Venta_Order_Pagos)
-                .HasForeignKey(x => x.PagoId);
-            modelBuilder.Entity<VentaOrderPago>()
-                .HasOne(x => x.Venta_Order)
-                .WithMany(y => y.Venta_Order_Pagos)
-                .HasForeignKey(x => x.Venta_orderId);
-
-            modelBuilder.Entity<MetodoDePago>(e => {
-                e.HasOne(x => x.Pagos).WithMany(y => y.MetodosDePago).HasForeignKey(x => x.Id_pago).HasConstraintName("MetodoPago1");
-            });
+         
 
             modelBuilder.Entity<VentaCFProducto>()
 
@@ -71,8 +55,6 @@ namespace SistemaApi
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaLine> Venta_Lines { get; set; }
-        public DbSet<VentaOrder> Venta_Orders { get; set; }
-        public DbSet<VentaOrderPago> Venta_Order_Pagos { get; set; }
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }
@@ -81,7 +63,5 @@ namespace SistemaApi
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraProducto> CompraProductos { get; set; }
-        public DbSet<Pagos> Pagos { get; set; }
-        public DbSet<MetodoDePago> MetodoDePagos { get; set; }
     }
 }

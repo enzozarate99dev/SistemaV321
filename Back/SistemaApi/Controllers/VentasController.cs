@@ -55,10 +55,7 @@ namespace SistemaApi.Controllers
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Productos)
-                .Include(v => v.VentaOrders)
-                    .ThenInclude(vo => vo.Venta_Order_Pagos)
-                        .ThenInclude(vop => vop.Pago)
-                            .ThenInclude(p => p.MetodosDePago)
+                
                 .ToListAsync();
 
             return mapper.Map<List<VentaDTO>>(ventas);
@@ -235,10 +232,7 @@ namespace SistemaApi.Controllers
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Productos)
-                .Include(v => v.VentaOrders)
-                    .ThenInclude(vo => vo.Venta_Order_Pagos)
-                        .ThenInclude(vop => vop.Pago)
-                            .ThenInclude(p => p.MetodosDePago)
+               
                 .FirstOrDefaultAsync(v => v.Id_venta == id);
 
             if (venta == null) { return NotFound(); }

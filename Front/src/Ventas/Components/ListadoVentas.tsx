@@ -20,6 +20,7 @@ import Swal from "sweetalert2";
 import "./ventaStyles.css";
 import "./ventaStyles.css";
 import RealizarVenta from "./RealizarVenta";
+import { Field, FieldProps, Form, Formik } from "formik";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   // const history = useHistory();

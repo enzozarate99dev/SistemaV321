@@ -8,22 +8,33 @@ namespace SistemaApi.Utilidades
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Producto, ProductoDTO>().ReverseMap();
+            CreateMap<Producto, ProductoDTO>();
+            CreateMap<ProductoDTO, Producto>().ReverseMap();
+
+
             CreateMap<ProductoCreacionDTO, Producto>()
                 .ForMember(x => x.Foto, options => options.Ignore());
 
-     /*       CreateMap<VentaCreacionDTO, Venta>()
+           /* CreateMap<VentaCreacionDTO, Venta>()
                 .ForMember(x => x.Venta_Lines, opciones => opciones.MapFrom(MapearVentaProducto));*/
-          /*  CreateMap<Venta, VentaDTO>()
-                .ForMember(x => x.Productos, options => options.MapFrom(MapearVentaProducto));
-*/
+           /* CreateMap<Venta, VentaDTO>()
+                .ForMember(x => x.Productos, options => options.MapFrom(MapearVentaProducto));*/
+
             CreateMap<VentaCreacionCFDTO, VentaConsumidorFinal>()
                 .ForMember(x => x.VentaCFProducto, opciones => opciones.MapFrom(MapearVentaCFProducto));
             CreateMap<VentaConsumidorFinal, VentaConsumidorFinalDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
 
-            CreateMap<Venta, VentaDTO>();
-            CreateMap<VentaCreacionDTO, Venta>().ReverseMap();
+            CreateMap<Venta, VentaDTO>().ReverseMap();
+            CreateMap<VentaCreacionDTO, Venta>()
+                .ForMember(x => x.VentaLines, opt => opt.MapFrom(src => src.VentaLines));
+             
+
+            CreateMap<VentaLine, VentaLineCreacionDTO>();
+            CreateMap<VentaLineCreacionDTO, VentaLine>();
+
+            CreateMap<VentaOrder, VentaOrderCreacionDTO>();
+            CreateMap<VentaOrderCreacionDTO, VentaOrder>().ReverseMap(); ;
 
             CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
             CreateMap<ClienteEntidad, ClienteDTO>().ReverseMap();
@@ -178,7 +189,7 @@ namespace SistemaApi.Utilidades
             return resultado;
         }*/
 
-        private List<ProductoDTO> MapearVentaProducto(Venta venta, VentaDTO ventaDTO)
+        /*private List<ProductoDTO> MapearVentaProducto(Venta venta, VentaDTO ventaDTO)
         {
             var resultado = new List<ProductoDTO>();
 
@@ -200,6 +211,6 @@ namespace SistemaApi.Utilidades
             }
 
             return resultado;
-        }
+        }*/
     }
 }

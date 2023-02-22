@@ -2,9 +2,9 @@
 {
     public class VentaOrderCreacionDTO
     {
-        public int Id_venta { get; set; }
+        public int VentaId { get; set; }
         public DateTime Fecha { get; set; }
         public string TipoComprobante { get; set; }
-        public ICollection<VentaOrderPagosCreacionDTO> Venta_Order_Pagos { get; set; }
+        public ICollection<VentaOrderPagosCreacionDTO> VentaOrderPagos { get; set; }
     }
 }

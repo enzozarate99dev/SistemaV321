@@ -6,7 +6,8 @@ namespace SistemaApi.Entidades
     {
         [Key]
         public int Id_venta { get; set; }
-        public int Id_cliente { get; set; }
+        public int ClienteId { get; set; }
+        public virtual ClienteEntidad Cliente { get; set; }
         public double? PrecioTotal { get; set; }
         [Required]
         public DateTime FechaDeVenta { get; set; }
@@ -17,9 +18,8 @@ namespace SistemaApi.Entidades
         public int ConfirmacionAfip { get; set; }*/
         public double Adeudada { get; set; }
         /*public List<VentaProducto> VentaProducto { get; set; }*/
-        public virtual ClienteEntidad Cliente { get; set; }
-        public virtual ICollection<VentaLine> VentaLines { get; set; }
-        public virtual ICollection<VentaOrder> ? VentaOrders { get; set; }
+        public virtual List<VentaLine> VentaLines { get; set; }
+        public virtual List<VentaOrder> VentaOrders { get; set; }
 
     }
 }

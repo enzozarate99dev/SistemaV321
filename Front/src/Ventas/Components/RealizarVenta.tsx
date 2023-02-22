@@ -86,17 +86,15 @@ export default function RealizarVenta(props: realizarVentaProps) {
         precioUnitario: p.precio,
         cantidad: p.cantidad,
         iva: 0,
-        producto: [
-          {
-            id_producto: p.id_producto,
-            nombre: p.nombre,
-            precio: p.precio,
-            cantidad: p.cantidad,
-            codigo: " ",
-            categoria: " ",
-            descripcion: " ",
-          },
-        ],
+        producto: {
+          id_producto: p.id_producto,
+          nombre: p.nombre,
+          precio: p.precio,
+          cantidad: p.cantidad,
+          codigo: " ",
+          categoria: " ",
+          descripcion: " ",
+        },
       }))
     );
     console.log(props.productos);
@@ -106,20 +104,38 @@ export default function RealizarVenta(props: realizarVentaProps) {
     var venta: ventaCreacionDTO = {
       id_cliente: props.clientes.id_cliente,
       tratamientoImpositivo: 1,
+
       fechaDeVenta: new Date(),
       ventaLines: ventaLineCreacion,
-      ventaOrders: ventaOrderCreacion,
+      ventaOrders: [
+        {
+          id_venta: 1,
+
+          fechaOrder: new Date(),
+          tipoComprobante: "sad",
+          ventaOrderPagos: [
+            {
+              pagoId: 0,
+              ventaOrderId: 1,
+              pago: [
+                {
+                  precioTotal: 10,
+                  fechaDePago: new Date(),
+                  metodosDePago: [
+                    {
+                      id_pago: 0,
+                      formaDePago: "contado",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
     crearVenta(venta);
     console.log(venta);
-  }
-
-  function crearVentaOrder(ventaOrder: ventaOrderCreacion) {
-    try {
-      services.crearVentaOrder(ventaOrder);
-    } catch (err) {
-      console.log(err.response.data);
-    }
   }
 
   function crearVenta(venta: ventaCreacionDTO) {

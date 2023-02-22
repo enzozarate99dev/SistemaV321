@@ -13,23 +13,27 @@ namespace SistemaApi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            /*modelBuilder.Entity<VentaProducto>()
-                .HasKey(x => new { x.ProductoId, x.VentaId });*/
-
+           
        
             modelBuilder.Entity<Venta>(e => {
-                e.HasOne(x => x.Cliente).WithMany(y => y.Ventas).HasForeignKey(x => x.Id_cliente).HasConstraintName("Venta1");
+                e.HasOne(x => x.Cliente).WithMany(y => y.Ventas).HasForeignKey(x => x.ClienteId).HasConstraintName("Venta1");
                 });
             
            
 
             modelBuilder.Entity<VentaLine>(e => {
-                e.HasOne(x => x.Venta).WithMany(y => y.VentaLines).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_line1");
+                e.HasOne(x => x.Venta).WithMany(y => y.VentaLines).HasForeignKey(x => x.VentaId).HasConstraintName("Venta_line1");
             });
+
+            modelBuilder.Entity<VentaLine>()
+                .HasOne(v => v.Productos)
+                .WithOne(p => p.Venta_line)
+                .HasForeignKey<VentaLine>(v => v.ProductoId);
+               
 
             modelBuilder.Entity<VentaOrder>(e =>
             {
-                e.HasOne(x => x.Venta).WithMany(y => y.VentaOrders).HasForeignKey(x => x.Id_venta).HasConstraintName("Venta_order1");
+                e.HasOne(x => x.Venta).WithMany(y => y.VentaOrders).HasForeignKey(x => x.VentaId).HasConstraintName("Venta_order1");
             });
 
             modelBuilder.Entity<VentaOrderPago>()
@@ -42,14 +46,6 @@ namespace SistemaApi
                 .HasOne(x => x.Venta_Order)
                 .WithMany(y => y.Venta_Order_Pagos)
                 .HasForeignKey(x => x.Venta_orderId);
-
-
-            modelBuilder.Entity<Producto>()
-                .HasOne(x => x.Venta_line)
-                .WithOne(y => y.Producto)
-                .HasForeignKey<VentaLine>(y => y.Id_venta_line);
-
-         
 
             modelBuilder.Entity<MetodoDePago>(e => {
                 e.HasOne(x => x.Pagos).WithMany(y => y.MetodosDePago).HasForeignKey(x => x.Id_pago).HasConstraintName("MetodoPago1");
@@ -77,7 +73,6 @@ namespace SistemaApi
         public DbSet<VentaLine> Venta_Lines { get; set; }
         public DbSet<VentaOrder> Venta_Orders { get; set; }
         public DbSet<VentaOrderPago> Venta_Order_Pagos { get; set; }
-    /*    public DbSet<VentaProducto> VentaProductos { get; set; }*/
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }

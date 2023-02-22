@@ -54,7 +54,7 @@ namespace SistemaApi.Controllers
             var ventas = await context.Ventas
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
-                    .ThenInclude(vl => vl.Producto)
+                    .ThenInclude(vl => vl.Productos)
                 .Include(v => v.VentaOrders)
                     .ThenInclude(vo => vo.Venta_Order_Pagos)
                         .ThenInclude(vop => vop.Pago)
@@ -121,7 +121,7 @@ namespace SistemaApi.Controllers
         [HttpGet("ventasCliente/{id:int}")]
         public async Task<ActionResult<List<VentaDTO>>> Ventas(int id)
         {
-            var ventas = await context.Ventas.Where(x => x.Id_cliente == id).ToListAsync();
+            var ventas = await context.Ventas.Where(x => x.ClienteId == id).ToListAsync();
             return mapper.Map<List<VentaDTO>>(ventas);
         }
 
@@ -230,10 +230,16 @@ namespace SistemaApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<VentaDTO>> Get(int id)
         {
+           
             var venta = await context.Ventas
-                .Include(x => x.VentaLines)
-                    .ThenInclude(x => x.Producto)
-                .FirstOrDefaultAsync(x=>x.Id_venta == id);
+                .Include(v => v.Cliente)
+                .Include(v => v.VentaLines)
+                    .ThenInclude(vl => vl.Productos)
+                .Include(v => v.VentaOrders)
+                    .ThenInclude(vo => vo.Venta_Order_Pagos)
+                        .ThenInclude(vop => vop.Pago)
+                            .ThenInclude(p => p.MetodosDePago)
+                .FirstOrDefaultAsync(v => v.Id_venta == id);
 
             if (venta == null) { return NotFound(); }
 
@@ -276,27 +282,39 @@ namespace SistemaApi.Controllers
                  return mapper.Map<List<VentaDTO>>(ventas);
              }       
          }*/
+
+        
+
         [HttpPost]
-        public async Task<ActionResult<VentaCreacionDTO>> PostVenta(VentaCreacionDTO ventaCreacionDTO)
+        public async Task<ActionResult<VentaCreacionDTO>> PostVenta( VentaCreacionDTO ventaCreacion)
         {
-
-            var venta = mapper.Map<Venta>(ventaCreacionDTO);
-            double precioTotal = 0;
-
-            foreach (var ventaLine in venta.VentaLines)
+            var cliente = await context.Clientes.FindAsync(ventaCreacion.ClienteId);
+            if (cliente == null)
             {
-                precioTotal += ventaLine.PrecioUnitario * ventaLine.Cantidad;
+                return BadRequest("El cliente no esta registrado");
             }
 
-            venta.PrecioTotal = precioTotal;
 
+
+            var venta = mapper.Map<Venta>(ventaCreacion);
+            venta.FechaDeVenta = DateTime.Now;
+            double totalVenta = 0;
+
+           /* foreach (var ventaLine in ventaCreacion)
+            {
+                var producto = await context.Productos.FirstOrDefaultAsync(p => p.Id_producto == ventaLine.ProductoId);
+                if (producto == null) { return BadRequest("No se selecciono ningun producto"); }
+                ventaLine.Producto = producto;
+                totalVenta = producto.Precio * producto.Cantidad;
+            }*/
+
+            venta.PrecioTotal = totalVenta;
             context.Ventas.Add(venta);
             await context.SaveChangesAsync();
 
+            
 
-            
-            
-            return NoContent();
+            return Ok();
         }
 
         /*[HttpPost]
@@ -345,135 +363,135 @@ namespace SistemaApi.Controllers
             context.Add(venta);
             await context.SaveChangesAsync();
             return NoContent();*/
-            /* var objeto = await CrearRequest(cliente, ventaCreacionDTO);
-             var idComp = await facturas.GenerarFactura(objeto);
-             if(idComp != -1)
-             {
-                 venta.IdComprobante = (int)idComp;
-                 venta.ConfirmacionAfip = 0;
-                 context.Add(venta);
-                 await context.SaveChangesAsync();
-                 return NoContent();
-             }
-            else
-             {
-                 return BadRequest("Error al generar comprobante Facturante.com");
-             } */
-        }
-
-     /*   [HttpGet("PostGet")]
-        public async Task<ActionResult<VentasPostGetDTO>> PostGet()
-        {
-            var productos = await context.Productos
-                .Where(x => x.Cantidad > 0)
-                .OrderBy(x => x.Nombre)
-                .ToListAsync();
-            var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
-            return new VentasPostGetDTO() { Productos = productosDTO };
-        }*/
-
-       /* [HttpPut("cancelar/{id:int}")]
-        public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
-        {
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == venta.Id_cliente);
-
-            if (venta == null)
-            {
-                return NotFound();
-            }
-            venta.Adeudada -= ventaCancelarDTO.Pago;
-            cliente.Deuda -= ventaCancelarDTO.Pago;
-
-            await context.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
-
-            if (venta == null)
-            {
-                return NotFound();
-            }
-
-            context.Remove(venta);
-            await context.SaveChangesAsync();
-            return NoContent();
-        }*/
-
-       /* private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
-        {
-            CrearComprobanteRequest request = new CrearComprobanteRequest();
-            request.Autenticacion = new Autenticacion();
-            request.Autenticacion.Usuario = "TESTING_API_6N";
-            request.Autenticacion.Hash = "10BgP6cOWs78";
-            request.Autenticacion.Empresa = 3468;
-
-
-            request.Cliente = new Cliente();
-            request.Cliente.CodigoPostal = cliente.CodigoPostal;
-            request.Cliente.CondicionPago = ventaCreacionDTO.FormaDePago;
-            request.Cliente.Contacto = cliente.NombreYApellido;
-            request.Cliente.DireccionFiscal = cliente.Domicilio;
-            request.Cliente.EnviarComprobante = true;
-            request.Cliente.Localidad = cliente.Localidad;
-            request.Cliente.MailContacto = cliente.Email;
-            request.Cliente.MailFacturacion = cliente.Email;
-            request.Cliente.NroDocumento = cliente.NroDocumento;
-            request.Cliente.PercibeIIBB = cliente.PercibeIIBB;
-            request.Cliente.PercibeIVA = cliente.PercibeIVA;
-            request.Cliente.Provincia = cliente.Provincia;
-            request.Cliente.RazonSocial = cliente.RazonSocial;
-            request.Cliente.Telefono = cliente.Telefono;
-            request.Cliente.TipoDocumento = cliente.TipoDocumento;
-            request.Cliente.TratamientoImpositivo = ventaCreacionDTO.TratamientoImpositivo;
-
-            request.Encabezado = new ComprobanteEncabezado();
-            request.Encabezado.Bienes = 1;
-            request.Encabezado.CondicionVenta = ventaCreacionDTO.FormaDePago;
-            request.Encabezado.EnviarComprobante = true;
-            request.Encabezado.FechaHora = DateTime.Now;
-            request.Encabezado.FechaVtoPago = DateTime.Now.AddDays(7);
-            request.Encabezado.ImporteImpuestosInternos = 0;
-            request.Encabezado.ImportePercepcionesMunic = 0;
-            request.Encabezado.Moneda = 2;
-            request.Encabezado.Observaciones = "";
-            request.Encabezado.OrdenCompra = "";
-            request.Encabezado.PercepcionIIBB = 0;
-            request.Encabezado.PercepcionIVA = 0;
-            request.Encabezado.PorcentajeIIBB = 0;
-            request.Encabezado.Prefijo = "00099";
-            request.Encabezado.Remito = "";
-            request.Encabezado.TipoComprobante = ventaCreacionDTO.TipoComprobante;
-            request.Encabezado.TipoDeCambio = 1;
-            request.Encabezado.WebHook = new WebHook();
-            request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventas/webhook";
-            //request.Encabezado.WebHook.Url = "https://eodkmdwv8jdt7dt.m.pipedream.net";
-            var header = new HttpHeader[1];
-            header[0] = new HttpHeader { Name = "Authorization", Value = "10BgP6cOWs78" };
-            request.Encabezado.WebHook.Headers = header;
-
-            int longitud = ventaCreacionDTO.ProductosIds.Count;
-            request.Items = new ComprobanteItem[longitud];
-
-            for(var i = 0; i < longitud; i++)
-            {
-                request.Items[i] = new ComprobanteItem();
-                var prod = await context.Productos.FirstOrDefaultAsync(x => x.Id == ventaCreacionDTO.ProductosIds[i][0]);
-                request.Items[i].Bonificacion = 0;
-                request.Items[i].Cantidad = ventaCreacionDTO.ProductosIds[i][1];
-                request.Items[i].Codigo = prod.Codigo;
-                request.Items[i].Detalle = prod.Descripcion;
-                request.Items[i].Gravado = true;
-                request.Items[i].IVA = (decimal)ventaCreacionDTO.Iva;
-                request.Items[i].PrecioUnitario = (decimal)prod.Precio;
-            }
-         
-            return request;
-
-        } */
+        /* var objeto = await CrearRequest(cliente, ventaCreacionDTO);
+         var idComp = await facturas.GenerarFactura(objeto);
+         if(idComp != -1)
+         {
+             venta.IdComprobante = (int)idComp;
+             venta.ConfirmacionAfip = 0;
+             context.Add(venta);
+             await context.SaveChangesAsync();
+             return NoContent();
+         }
+        else
+         {
+             return BadRequest("Error al generar comprobante Facturante.com");
+         } */
     }
+
+    /*   [HttpGet("PostGet")]
+       public async Task<ActionResult<VentasPostGetDTO>> PostGet()
+       {
+           var productos = await context.Productos
+               .Where(x => x.Cantidad > 0)
+               .OrderBy(x => x.Nombre)
+               .ToListAsync();
+           var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
+           return new VentasPostGetDTO() { Productos = productosDTO };
+       }*/
+
+    /* [HttpPut("cancelar/{id:int}")]
+     public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
+     {
+         var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
+         var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == venta.Id_cliente);
+
+         if (venta == null)
+         {
+             return NotFound();
+         }
+         venta.Adeudada -= ventaCancelarDTO.Pago;
+         cliente.Deuda -= ventaCancelarDTO.Pago;
+
+         await context.SaveChangesAsync();
+         return NoContent();
+     }
+
+     [HttpDelete("{id:int}")]
+     public async Task<ActionResult> Delete(int id)
+     {
+         var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
+
+         if (venta == null)
+         {
+             return NotFound();
+         }
+
+         context.Remove(venta);
+         await context.SaveChangesAsync();
+         return NoContent();
+     }*/
+
+    /* private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
+     {
+         CrearComprobanteRequest request = new CrearComprobanteRequest();
+         request.Autenticacion = new Autenticacion();
+         request.Autenticacion.Usuario = "TESTING_API_6N";
+         request.Autenticacion.Hash = "10BgP6cOWs78";
+         request.Autenticacion.Empresa = 3468;
+
+
+         request.Cliente = new Cliente();
+         request.Cliente.CodigoPostal = cliente.CodigoPostal;
+         request.Cliente.CondicionPago = ventaCreacionDTO.FormaDePago;
+         request.Cliente.Contacto = cliente.NombreYApellido;
+         request.Cliente.DireccionFiscal = cliente.Domicilio;
+         request.Cliente.EnviarComprobante = true;
+         request.Cliente.Localidad = cliente.Localidad;
+         request.Cliente.MailContacto = cliente.Email;
+         request.Cliente.MailFacturacion = cliente.Email;
+         request.Cliente.NroDocumento = cliente.NroDocumento;
+         request.Cliente.PercibeIIBB = cliente.PercibeIIBB;
+         request.Cliente.PercibeIVA = cliente.PercibeIVA;
+         request.Cliente.Provincia = cliente.Provincia;
+         request.Cliente.RazonSocial = cliente.RazonSocial;
+         request.Cliente.Telefono = cliente.Telefono;
+         request.Cliente.TipoDocumento = cliente.TipoDocumento;
+         request.Cliente.TratamientoImpositivo = ventaCreacionDTO.TratamientoImpositivo;
+
+         request.Encabezado = new ComprobanteEncabezado();
+         request.Encabezado.Bienes = 1;
+         request.Encabezado.CondicionVenta = ventaCreacionDTO.FormaDePago;
+         request.Encabezado.EnviarComprobante = true;
+         request.Encabezado.FechaHora = DateTime.Now;
+         request.Encabezado.FechaVtoPago = DateTime.Now.AddDays(7);
+         request.Encabezado.ImporteImpuestosInternos = 0;
+         request.Encabezado.ImportePercepcionesMunic = 0;
+         request.Encabezado.Moneda = 2;
+         request.Encabezado.Observaciones = "";
+         request.Encabezado.OrdenCompra = "";
+         request.Encabezado.PercepcionIIBB = 0;
+         request.Encabezado.PercepcionIVA = 0;
+         request.Encabezado.PorcentajeIIBB = 0;
+         request.Encabezado.Prefijo = "00099";
+         request.Encabezado.Remito = "";
+         request.Encabezado.TipoComprobante = ventaCreacionDTO.TipoComprobante;
+         request.Encabezado.TipoDeCambio = 1;
+         request.Encabezado.WebHook = new WebHook();
+         request.Encabezado.WebHook.Url = "https://sistemamakersapi.azurewebsites.net/api/ventas/webhook";
+         //request.Encabezado.WebHook.Url = "https://eodkmdwv8jdt7dt.m.pipedream.net";
+         var header = new HttpHeader[1];
+         header[0] = new HttpHeader { Name = "Authorization", Value = "10BgP6cOWs78" };
+         request.Encabezado.WebHook.Headers = header;
+
+         int longitud = ventaCreacionDTO.ProductosIds.Count;
+         request.Items = new ComprobanteItem[longitud];
+
+         for(var i = 0; i < longitud; i++)
+         {
+             request.Items[i] = new ComprobanteItem();
+             var prod = await context.Productos.FirstOrDefaultAsync(x => x.Id == ventaCreacionDTO.ProductosIds[i][0]);
+             request.Items[i].Bonificacion = 0;
+             request.Items[i].Cantidad = ventaCreacionDTO.ProductosIds[i][1];
+             request.Items[i].Codigo = prod.Codigo;
+             request.Items[i].Detalle = prod.Descripcion;
+             request.Items[i].Gravado = true;
+             request.Items[i].IVA = (decimal)ventaCreacionDTO.Iva;
+             request.Items[i].PrecioUnitario = (decimal)prod.Precio;
+         }
+
+         return request;
+
+     } */
+}
 

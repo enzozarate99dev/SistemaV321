@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230222134219_ventalinemodif")]
-    partial class ventalinemodif
+    [Migration("20230223193838_Ventalinemodificaion123")]
+    partial class Ventalinemodificaion123
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -326,47 +326,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("CompraProductos");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.Property<int>("Id_metodoDePago")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_metodoDePago"), 1L, 1);
-
-                    b.Property<string>("FormaDePago")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Id_pago")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id_metodoDePago");
-
-                    b.HasIndex("Id_pago");
-
-                    b.ToTable("MetodoDePagos");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.Pagos", b =>
-                {
-                    b.Property<int>("Id_pago")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_pago"), 1L, 1);
-
-                    b.Property<DateTime>("FechaDePago")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("PrecioTotal")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id_pago");
-
-                    b.ToTable("Pagos");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.Property<int>("PresupuestoId")
@@ -592,46 +551,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("Venta_Lines");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
-                {
-                    b.Property<int>("Id_venta_order")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_venta_order"), 1L, 1);
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TipoComprobante")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("VentaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id_venta_order");
-
-                    b.HasIndex("VentaId");
-
-                    b.ToTable("Venta_Orders");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrderPago", b =>
-                {
-                    b.Property<int>("PagoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Venta_orderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PagoId", "Venta_orderId");
-
-                    b.HasIndex("Venta_orderId");
-
-                    b.ToTable("Venta_Order_Pagos");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -714,18 +633,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.Pagos", "Pagos")
-                        .WithMany("MetodosDePago")
-                        .HasForeignKey("Id_pago")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("MetodoPago1");
-
-                    b.Navigation("Pagos");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Presupuestos", "Presupuesto")
@@ -778,8 +685,8 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaLine", b =>
                 {
-                    b.HasOne("SistemaApi.Entidades.Producto", "Productos")
-                        .WithOne("Venta_line")
+                    b.HasOne("SistemaApi.Entidades.Producto", "Producto")
+                        .WithOne("VentaLine")
                         .HasForeignKey("SistemaApi.Entidades.VentaLine", "ProductoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -791,40 +698,9 @@ namespace SistemaApi.Migrations
                         .IsRequired()
                         .HasConstraintName("Venta_line1");
 
-                    b.Navigation("Productos");
+                    b.Navigation("Producto");
 
                     b.Navigation("Venta");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.Venta", "Venta")
-                        .WithMany("VentaOrders")
-                        .HasForeignKey("VentaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("Venta_order1");
-
-                    b.Navigation("Venta");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrderPago", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.Pagos", "Pago")
-                        .WithMany("Venta_Order_Pagos")
-                        .HasForeignKey("PagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SistemaApi.Entidades.VentaOrder", "Venta_Order")
-                        .WithMany("Venta_Order_Pagos")
-                        .HasForeignKey("Venta_orderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pago");
-
-                    b.Navigation("Venta_Order");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
@@ -835,13 +711,6 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
                 {
                     b.Navigation("CompraProducto");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.Pagos", b =>
-                {
-                    b.Navigation("MetodosDePago");
-
-                    b.Navigation("Venta_Order_Pagos");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>
@@ -857,7 +726,7 @@ namespace SistemaApi.Migrations
 
                     b.Navigation("VentaCFProducto");
 
-                    b.Navigation("Venta_line")
+                    b.Navigation("VentaLine")
                         .IsRequired();
                 });
 
@@ -869,18 +738,11 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.Navigation("VentaLines");
-
-                    b.Navigation("VentaOrders");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaConsumidorFinal", b =>
                 {
                     b.Navigation("VentaCFProducto");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
-                {
-                    b.Navigation("Venta_Order_Pagos");
                 });
 #pragma warning restore 612, 618
         }

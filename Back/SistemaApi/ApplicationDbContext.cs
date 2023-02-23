@@ -25,15 +25,21 @@ namespace SistemaApi
                 e.HasOne(x => x.Venta).WithMany(y => y.VentaLines).HasForeignKey(x => x.VentaId).HasConstraintName("Venta_line1");
             });
 
-            modelBuilder.Entity<VentaLine>()
-                .HasOne(v => v.Productos)
-                .WithOne(p => p.Venta_line)
-                .HasForeignKey<VentaLine>(v => v.ProductoId);
-               
+            /*   modelBuilder.Entity<VentaLine>(e =>
+               {
+                   e.HasOne(vl => vl.Productos).WithMany(p => p.VentaLines).HasForeignKey(vl => vl.ProductoId).HasConstraintName("Producto-VentaLine");
+               });*/
+            /*  modelBuilder.Entity<VentaLine>()
+                   .HasOne(v => v.Producto)
+                   .WithOne(p => p.VentaLine)
+                   .HasForeignKey<VentaLine>(v => v.ProductoId);*/
 
-          
+            modelBuilder.Entity<Producto>()
+                .HasOne(p => p.VentaLine)
+                .WithOne(vl => vl.Producto)
+                .HasForeignKey<VentaLine>(p => p.ProductoId);
 
-         
+
 
             modelBuilder.Entity<VentaCFProducto>()
 

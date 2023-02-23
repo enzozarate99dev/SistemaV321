@@ -19,6 +19,6 @@ namespace SistemaApi.Entidades
         public List<VentaCFProducto> VentaCFProducto { get; set; }
         public List<PresupuestoProducto> PresupuestoProducto { get; set; }
         public List<CompraProducto> CompraProducto { get; set; }
-        public  VentaLine Venta_line { get; set; }
+        public  VentaLine VentaLine { get; set; }
     }
 }

@@ -54,7 +54,7 @@ namespace SistemaApi.Controllers
             var ventas = await context.Ventas
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
-                    .ThenInclude(vl => vl.Productos)
+                    .ThenInclude(vl => vl.Producto)
                 
                 .ToListAsync();
 
@@ -231,7 +231,7 @@ namespace SistemaApi.Controllers
             var venta = await context.Ventas
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
-                    .ThenInclude(vl => vl.Productos)
+                    .ThenInclude(vl => vl.Producto)
                
                 .FirstOrDefaultAsync(v => v.Id_venta == id);
 
@@ -280,7 +280,7 @@ namespace SistemaApi.Controllers
         
 
         [HttpPost]
-        public async Task<ActionResult<VentaCreacionDTO>> PostVenta( VentaCreacionDTO ventaCreacion)
+        public async Task<ActionResult<VentaCreacionDTO>> Post( VentaCreacionDTO ventaCreacion)
         {
             var cliente = await context.Clientes.FindAsync(ventaCreacion.ClienteId);
             if (cliente == null)
@@ -288,27 +288,41 @@ namespace SistemaApi.Controllers
                 return BadRequest("El cliente no esta registrado");
             }
 
-
-
+/*            Después de que se ha mapeado el objeto ventaCreacion a un objeto Venta, el resultado se almacena
+ *            en la variable venta. Ahora venta  es un objeto de tipo Venta que tiene todas las 
+ *            propiedades y valores de ventaCreacion, pero en el formato de Venta.
+*/            
             var venta = mapper.Map<Venta>(ventaCreacion);
             venta.FechaDeVenta = DateTime.Now;
-            double totalVenta = 0;
-
-           /* foreach (var ventaLine in ventaCreacion)
-            {
-                var producto = await context.Productos.FirstOrDefaultAsync(p => p.Id_producto == ventaLine.ProductoId);
-                if (producto == null) { return BadRequest("No se selecciono ningun producto"); }
-                ventaLine.Producto = producto;
-                totalVenta = producto.Precio * producto.Cantidad;
-            }*/
-
-            venta.PrecioTotal = totalVenta;
+            double total = 0;
+            venta.Cliente = cliente;
             context.Ventas.Add(venta);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(); /* ya se creo el id_venta*/
+
+            foreach (var ventaline in  ventaCreacion.VentaLines)
+            {
+                var producto = await context.Productos.FindAsync(ventaline.ProductoId);
+                if (producto == null)
+                {
+                    return BadRequest($"El producto con id {ventaline.ProductoId} no existe");
+                }
+               
+
+                var ventaLineCreacion = mapper.Map<VentaLine>(ventaline);
+                ventaLineCreacion.Producto = producto;
+                ventaLineCreacion.ProductoId = ventaline.ProductoId;
+                ventaLineCreacion.Cantidad = ventaline.Cantidad;
+                producto.Cantidad -= ventaline.Cantidad;
+                total = producto.Precio * ventaline.Cantidad;
+                venta.PrecioTotal = total;
+                ventaLineCreacion.VentaId = venta.Id_venta;
+                venta.VentaLines.Add(ventaLineCreacion);
+               await context.SaveChangesAsync();
+            }
 
             
+            return Ok(venta);
 
-            return Ok();
         }
 
         /*[HttpPost]

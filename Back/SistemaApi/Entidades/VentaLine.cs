@@ -12,7 +12,7 @@ namespace SistemaApi.Entidades
         public int Cantidad { get; set; }
         public double Iva { get; set; }
         public virtual Venta Venta { get; set; }
-        public virtual Producto Productos { get; set; }
+        public virtual Producto Producto { get; set; }
 
     }
 }

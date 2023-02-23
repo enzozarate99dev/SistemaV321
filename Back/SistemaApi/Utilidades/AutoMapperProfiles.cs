@@ -10,6 +10,7 @@ namespace SistemaApi.Utilidades
         {
             CreateMap<Producto, ProductoDTO>();
             CreateMap<ProductoDTO, Producto>().ReverseMap();
+            CreateMap<Producto, ProductoVentaLineDTO>();
 
 
             CreateMap<ProductoCreacionDTO, Producto>()
@@ -21,15 +22,15 @@ namespace SistemaApi.Utilidades
             CreateMap<VentaConsumidorFinal, VentaConsumidorFinalDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
 
-            CreateMap<Venta, VentaDTO>().ReverseMap();
             CreateMap<VentaCreacionDTO, Venta>()
                 .ForMember(x => x.VentaLines, opt => opt.MapFrom(src => src.VentaLines));
-             
+            CreateMap<Venta, VentaDTO>().ReverseMap();
 
-            CreateMap<VentaLine, VentaLineCreacionDTO>();
             CreateMap<VentaLineCreacionDTO, VentaLine>();
+            CreateMap<VentaLine, VentaLineDTO>().ReverseMap();
 
-           
+
+
 
             CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
             CreateMap<ClienteEntidad, ClienteDTO>().ReverseMap();

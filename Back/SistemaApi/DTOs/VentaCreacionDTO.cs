@@ -8,6 +8,7 @@ namespace SistemaApi.DTOs
     {
         
         public int ClienteId { get; set; }
+       /* public double Total { get; set; }*/
         public ICollection<VentaLineCreacionDTO> VentaLines { get; set; }
 
     }

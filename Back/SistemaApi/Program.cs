@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SistemaApi.Services;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -53,7 +55,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
     });
 });*/
 
-
+JsonSerializerOptions options = new()
+{
+    ReferenceHandler = ReferenceHandler.IgnoreCycles,
+    WriteIndented = true
+};
 
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 

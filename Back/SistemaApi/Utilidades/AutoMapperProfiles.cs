@@ -27,6 +27,8 @@ namespace SistemaApi.Utilidades
             CreateMap<Venta, VentaDTO>().ReverseMap();
 
             CreateMap<VentaLineCreacionDTO, VentaLine>();
+                /*.ForMember(x => x.Producto, opt => opt.MapFrom(src => src.));*/
+
             CreateMap<VentaLine, VentaLineDTO>().ReverseMap();
 
 

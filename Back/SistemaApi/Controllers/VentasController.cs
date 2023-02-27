@@ -288,40 +288,44 @@ namespace SistemaApi.Controllers
                 return BadRequest("El cliente no esta registrado");
             }
 
-/*            Después de que se ha mapeado el objeto ventaCreacion a un objeto Venta, el resultado se almacena
- *            en la variable venta. Ahora venta  es un objeto de tipo Venta que tiene todas las 
- *            propiedades y valores de ventaCreacion, pero en el formato de Venta.
-*/            
-            var venta = mapper.Map<Venta>(ventaCreacion);
-            venta.FechaDeVenta = DateTime.Now;
-            double total = 0;
-            venta.Cliente = cliente;
-            context.Ventas.Add(venta);
-            await context.SaveChangesAsync(); /* ya se creo el id_venta*/
-
-            foreach (var ventaline in  ventaCreacion.VentaLines)
+            var venta = new Venta
             {
-                var producto = await context.Productos.FindAsync(ventaline.ProductoId);
+                FechaDeVenta = DateTime.Now,
+                Cliente = cliente,
+                PrecioTotal = 0,
+                Adeudada = 0,
+                
+            };
+
+            /*var lineaDeVenta = ventaCreacion.VentaLines.Select(vl =>
+            {
+                vl.Pr
+            });*/
+                
+            foreach (var ventaLineCreacion in  ventaCreacion.VentaLines)
+            {
+                var producto = await context.Productos.FindAsync(ventaLineCreacion.ProductoId);
                 if (producto == null)
                 {
-                    return BadRequest($"El producto con id {ventaline.ProductoId} no existe");
+                    return BadRequest($"El producto con id {ventaLineCreacion.ProductoId} no existe");
                 }
-               
 
-                var ventaLineCreacion = mapper.Map<VentaLine>(ventaline);
-                ventaLineCreacion.Producto = producto;
-                ventaLineCreacion.ProductoId = ventaline.ProductoId;
-                ventaLineCreacion.Cantidad = ventaline.Cantidad;
-                producto.Cantidad -= ventaline.Cantidad;
-                total = producto.Precio * ventaline.Cantidad;
-                venta.PrecioTotal = total;
-                ventaLineCreacion.VentaId = venta.Id_venta;
-                venta.VentaLines.Add(ventaLineCreacion);
-               await context.SaveChangesAsync();
+                var ventaLine = new VentaLine
+                {
+                    Producto = producto,
+                    Venta = venta,
+                    VentaId = venta.Id_venta,
+                    PrecioUnitario = producto.Precio,
+                }; 
+                producto.Cantidad -= ventaLineCreacion.Cantidad;
+                venta.PrecioTotal += ventaLineCreacion.Cantidad * ventaLine.PrecioUnitario;
+                context.Venta_Lines.Add(ventaLine);            
             }
 
-            
-            return Ok(venta);
+           context.Ventas.Add(venta);
+            await context.SaveChangesAsync();   
+
+            return NoContent();
 
         }
 

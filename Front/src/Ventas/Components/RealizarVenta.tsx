@@ -9,6 +9,7 @@ import * as services from "../Services/ventas.services";
 import PagoCredito from "./PagoCredito";
 import Swal from "sweetalert2";
 import { clienteModel } from "../../Models/clientes.model";
+import { urlVentas } from "../../Generales/endpoints";
 
 export default function RealizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
@@ -25,7 +26,7 @@ export default function RealizarVenta(props: realizarVentaProps) {
     tratamientoImpositivo: 0,
     fechaDeVenta: new Date(),
     ventaLines: [],
-    ventaOrders: [],
+    // ventaOrders: [],
   };
 
   const showCargarVenta = () => {
@@ -107,32 +108,32 @@ export default function RealizarVenta(props: realizarVentaProps) {
 
       fechaDeVenta: new Date(),
       ventaLines: ventaLineCreacion,
-      ventaOrders: [
-        {
-          id_venta: 1,
+      // ventaOrders: [
+      //   {
+      //     id_venta: 1,
 
-          fechaOrder: new Date(),
-          tipoComprobante: "sad",
-          ventaOrderPagos: [
-            {
-              pagoId: 0,
-              ventaOrderId: 1,
-              pago: [
-                {
-                  precioTotal: 10,
-                  fechaDePago: new Date(),
-                  metodosDePago: [
-                    {
-                      id_pago: 0,
-                      formaDePago: "contado",
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      //     fechaOrder: new Date(),
+      //     tipoComprobante: "sad",
+      //     ventaOrderPagos: [
+      //       {
+      //         pagoId: 0,
+      //         ventaOrderId: 1,
+      //         pago: [
+      //           {
+      //             precioTotal: 10,
+      //             fechaDePago: new Date(),
+      //             metodosDePago: [
+      //               {
+      //                 id_pago: 0,
+      //                 formaDePago: "contado",
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // ],
     };
     crearVenta(venta);
     console.log(venta);

@@ -36,7 +36,25 @@ namespace SistemaApi
                    .WithMany(p => p.VentaLine)
                    .HasForeignKey(vl => vl.ProductoId)
                    .HasConstraintName("Producto-VentaLine");
-           
+
+            modelBuilder.Entity<VentaOrder>()
+                .HasOne(vo => vo.Venta)
+                .WithMany(v => v.VentaOrders)
+                .HasForeignKey(vo => vo.VentaId)
+                .HasConstraintName("VentaOrder1");
+
+            modelBuilder.Entity<VentaOrderPago>()
+                .HasKey(vop => new { vop.PagoId, vop.VentaOrderId });
+            modelBuilder.Entity<VentaOrderPago>()
+                .HasOne(vop => vop.Pago)
+                .WithMany(p => p.VentaOrderPagos)
+                .HasForeignKey(vop => vop.PagoId);
+            modelBuilder.Entity<VentaOrderPago>()
+                .HasOne(vop => vop.VentaOrder)
+                .WithMany(vo => vo.VentaOrderPagos)
+                .HasForeignKey(vop => vop.VentaOrderId);
+
+
 
 
             modelBuilder.Entity<VentaCFProducto>()
@@ -50,7 +68,10 @@ namespace SistemaApi
                 .HasKey(x => new { x.ProductoId, x.CompraId });
             modelBuilder.Entity<Compra>(e =>
             {
-                e.HasOne(x => x.Proveedor).WithMany(y => y.Compras).HasForeignKey(z => z.ProveedorId).HasConstraintName("Compra1");
+                e.HasOne(x => x.Proveedor)
+                .WithMany(y => y.Compras)
+                .HasForeignKey(z => z.ProveedorId)
+                .HasConstraintName("Compra1");
             });
 
 
@@ -59,6 +80,9 @@ namespace SistemaApi
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaLine> Venta_Lines { get; set; }
+        public DbSet<VentaOrderPago> VentaOrderPagos { get; set; }
+        public DbSet<Pago> Pagos { get; set; }
+        public DbSet<VentaOrder> VentaOrders { get; set; }
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }

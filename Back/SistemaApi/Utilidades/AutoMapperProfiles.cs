@@ -27,7 +27,6 @@ namespace SistemaApi.Utilidades
             CreateMap<Venta, VentaDTO>().ReverseMap();
 
             CreateMap<VentaLineCreacionDTO, VentaLine>();
-                /*.ForMember(x => x.Producto, opt => opt.MapFrom(src => src.));*/
 
             CreateMap<VentaLine, VentaLineDTO>().ReverseMap();
 
@@ -50,6 +49,22 @@ namespace SistemaApi.Utilidades
             CreateMap<Presupuestos, PresupuestosDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearPresupuestoProducto));
         }
+
+       /* private List<VentaLine> MapVentaLines(List<VentaLineCreacionDTO> ventalinecreacionDTO )
+        {
+            var lines = new List<VentaLine>();
+            foreach(var ventaline in ventalinecreacionDTO)
+            {
+                var ventaLineCreacion = new VentaLine()
+                {
+                    ProductoId = ventaline.ProductoId,
+                    Cantidad = ventaline.Cantidad,
+                   
+                };
+                lines.Add(ventaLineCreacion);
+                return lines;
+            }
+        }*/
 
         private List<ProductoDTO> MapearCompraProducto(Compra compra, CompraDTO compraDTO)
         {

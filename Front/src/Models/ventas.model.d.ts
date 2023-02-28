@@ -9,7 +9,7 @@ export interface ventaCreacionDTO {
   fechaDeVenta: Date;
   tratamientoImpositivo: number;
   ventaLines: ventaLineCreacion[];
-  ventaOrders: ventaOrderCreacion[];
+  // ventaOrders: ventaOrderCreacion[];
 }
 
 export interface ventaLine {

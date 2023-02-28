@@ -324,6 +324,29 @@ namespace SistemaApi.Migrations
                     b.ToTable("CompraProductos");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
+                {
+                    b.Property<int>("Id_pago")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_pago"), 1L, 1);
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("Importe")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MetodoDePago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id_pago");
+
+                    b.ToTable("Pagos");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.Property<int>("PresupuestoId")
@@ -548,6 +571,46 @@ namespace SistemaApi.Migrations
                     b.ToTable("Venta_Lines");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
+                {
+                    b.Property<int>("Id_VentaOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_VentaOrder"), 1L, 1);
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TipoComprobante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VentaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id_VentaOrder");
+
+                    b.HasIndex("VentaId");
+
+                    b.ToTable("VentaOrders");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaOrderPago", b =>
+                {
+                    b.Property<int>("PagoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VentaOrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PagoId", "VentaOrderId");
+
+                    b.HasIndex("VentaOrderId");
+
+                    b.ToTable("VentaOrderPagos");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -701,6 +764,37 @@ namespace SistemaApi.Migrations
                     b.Navigation("Venta");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Venta", "Venta")
+                        .WithMany("VentaOrders")
+                        .HasForeignKey("VentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("VentaOrder1");
+
+                    b.Navigation("Venta");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaOrderPago", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Pago", "Pago")
+                        .WithMany("VentaOrderPagos")
+                        .HasForeignKey("PagoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaApi.Entidades.VentaOrder", "VentaOrder")
+                        .WithMany("VentaOrderPagos")
+                        .HasForeignKey("VentaOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pago");
+
+                    b.Navigation("VentaOrder");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
                 {
                     b.Navigation("Ventas");
@@ -709,6 +803,11 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
                 {
                     b.Navigation("CompraProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
+                {
+                    b.Navigation("VentaOrderPagos");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>
@@ -735,11 +834,18 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.Navigation("VentaLines");
+
+                    b.Navigation("VentaOrders");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaConsumidorFinal", b =>
                 {
                     b.Navigation("VentaCFProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
+                {
+                    b.Navigation("VentaOrderPagos");
                 });
 #pragma warning restore 612, 618
         }

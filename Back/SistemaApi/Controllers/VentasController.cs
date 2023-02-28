@@ -232,6 +232,9 @@ namespace SistemaApi.Controllers
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
+                .Include(v => v.VentaOrders)
+                    .ThenInclude(vo => vo.VentaOrderPagos)
+                        .ThenInclude(vop => vop.Pago)
                
                 .FirstOrDefaultAsync(v => v.Id_venta == id);
 
@@ -302,25 +305,32 @@ namespace SistemaApi.Controllers
                 vl.Pr
             });*/
                 
-            foreach (var ventaLineCreacion in  ventaCreacion.VentaLines)
+            foreach (var ventaLine in  ventaCreacion.VentaLines)
             {
-                var producto = await context.Productos.FindAsync(ventaLineCreacion.ProductoId);
+                var producto = await context.Productos.FindAsync(ventaLine.ProductoId);
                 if (producto == null)
                 {
-                    return BadRequest($"El producto con id {ventaLineCreacion.ProductoId} no existe");
+                    return BadRequest($"El producto con id {ventaLine.ProductoId} no existe");
                 }
 
-                var ventaLine = new VentaLine
+                var ventaLineCreacion = new VentaLine
                 {
                     Producto = producto,
                     Venta = venta,
                     VentaId = venta.Id_venta,
                     PrecioUnitario = producto.Precio,
                 }; 
-                producto.Cantidad -= ventaLineCreacion.Cantidad;
-                venta.PrecioTotal += ventaLineCreacion.Cantidad * ventaLine.PrecioUnitario;
-                context.Venta_Lines.Add(ventaLine);            
+                producto.Cantidad -= ventaLine.Cantidad;
+                venta.PrecioTotal += ventaLine.Cantidad * ventaLineCreacion.PrecioUnitario;
+                context.Venta_Lines.Add(ventaLineCreacion);            
             }
+
+          /*  var ventaOrder = new VentaOrder
+            {
+                Venta = venta,
+                VentaId = venta.Id_venta,
+                TipoComprobante = ""
+            };*/
 
            context.Ventas.Add(venta);
             await context.SaveChangesAsync();   

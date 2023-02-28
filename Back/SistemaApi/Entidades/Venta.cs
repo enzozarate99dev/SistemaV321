@@ -17,7 +17,8 @@ namespace SistemaApi.Entidades
         public int IdComprobante { get; set; }
         public int ConfirmacionAfip { get; set; }*/
         public double Adeudada { get; set; }
-        public virtual List<VentaLine> VentaLines { get; set; }
+        public virtual ICollection<VentaLine> VentaLines { get; set; }
+        public virtual ICollection<VentaOrder> VentaOrders { get; set; }
 
     }
 }

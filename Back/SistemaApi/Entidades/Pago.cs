@@ -8,9 +8,8 @@ namespace SistemaApi.Entidades
         public int Id_pago { get; set; }
         public double Importe { get; set; }
         public DateTime Fecha { get; set; }
-        public string MetodoDePago { get; set; }
-        public List<VentaOrderPago> VentaOrderPagos { get; set; }
-
+        public int MetodoDePago { get; set; }
+        public ICollection<VentaOrder> VentaOrders { get; set; }
 
     }
 }

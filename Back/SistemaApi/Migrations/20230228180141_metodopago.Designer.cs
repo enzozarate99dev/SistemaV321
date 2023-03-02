@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaApi;
 
@@ -11,9 +12,10 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228180141_metodopago")]
+    partial class metodopago
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -374,9 +376,6 @@ namespace SistemaApi.Migrations
 
                     b.Property<double>("Importe")
                         .HasColumnType("float");
-
-                    b.Property<int>("MetodoDePago")
-                        .HasColumnType("int");
 
                     b.HasKey("Id_pago");
 
@@ -743,10 +742,11 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Pago", "Pago")
-                        .WithMany()
+                        .WithMany("MetodosDePago")
                         .HasForeignKey("PagoId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("MetodoDePago1");
 
                     b.Navigation("Pago");
                 });
@@ -861,6 +861,11 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
                 {
                     b.Navigation("CompraProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
+                {
+                    b.Navigation("MetodosDePago");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>

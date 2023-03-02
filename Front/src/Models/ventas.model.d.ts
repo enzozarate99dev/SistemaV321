@@ -5,10 +5,10 @@ import { productoDTO, productoModel } from "./producto.model";
 
 //nuevas interfaces
 export interface ventaCreacionDTO {
-  id_cliente: number;
-  fechaDeVenta: Date;
-  tratamientoImpositivo: number;
+  clienteId: number;
+  // tratamientoImpositivo: number;
   ventaLines: ventaLineCreacion[];
+  pagos: pagoCreacion[];
   // ventaOrders: ventaOrderCreacion[];
 }
 
@@ -22,11 +22,10 @@ export interface ventaLine {
 }
 
 export interface ventaLineCreacion {
-  id_producto: number;
-  precioUnitario: number;
   cantidad: number;
-  iva: number;
-  producto: productoModel;
+  productoId: number;
+  // producto: productoModel;
+  // iva: number;
 }
 
 export interface ventaOrders {
@@ -44,39 +43,39 @@ export interface ventaOrderCreacion {
   ventaOrderPagos: ventaOrderPagosCreacion[];
 }
 
-export interface ventaOrderPagos {
-  pagoId: number;
-  ventaOrderId: number;
-  pago: pagos[];
-}
+// export interface ventaOrderPagos {
+//   pagoId: number;
+//   ventaOrderId: number;
+//   pago: pago[];
+// }
 
-export interface ventaOrderPagosCreacion {
-  pagoId: number;
-  ventaOrderId: number;
-  pago: pagosCreacion[];
-}
+// export interface ventaOrderPagosCreacion {
+//   pagoId: number;
+//   ventaOrderId: number;
+//   pago: pagoCreacion[];
+// }
 
-export interface pagos {
+export interface pago {
   precioTotalAPagar: number;
   fechaDePago?: Date;
-  metodoDePago: metodosDePago[];
+  metodoDePago: number;
 }
 
-export interface pagosCreacion {
-  precioTotal: number;
-  fechaDePago: Date;
-  metodosDePago: metodosDePagoCreacion[];
+export interface pagoCreacion {
+  importe: number;
+  // fechaDePago: Date;
+  metodoDePago: number;
 }
 
-export interface metodosDePagoCreacion {
-  id_pago: number;
-  formaDePago: string;
-}
+// export interface metodosDePagoCreacion {
+//   id_pago: number;
+//   formaDePago: string;
+// }
 
-export interface metodosDePago {
-  id_pago: number;
-  formaDePago: string;
-}
+// export interface metodosDePago {
+//   id_pago: number;
+//   formaDePago: string;
+// }
 
 //viejas
 export interface ventasModel {

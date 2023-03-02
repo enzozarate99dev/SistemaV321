@@ -15,6 +15,6 @@ namespace SistemaApi.DTOs
         public int TratamientoImpositivo { get; set; }
         public double Adeudada { get; set; }
         public List<VentaLineDTO> VentaLines { get; set; }
-        public List<VentaOrder> VentaOrders { get; set; }
+        public List<VentaOrderDTO> VentaOrders { get; set; }
     }
 }

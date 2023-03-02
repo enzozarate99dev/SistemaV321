@@ -22,14 +22,18 @@ namespace SistemaApi.Utilidades
             CreateMap<VentaConsumidorFinal, VentaConsumidorFinalDTO>()
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
 
-            CreateMap<VentaCreacionDTO, Venta>()
-                .ForMember(x => x.VentaLines, opt => opt.MapFrom(src => src.VentaLines));
+            CreateMap<VentaCreacionDTO, Venta>();
+            /*    .ForMember(x=> x.VentaOrders, opt => opt.MapFrom(src => src.enta))*/
+          /*      
+               .ForMember(x => x.VentaLines, opt => opt.MapFrom(src => src.VentaLinesCreacion));*/
             CreateMap<Venta, VentaDTO>().ReverseMap();
 
             CreateMap<VentaLineCreacionDTO, VentaLine>();
 
             CreateMap<VentaLine, VentaLineDTO>().ReverseMap();
 
+            CreateMap<VentaOrder, VentaOrderDTO>()
+                .ForMember(x => x.Pagos, opt => opt.MapFrom(MapearVentaOrderPagos));
 
 
 
@@ -50,21 +54,27 @@ namespace SistemaApi.Utilidades
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearPresupuestoProducto));
         }
 
-       /* private List<VentaLine> MapVentaLines(List<VentaLineCreacionDTO> ventalinecreacionDTO )
+
+        private List<PagoDTO> MapearVentaOrderPagos(VentaOrder ventaOrder, VentaOrderDTO ventaOrderDTO)
         {
-            var lines = new List<VentaLine>();
-            foreach(var ventaline in ventalinecreacionDTO)
+            var resultado = new List<PagoDTO>();
+            if (ventaOrder.Pagos != null)
             {
-                var ventaLineCreacion = new VentaLine()
+                foreach (var pago in ventaOrder.Pagos)
                 {
-                    ProductoId = ventaline.ProductoId,
-                    Cantidad = ventaline.Cantidad,
-                   
-                };
-                lines.Add(ventaLineCreacion);
-                return lines;
+                    resultado.Add(new PagoDTO()
+                    {
+                        Id_pago = pago.Id_pago,
+                        Fecha = pago.Fecha,
+                        MetodoDePago = pago.MetodoDePago,
+                        Importe = pago.Importe,
+
+                    });
+                }
+
             }
-        }*/
+            return resultado;
+        }
 
         private List<ProductoDTO> MapearCompraProducto(Compra compra, CompraDTO compraDTO)
         {
@@ -145,6 +155,8 @@ namespace SistemaApi.Utilidades
 
             return resultado;
         }
+
+       
 
         private List<ProductoDTO> MapearVentaCFProducto(VentaConsumidorFinal ventaConsumidorFinal, VentaConsumidorFinalDTO ventaConsumidorFinalDTO)
         {

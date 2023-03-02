@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemaApi;
 
@@ -11,9 +12,10 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228145114_newventaorder")]
+    partial class newventaorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -339,28 +341,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("CompraProductos");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Metodo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PagoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PagoId");
-
-                    b.ToTable("MetodosDePago");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
                 {
                     b.Property<int>("Id_pago")
@@ -375,8 +355,9 @@ namespace SistemaApi.Migrations
                     b.Property<double>("Importe")
                         .HasColumnType("float");
 
-                    b.Property<int>("MetodoDePago")
-                        .HasColumnType("int");
+                    b.Property<string>("MetodoDePago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id_pago");
 
@@ -618,6 +599,10 @@ namespace SistemaApi.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TipoComprobante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("VentaId")
                         .HasColumnType("int");
 
@@ -738,17 +723,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("Compra");
 
                     b.Navigation("Producto");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.Pago", "Pago")
-                        .WithMany()
-                        .HasForeignKey("PagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pago");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>

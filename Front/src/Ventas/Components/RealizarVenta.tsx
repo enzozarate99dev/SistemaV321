@@ -1,7 +1,7 @@
 import { Modal, Steps } from "antd";
 import { useEffect, useState } from "react";
 import { productoModel } from "../../Models/producto.model";
-import { ventaOrderPagos, ventaLineCreacion, ventaCreacionDTO, ventaOrderCreacion } from "../../Models/ventas.model";
+import { ventaLineCreacion, ventaCreacionDTO, pagoCreacion } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
 import FormaDePago from "./FormaDePago";
 import Montos from "./Montos";
@@ -15,19 +15,17 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
 
   const [current, setCurrent] = useState(0);
-  const [formadePago, setFormadePago] = useState<string>();
+  const [formadePago, setFormadePago] = useState<number>(0);
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
-  const [ventaOrderCreacion, setVentaOrderCreacion] = useState<ventaOrderCreacion[]>([]);
-  const [ventaOrdenPagosCreacion, setVentaOrdenPagosCreacion] = useState<ventaOrderPagos[]>([]);
+  const [pagoCreacion, setPagoCreacion] = useState<pagoCreacion[]>([]);
 
-  const modelo: ventaCreacionDTO = {
-    id_cliente: 0,
-    tratamientoImpositivo: 0,
-    fechaDeVenta: new Date(),
-    ventaLines: [],
-    // ventaOrders: [],
-  };
+  // const modelo: ventaCreacionDTO = {
+  //   clienteId: 0,
+  //   tratamientoImpositivo: 0,
+  //   ventaLines: [],
+  //   // ventaOrders: [],
+  // };
 
   const showCargarVenta = () => {
     setOpenFormaDePago(!openFormaDePago);
@@ -45,18 +43,11 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const steps = [
     {
       title: "",
-      content: (
-        <FormaDePago
-          formadePago={formadePago!}
-          setFormaDePago={setFormadePago}
-          ventaOrderPagos={ventaOrdenPagosCreacion}
-          onSuccess={next}
-        />
-      ),
+      content: <FormaDePago formadePago={formadePago!} setFormaDePago={setFormadePago} onSuccess={next} />,
     },
     {
       title: "",
-      content: formadePago === "credito" ? <PagoCredito /> : <Montos montoAPagar={props.montoAPagar} formaDePago={formadePago!} />,
+      content: formadePago == 3 ? <PagoCredito /> : <Montos montoAPagar={props.montoAPagar} formaDePago={formadePago!} />,
     },
   ];
 
@@ -83,61 +74,34 @@ export default function RealizarVenta(props: realizarVentaProps) {
   useEffect(() => {
     setVentaLineCreacion(
       props.productos.map((p) => ({
-        id_producto: p.id_producto,
-        precioUnitario: p.precio,
+        productoId: p.id_producto,
         cantidad: p.cantidad,
-        iva: 0,
-        producto: {
-          id_producto: p.id_producto,
-          nombre: p.nombre,
-          precio: p.precio,
-          cantidad: p.cantidad,
-          codigo: " ",
-          categoria: " ",
-          descripcion: " ",
-        },
       }))
     );
-    console.log(props.productos);
+    console.log(` el ventaline: ${ventaLineCreacion}`);
   }, [props.productos]);
+
+  useEffect(() => {
+    setPagoCreacion([
+      {
+        importe: props.montoAPagar,
+        metodoDePago: formadePago,
+      },
+    ]);
+    console.log(pagoCreacion);
+  }, [formadePago]);
+  console.log(`pago creacion1: ${pagoCreacion}`);
 
   async function finalizarVenta() {
     var venta: ventaCreacionDTO = {
-      id_cliente: props.clientes.id_cliente,
-      tratamientoImpositivo: 1,
-
-      fechaDeVenta: new Date(),
+      clienteId: props.clientes.id_cliente,
       ventaLines: ventaLineCreacion,
-      // ventaOrders: [
-      //   {
-      //     id_venta: 1,
-
-      //     fechaOrder: new Date(),
-      //     tipoComprobante: "sad",
-      //     ventaOrderPagos: [
-      //       {
-      //         pagoId: 0,
-      //         ventaOrderId: 1,
-      //         pago: [
-      //           {
-      //             precioTotal: 10,
-      //             fechaDePago: new Date(),
-      //             metodosDePago: [
-      //               {
-      //                 id_pago: 0,
-      //                 formaDePago: "contado",
-      //               },
-      //             ],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      // ],
+      pagos: pagoCreacion,
     };
     crearVenta(venta);
     console.log(venta);
   }
+  console.log(`pago creacion2: ${pagoCreacion}`);
 
   function crearVenta(venta: ventaCreacionDTO) {
     try {

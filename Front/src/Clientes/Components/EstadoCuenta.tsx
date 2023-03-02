@@ -1,7 +1,19 @@
 import { Table } from "antd";
-import { clienteModel } from "../../Models/clientes.model";
+import { useEffect, useState } from "react";
+import { clienteModel, clientePagos } from "../../Models/clientes.model";
 
 export default function EstadoCuenta(props: estadoCuentaProps) {
+  const [estadoCuentaCliente, setEstadoCuentaCliente] = useState<clientePagos[]>([]);
+
+  // useEffect(() => {
+  //   setEstadoCuentaCliente(
+  //     props.clientes.map((c) => ({
+  //      clienteId: c.id_cliente,
+  //      metodoDePago: 0,
+  //     }))
+  //   )
+  // }, []);
+
   const columns = [
     {
       title: "Fecha",
@@ -9,7 +21,7 @@ export default function EstadoCuenta(props: estadoCuentaProps) {
       key: "fechaDeVenta",
     },
     {
-      title: "Nombre",
+      title: "Tipo",
       dataIndex: "tipoComprobante",
       key: "tipoComprobante",
     },
@@ -43,12 +55,16 @@ export default function EstadoCuenta(props: estadoCuentaProps) {
   return (
     <>
       <p>DEUDA</p>
-      <div className="container">$300</div>
-      <Table columns={columns} />
+      <div className="container"> </div>
+      <Table
+        columns={columns}
+        // dataSource={estadoCuentaCliente}
+      />
     </>
   );
 }
 interface estadoCuentaProps {
   setFlagModal: () => void;
   setFlagListado: () => void;
+  // clientes: clientePagos[];
 }

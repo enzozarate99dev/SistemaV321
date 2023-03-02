@@ -4,21 +4,20 @@ import TarjetaCredito from "../../assets/TarjetaCredito";
 import TarjetaDebito from "../../assets/TarjetaDebito";
 import Button from "../../utils/Button";
 import "./ventaStyles.css";
-import { metodosDePago, pagos, ventaOrderPagos } from "../../Models/ventas.model";
+import { pago } from "../../Models/ventas.model";
 import { useEffect, useRef, useState } from "react";
 import "./ventaStyles.css";
 
 export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoProps) {
-  const [metodoPago, setMetodoPago] = useState<metodosDePago[]>([]);
-  const [pago, setPago] = useState<pagos[]>([]);
+  // const [pago, setPago] = useState<pago[]>([]);
   const [botonSeleccionado, setBotonSeleccionado] = useState(true);
 
-  const onClick = (value: string) => {
+  const onClick = (value: number) => {
     setFormaDePago(value);
     console.log(value);
   };
 
-  const pagoCredito = (value: string) => {
+  const pagoCredito = (value: number) => {
     setFormaDePago(value);
     onSuccess();
   };
@@ -47,7 +46,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
                   }
             }
             onClick={() => {
-              onClick("contado");
+              onClick(1);
             }}
           >
             <Dinero />
@@ -75,7 +74,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
                   }
             }
             onClick={() => {
-              onClick("debito");
+              onClick(2);
               // seleccionado();
             }}
           >
@@ -104,7 +103,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
                   }
             }
             onClick={() => {
-              pagoCredito("credito");
+              pagoCredito(3);
               // seleccionado();
             }}
           >
@@ -136,7 +135,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
                   }
             }
             onClick={() => {
-              onClick("mercadoPago");
+              onClick(4);
               // seleccionado();
             }}
           >
@@ -164,7 +163,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
                   }
             }
             onClick={() => {
-              onClick("transferencia");
+              onClick(5);
               // seleccionado();
             }}
           >
@@ -178,8 +177,7 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
 }
 
 interface formadePagoProps {
-  formadePago: string;
-  setFormaDePago(formaDePago: string): void;
+  formadePago: number;
+  setFormaDePago(formaDePago: number): void;
   onSuccess(): void;
-  ventaOrderPagos?: ventaOrderPagos[];
 }

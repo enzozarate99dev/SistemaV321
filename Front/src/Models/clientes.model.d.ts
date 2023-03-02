@@ -19,6 +19,16 @@ export interface clienteModel {
   label?: string;
 }
 
+export interface clientePagos {
+  clienteId: number;
+  fecha?: Date;
+  metodoDePago: number;
+  debe?: number;
+  haber?: number;
+  saldo: number;
+  accciones?: void;
+}
+
 export interface clienteCrear {
   nombreYApellido: string;
   email?: string;

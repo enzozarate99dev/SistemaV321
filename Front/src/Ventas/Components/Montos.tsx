@@ -39,7 +39,7 @@ export default function Montos(props: montosProps) {
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setContado(parseInt(e.target.value))}
           // onPressEnter={() => calcularMonto()}
-          disabled={props.formaDePago !== "contado"}
+          disabled={props.formaDePago !== 1}
         />
       </div>
       <div className="d-flex justify-content-center align-items-center">
@@ -49,7 +49,7 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setDebito(parseInt(e.target.value))}
-          disabled={props.formaDePago !== "debito"}
+          disabled={props.formaDePago !== 2}
           onPressEnter={() => calcularMonto()}
         />
       </div>
@@ -60,7 +60,7 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setMP(parseInt(e.target.value))}
-          disabled={props.formaDePago !== "mercadoPago"}
+          disabled={props.formaDePago !== 4}
           onPressEnter={() => calcularMonto()}
         />
       </div>
@@ -71,7 +71,7 @@ export default function Montos(props: montosProps) {
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setTransf(parseInt(e.target.value))}
-          disabled={props.formaDePago !== "transferencia"}
+          disabled={props.formaDePago !== 5}
           onPressEnter={() => calcularMonto()}
         />
       </div>
@@ -81,5 +81,5 @@ export default function Montos(props: montosProps) {
 
 interface montosProps {
   montoAPagar: number;
-  formaDePago: string;
+  formaDePago: number;
 }

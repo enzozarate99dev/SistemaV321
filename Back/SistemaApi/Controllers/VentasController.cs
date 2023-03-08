@@ -353,7 +353,6 @@ namespace SistemaApi.Controllers
                     Pagos = new List<Pago>()
                     
                 };
-               /* var ventaOrder1 = mapper.Map<VentaOrder>(v);*/
                 foreach (var pagoCreacion in ventaCreacion.Pagos)
                 {
                     var pago = new Pago
@@ -363,11 +362,11 @@ namespace SistemaApi.Controllers
                         Fecha = DateTime.Now,                                             
                     };
 
-                    if (pago.MetodoDePago == 3)
+                  /*  if (pago.MetodoDePago == 3)
                     {
                         venta.Adeudada = pago.Importe;
                         cliente.Deuda += venta.Adeudada;
-                    }
+                    }*/
 
                     if (pago.Importe > venta.PrecioTotal && pago.Importe > cliente.Deuda) { return BadRequest($"Operacion Invalida"); }
 

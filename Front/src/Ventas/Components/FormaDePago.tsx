@@ -10,10 +10,15 @@ import "./ventaStyles.css";
 
 export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoProps) {
   // const [pago, setPago] = useState<pago[]>([]);
-  const [botonSeleccionado, setBotonSeleccionado] = useState(true);
+  const [botonSeleccionado, setBotonSeleccionado] = useState(0);
 
   const onClick = (value: number) => {
     setFormaDePago(value);
+    if (botonSeleccionado === value) {
+      setBotonSeleccionado(0);
+    } else {
+      setBotonSeleccionado(value);
+    }
     console.log(value);
   };
 
@@ -22,29 +27,36 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
     onSuccess();
   };
 
+  const handleButtonClick = (valor: number) => {
+    if (botonSeleccionado === valor) {
+      setBotonSeleccionado(0);
+    } else {
+      setBotonSeleccionado(valor);
+    }
+  };
+  // const buttonStyle = {
+  //   height: 148,
+  //   width: 148,
+  //   backgroundColor: "#FBFBFB",
+  //   boxShadow: botonSeleccionado === 0 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+  //   borderRadius: botonSeleccionado === 0 ? 0 : 10,
+  //   color: "#6A7580",
+  // };
+
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>
       <div className="d-flex align-items-start mx-5">
         <div className="container">
           <Button
             className="btn btn-transparent boton"
-            style={
-              botonSeleccionado
-                ? {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-                    borderRadius: 10,
-                    color: "#6A7580",
-                  }
-                : {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    color: "#6A7580",
-                  }
-            }
+            style={{
+              height: 148,
+              width: 148,
+              backgroundColor: "#FBFBFB",
+              boxShadow: botonSeleccionado === 1 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: botonSeleccionado === 1 ? 0 : 10,
+              color: "#6A7580",
+            }}
             onClick={() => {
               onClick(1);
             }}
@@ -56,26 +68,17 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
         <div className="container">
           <Button
             className="btn btn-transparent boton"
-            style={
-              botonSeleccionado
-                ? {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-                    borderRadius: 10,
-                    color: "#6A7580",
-                  }
-                : {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    color: "#6A7580",
-                  }
-            }
+            style={{
+              height: 148,
+              width: 148,
+              backgroundColor: "#FBFBFB",
+              boxShadow: botonSeleccionado === 2 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: botonSeleccionado === 2 ? 0 : 10,
+              color: "#6A7580",
+            }}
             onClick={() => {
               onClick(2);
-              // seleccionado();
+              // handleButtonClick();
             }}
           >
             <TarjetaDebito />
@@ -85,23 +88,14 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
         <div className="container">
           <Button
             className="btn btn-transparent boton"
-            style={
-              botonSeleccionado
-                ? {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-                    borderRadius: 10,
-                    color: "#6A7580",
-                  }
-                : {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    color: "#6A7580",
-                  }
-            }
+            style={{
+              height: 148,
+              width: 148,
+              backgroundColor: "#FBFBFB",
+              boxShadow: botonSeleccionado === 3 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: botonSeleccionado === 3 ? 0 : 10,
+              color: "#6A7580",
+            }}
             onClick={() => {
               pagoCredito(3);
               // seleccionado();
@@ -117,23 +111,14 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
         <div className="container">
           <Button
             className="btn btn-transparent boton"
-            style={
-              botonSeleccionado
-                ? {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-                    borderRadius: 10,
-                    color: "#6A7580",
-                  }
-                : {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    color: "#6A7580",
-                  }
-            }
+            style={{
+              height: 148,
+              width: 148,
+              backgroundColor: "#FBFBFB",
+              boxShadow: botonSeleccionado === 4 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: botonSeleccionado === 4 ? 0 : 10,
+              color: "#6A7580",
+            }}
             onClick={() => {
               onClick(4);
               // seleccionado();
@@ -145,23 +130,14 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
         <div className="container">
           <Button
             className="btn btn-transparent boton"
-            style={
-              botonSeleccionado
-                ? {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
-                    borderRadius: 10,
-                    color: "#6A7580",
-                  }
-                : {
-                    height: 148,
-                    width: 148,
-                    backgroundColor: "#FBFBFB",
-                    color: "#6A7580",
-                  }
-            }
+            style={{
+              height: 148,
+              width: 148,
+              backgroundColor: "#FBFBFB",
+              boxShadow: botonSeleccionado === 5 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: botonSeleccionado === 5 ? 0 : 10,
+              color: "#6A7580",
+            }}
             onClick={() => {
               onClick(5);
               // seleccionado();
@@ -171,6 +147,25 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
             <p>TRANSFERENCIA</p>
           </Button>
         </div>
+        {/* <div className="container">
+          <Button
+            className="btn btn-transparent boton"
+            style={{
+              height: 148,
+              width: 148,
+              backgroundColor: "#FBFBFB",
+              boxShadow: botonSeleccionado === 6 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: botonSeleccionado === 6 ? 0 : 10,
+              color: "#6A7580",
+            }}
+            onClick={() => {
+              onClick(6);
+            }}
+          >
+            <Dinero />
+            <p>Cta Corriente</p>
+          </Button>
+        </div> */}
       </div>
     </div>
   );

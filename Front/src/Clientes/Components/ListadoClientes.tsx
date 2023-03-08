@@ -6,7 +6,6 @@ import { clienteModel } from "../../Models/clientes.model";
 import Button from "../../utils/Button";
 import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/clientes.services";
-import CargarCliente from "./CargarCliente";
 import EditarCliente from "./EditarCliente";
 import InfoCliente from "./InfoCliente";
 import axios from "axios";
@@ -16,7 +15,6 @@ import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
 import "../clientesStyles.css";
 import "../../utils/modal.css";
 import EstadoCuenta from "./EstadoCuenta";
-import AddIcon from "../../assets/AddIcon";
 
 export default function ListadoClientes(props: propsListadoClientes) {
   const [cuenta, setCuenta] = useState(false);
@@ -26,7 +24,6 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
   const [clientes, setClientes] = useState<clienteModel[]>([]);
   // const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
-  const [clienteSeleccionado, setClienteSeleccionado] = useState<clienteModel>({} as clienteModel);
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
 
   const showCuenta = () => {
@@ -41,10 +38,6 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const showInfo = () => {
     setInfo(!info);
     props.setFlag();
-  };
-
-  const resetForm = () => {
-    console.log("reset");
   };
 
   useEffect(() => {
@@ -66,16 +59,22 @@ export default function ListadoClientes(props: propsListadoClientes) {
       title: "DNI/CUIT",
       dataIndex: "nroDocumento",
       key: "nroDocumento",
+      sortDirection: ["desc", "asc"],
+      sorter: (a: any, b: any) => a.nroDocumento.localeCompare(b.nroDocumento),
     },
     {
       title: "Nombre",
       dataIndex: "nombreYApellido",
       key: "nombreYApellido",
+      sortDirection: ["desc", "asc"],
+      sorter: (a: any, b: any) => a.nombreYApellido.localeCompare(b.nombreYApellido),
     },
     {
       title: "Razon Social",
       dataIndex: "razonSocial",
       key: "razonSocial",
+      sortDirection: ["desc", "asc"],
+      sorter: (a: any, b: any) => a.razonSocial.localeCompare(b.razonSocial),
     },
     {
       title: "Deuda",
@@ -104,6 +103,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
         style={{ marginRight: "1rem" }}
         className="btn btn-transparent"
         onClick={() => {
+          console.log(id, "row");
+          console.log(clientesTabla, "data");
           showInfo();
           setId(id);
         }}
@@ -136,25 +137,20 @@ export default function ListadoClientes(props: propsListadoClientes) {
     </>
   );
 
-  useEffect(() => {
-    if (!info) {
-      setId(id);
-    }
-  }, [info]);
-
   return (
     <>
       <div className="clientes">
         <h3>Listado Clientes</h3>
-        <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo} afterClose={resetForm}>
+        <Modal title="Informacion del cliente" width={960} open={info} footer={null} centered onCancel={showInfo}>
           <InfoCliente id={id!} setFlagModal={showInfo} setFlagListado={props.setFlag} />
         </Modal>
-        <Modal title="Editar Cliente" width={1150} open={edit} footer={null} centered onCancel={showEdit}>
+        <Modal title="Editar Cliente" width={960} open={edit} footer={null} centered onCancel={showEdit}>
           <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
         </Modal>
-        <Modal title="Estado de Cuenta" width={1150} open={cuenta} footer={null} centered onCancel={showCuenta}>
+        <Modal title="Estado de Cuenta" width={960} open={cuenta} footer={null} centered onCancel={showCuenta}>
           <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} />
         </Modal>
+
         <div>
           <AutoComplete
             className="input"
@@ -181,6 +177,6 @@ export default function ListadoClientes(props: propsListadoClientes) {
 }
 
 interface propsListadoClientes {
-  clientes?: clienteModel[];
+  clientes: clienteModel[];
   setFlag: () => void;
 }

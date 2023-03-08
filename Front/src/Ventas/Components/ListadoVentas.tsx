@@ -20,10 +20,8 @@ import Swal from "sweetalert2";
 import "./ventaStyles.css";
 import "./ventaStyles.css";
 import RealizarVenta from "./RealizarVenta";
-import { Field, FieldProps, Form, Formik } from "formik";
 
 export default function ListadoVentas(props: propsListadoVentas) {
-  // const history = useHistory();
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
 
@@ -36,23 +34,17 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [subTotal, setSubTotal] = useState(0);
   const [totalConDescuento, setTotalConDescuento] = useState(0);
   const [descuentoAplicado, setDescuentoAplicado] = useState(false);
+  const [botonSeleccionado, setBotonSeleccionado] = useState(0);
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
 
-  const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
-  // const [ventaOrderCreacion, setVentaOrderCreacion] = useState<ventaOrderCreacion[]>([]);
-  // const [ventaOrdenPagosCreacion, setVentaOrdenPagosCreacion] = useState<ventaOrderPagos[]>([]);
-
-  // const [current, setCurrent] = useState(0);
-  // const [formadePago, setFormadePago] = useState<string>();
-
   const [flag, setFlag] = useState(false);
 
   const handleFlag = () => {
     setFlag(!flag);
-    console.log(flag);
+    console.log("flag", flag);
   };
 
   //Modales
@@ -195,63 +187,21 @@ export default function ListadoVentas(props: propsListadoVentas) {
   //Ventas
   function calcularSubtotal(productos: productoModel[]) {
     return productos.reduce((suma, producto) => suma + producto.precioF!, 0);
-    console.log(productosTabla2);
   }
 
   function calcularDescuento(porcentaje: number) {
-    if (descuentoAplicado) {
+    if (descuentoAplicado && porcentaje === botonSeleccionado) {
       //para que se aplique descuento dependiendo de onClick
-      setTotalConDescuento(0);
+      setTotalConDescuento(subTotal);
       setDescuentoAplicado(false);
+      setBotonSeleccionado(0);
     } else {
       const totalConDescuento = subTotal - subTotal * (porcentaje / 100);
       setTotalConDescuento(totalConDescuento);
       setDescuentoAplicado(true);
+      setBotonSeleccionado(porcentaje);
     }
   }
-
-  // useEffect(() => {
-  //   setVentaLineCreacion(
-  //     productosTabla2.map((p) => ({
-  //       id_producto: p.id_producto,
-  //       precioUnitario: p.precio,
-  //       cantidad: p.cantidad,
-  //       iva: 0,
-  //       producto: [
-  //         {
-  //           id_producto: p.id_producto,
-  //           nombre: p.nombre,
-  //           precio: p.precio,
-  //           cantidad: p.cantidad,
-  //           codigo: " ",
-  //           categoria: " ",
-  //           descripcion: " ",
-  //         },
-  //       ],
-  //     }))
-  //   );
-  //   console.log(ventaLineCreacion);
-  // }, [productosTabla2]);
-
-  // async function finalizarVenta() {
-  //   var venta: ventaCreacion = {
-  //     id_cliente: clienteSeleccionado!.id_cliente,
-  //     tratamientoImpositivo: 1,
-  //     fechaDeVenta: new Date(),
-  //     ventaLines: ventaLineCreacion,
-  //   };
-
-  //   crear(venta);
-  //   console.log(venta);
-  // }
-  // function crear(venta: ventaCreacionDTO) {
-  //   try {
-  //     services.crear(venta);
-  //     Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
-  //   } catch (error) {
-  //     console.log(error.response.data);
-  //   }
-  // }
 
   return (
     <>
@@ -311,21 +261,30 @@ export default function ListadoVentas(props: propsListadoVentas) {
             <h6>Articulos Cargados</h6>
             <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
           </div>
-          <Button onClick={() => exportPdf()} className="btn btn-transparent">
-            <PdfIcon />
+          <Button
+            onClick={() => exportPdf()}
+            className="btn btn-transparent d-flex  justify-content-start "
+            style={{
+              backgroundColor: "#F5F5F5",
+              boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: 7,
+              width: 80,
+              height: 50,
+            }}
+          >
+            <div
+              className="d-flex flex-column justify-content-center align-items-center  "
+              style={{ position: "relative", width: "100%", height: "100%", margin: 0 }}
+            >
+              <PdfIcon />
+              <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
+            </div>
           </Button>
         </Col>
 
         <Col span={5} style={{ backgroundColor: "#F5F5F5", boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)" }}>
           <div className="container">
-            <div
-              className="container"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <div className="container d-flex justify-content-center align-items-center">
               <Select
                 showSearch
                 onSelect={selectCliente}
@@ -389,31 +348,34 @@ export default function ListadoVentas(props: propsListadoVentas) {
               <div className="mt-4">
                 <div className="d-flex justify-content-between ">
                   <Button
-                    style={
-                      descuentoAplicado
-                        ? { background: "#fff", border: "1px solid #1DCA94", borderRadius: 5, color: "black" }
-                        : { background: "#D9D9D9", border: "1px solid #000000", borderRadius: 5, color: "black" }
-                    }
+                    style={{
+                      backgroundColor: botonSeleccionado === 15 ? "#fff" : "#D9D9D9",
+                      border: botonSeleccionado === 15 ? "1px solid #1DCA94" : "1px solid #000000",
+                      borderRadius: 5,
+                      color: "black",
+                    }}
                     onClick={() => calcularDescuento(15)}
                   >
                     15%
                   </Button>
                   <Button
-                    style={
-                      descuentoAplicado
-                        ? { background: "#fff", border: "1px solid #1DCA94", borderRadius: 5, color: "black" }
-                        : { background: "#D9D9D9", border: "1px solid #000000", borderRadius: 5, color: "black" }
-                    }
+                    style={{
+                      backgroundColor: botonSeleccionado === 20 ? "#fff" : "#D9D9D9",
+                      border: botonSeleccionado === 20 ? "1px solid #1DCA94" : "1px solid #000000",
+                      borderRadius: 5,
+                      color: "black",
+                    }}
                     onClick={() => calcularDescuento(20)}
                   >
                     20%
                   </Button>
                   <Button
-                    style={
-                      descuentoAplicado
-                        ? { background: "#fff", border: "1px solid #1DCA94", borderRadius: 5, color: "black" }
-                        : { background: "#D9D9D9", border: "1px solid #000000", borderRadius: 5, color: "black" }
-                    }
+                    style={{
+                      backgroundColor: botonSeleccionado === 30 ? "#fff" : "#D9D9D9",
+                      border: botonSeleccionado === 30 ? "1px solid #1DCA94" : "1px solid #000000",
+                      borderRadius: 5,
+                      color: "black",
+                    }}
                     onClick={() => calcularDescuento(30)}
                   >
                     30%

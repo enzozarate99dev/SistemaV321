@@ -124,7 +124,7 @@ export default function HomePage() {
   };
 
   return (
-    <h1>Holi</h1>
+    <h1></h1>
     // <Layout style={{ height: '850px', marginTop: '20px', width: '1860px', marginLeft: '-370px', background: 'transparent' }}>
     //     <Layout style={{ height: '850px', marginTop: '20px', width: '1860px', background: 'transparent' }}>
     //         <Content style={{ padding: '0 50px', width:'900px' }}>

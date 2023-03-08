@@ -2,7 +2,6 @@ import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { productoCrear } from "../../Models/producto.model";
-import Button from "../../utils/Button";
 import Cargando from "../../utils/Cargando";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/productos.services";
@@ -36,6 +35,7 @@ export default function EditarProducto(props: editarProductoProps) {
         cantidad: respuesta.data.cantidad,
       };
       setProducto(modelo);
+      console.log(`en editarcomponent ${modelo}`);
     });
   }, [props.id]);
 

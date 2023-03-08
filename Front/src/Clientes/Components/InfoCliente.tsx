@@ -10,12 +10,15 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import FormularioClientes from "./FormularioClientes";
 
 export default function InfoCliente(props: infoClienteProps) {
+  console.log("first");
   const [cliente, setCliente] = useState<clienteModel>();
   const [ventasCliente, setVentasCliente] = useState<ventasModel[]>([]);
   const [errores, setErrores] = useState<string[]>([]);
 
   useEffect(() => {
+    console.log("llega", props.id);
     const res = services.getCliente(props.id);
+    console.log("res", res);
     res.then((respuesta: AxiosResponse<clienteModel>) => {
       const modelo: clienteModel = {
         nombreYApellido: respuesta.data.nombreYApellido,
@@ -34,8 +37,9 @@ export default function InfoCliente(props: infoClienteProps) {
         nroIngresos: respuesta.data.nroIngresos,
       };
       setCliente(modelo);
+      console.log(modelo);
     });
-  }, []);
+  }, [props.id]);
 
   // este sirve para el estado de cuenta
   // useEffect(() => {
@@ -48,7 +52,7 @@ export default function InfoCliente(props: infoClienteProps) {
   return (
     <div className="container">
       <MostrarErrores errores={errores} />
-      {cliente ? <FormularioClientes modelo={cliente} onSubmit={() => {}} buttonExiste={false} /> : <Cargando />}
+      {cliente ? <FormularioClientes modelo={cliente} buttonExiste={false} onSubmit={() => {}} /> : <Cargando />}
     </div>
   );
 }

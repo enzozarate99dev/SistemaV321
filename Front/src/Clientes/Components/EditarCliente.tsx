@@ -1,10 +1,8 @@
 import { AxiosResponse } from "axios";
-import { FormikHelpers } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { clienteCrear, clienteModel } from "../../Models/clientes.model";
-import Button from "../../utils/Button";
+import { clienteCrear } from "../../Models/clientes.model";
 import Cargando from "../../utils/Cargando";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/clientes.services";
@@ -21,8 +19,8 @@ export default function EditarCliente(props: editarClienteProps) {
       const modelo: clienteCrear = {
         nombreYApellido: respuesta.data.nombreYApellido,
         domicilio: respuesta.data.domicilio,
-        telefono: respuesta.data.telefono,
-        email: respuesta.data.email,
+        telefono: " ",
+        email: " ",
         codigoPostal: respuesta.data.codigoPostal,
         localidad: respuesta.data.localidad,
         nroDocumento: respuesta.data.nroDocumento,
@@ -68,6 +66,7 @@ export default function EditarCliente(props: editarClienteProps) {
           onSubmit={async (valores) => await editar(valores)}
           buttonExiste={true}
           buttonText="Editar Cliente"
+          id={props.id}
         />
       ) : (
         <Cargando />

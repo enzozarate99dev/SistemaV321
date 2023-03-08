@@ -343,7 +343,7 @@ namespace SistemaApi.Controllers
                 context.Venta_Lines.Add(ventaLine);            
             }
 
-            if (ventaCreacion.Pagos != null)
+            /*if (ventaCreacion.Pagos != null)
             {
                 var ventaOrder = new VentaOrder
                 {
@@ -362,11 +362,11 @@ namespace SistemaApi.Controllers
                         Fecha = DateTime.Now,                                             
                     };
 
-                  /*  if (pago.MetodoDePago == 3)
+                  *//*  if (pago.MetodoDePago == 3)
                     {
                         venta.Adeudada = pago.Importe;
                         cliente.Deuda += venta.Adeudada;
-                    }*/
+                    }*//*
 
                     if (pago.Importe > venta.PrecioTotal && pago.Importe > cliente.Deuda) { return BadRequest($"Operacion Invalida"); }
 
@@ -376,7 +376,7 @@ namespace SistemaApi.Controllers
                 }
 
                context.VentaOrders.Add(ventaOrder);
-            }
+            }*/
 
 
             // agregar el objeto Venta a la base de datos

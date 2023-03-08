@@ -15,7 +15,7 @@ import ListadoClientes from "./ListadoClientes";
 
 export default function FiltroClientes() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
-  const [clientes, setClientes] = useState<clienteModel[]>();
+  const [clientes, setClientes] = useState<clienteModel[]>([]);
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);

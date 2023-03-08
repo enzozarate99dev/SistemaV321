@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { clienteCrear } from "../../Models/clientes.model";
-import Button from "../../utils/Button";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/clientes.services";
 import FormularioClientes from "./FormularioClientes";
@@ -13,6 +12,9 @@ export default function CargarCliente(props: cargarClienteProps) {
   const modelo: clienteCrear = {
     nombreYApellido: "",
     domicilio: "",
+    telefono: " ",
+    email: " ",
+    codigoPostal: " ",
     localidad: "",
     nroDocumento: "",
     percibeIIBB: false,
@@ -23,19 +25,22 @@ export default function CargarCliente(props: cargarClienteProps) {
     nroIngresos: "",
   };
 
+  // console.log("modelo crear", modelo);
+
   async function crear(cliente: clienteCrear) {
-    console.log(cliente);
+    console.log("cargar cliente", cliente);
     try {
       services.crear(cliente);
       props.setFlagListado();
+      props.setFlagModal();
       Swal.fire({
         title: "CLIENTE CARGADO !",
         icon: "success",
         showConfirmButton: false,
-        customClass: {
-          popup: "cliente-alert",
-        },
-        willClose: () => props.setFlagModal(),
+        // customClass: {
+        //   popup: "cliente-alert",
+        // },
+        // willClose: () => props.setFlagModal(),
       });
     } catch (error) {
       setErrores(error.response.data);
@@ -48,9 +53,7 @@ export default function CargarCliente(props: cargarClienteProps) {
       <FormularioClientes
         modelo={modelo}
         setBandera={props.setFlagModal}
-        onSubmit={async (valores) => {
-          await crear(valores);
-        }}
+        onSubmit={async (valores) => await crear(valores)}
         buttonExiste={true}
         buttonText="Cargar Cliente"
       />

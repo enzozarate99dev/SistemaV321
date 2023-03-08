@@ -1,108 +1,112 @@
-import { Field, Form, Formik, FormikHelpers } from "formik";
+import { Checkbox, Form, Input, Button } from "antd";
 import { useState } from "react";
-import * as Yup from "yup";
+import Swal from "sweetalert2";
 import { clienteCrear } from "../../Models/clientes.model";
-import Button from "../../utils/Button";
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
-import FormGroupText from "../../utils/FormGroupText";
+import * as services from "../Services/clientes.services";
 
 export default function FormularioClientes(props: formularioClientesProps) {
+  const [form] = Form.useForm();
+
+  form.setFieldsValue({
+    ["nroDocumento"]: props.modelo.nroDocumento,
+    ["nombreYApellido"]: props.modelo.nombreYApellido,
+    ["razonSocial"]: props.modelo.razonSocial,
+    ["domicilio"]: props.modelo.domicilio,
+    ["localidad"]: props.modelo.localidad,
+    ["provincia"]: props.modelo.provincia,
+    ["codigoPostal"]: props.modelo.codigoPostal,
+    ["percibeIIBB"]: props.modelo.percibeIIBB,
+    ["percibeIVA"]: props.modelo.percibeIVA,
+  });
+  console.log("llegan", props.modelo);
   return (
-    <Formik
+    <Form
+      form={form}
+      name="basic"
+      className="row g-3 needs-validation"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      style={{ marginTop: "-1px", backgroundColor: "#D9D9D9" }}
       initialValues={props.modelo}
-      onSubmit={props.onSubmit}
-      validationSchema={Yup.object({
-        nombreYApellido: Yup.string().required("Este campo es requerido").max(100, "La longitud maxima es de 100"),
-        nroIngresos: Yup.string().required("Este campo es requerido"),
-        domicilio: Yup.string().required("Este campo es requerido"),
-        codigoPostal: Yup.string().required("Este campo es requerido"),
-        provincia: Yup.string().required("Este campo es requerido"),
-        localidad: Yup.string().required("Este campo es requerido"),
-        nroDocumento: Yup.string().required("Este campo es requerido"),
-        razonSocial: Yup.string().required("Este campo es requerido"),
-      })}
+      onFinish={props.onSubmit}
+      // onValuesChange={() => {}}
+      autoComplete="off"
     >
-      {(formikProps) => (
-        <Form style={{ marginTop: "-1px", backgroundColor: "#D9D9D9" }} className="row g-3 needs-validation" noValidate>
-          <div className="col-md-4">
-            <FormGroupText campo="nroDocumento" label="Numero de documento" placeholder="Numero de documento" />
-          </div>
-          <div className="col-md-4">
-            <FormGroupText campo="nombreYApellido" label="Nombre Y Apellido" placeholder="Nombre del cliente" />
-          </div>
-          <div className="col-md-4">
-            <FormGroupText campo="razonSocial" label="Razon Social" placeholder="Razon Social" />
-          </div>
-          <div className="col-md-4">
-            <FormGroupText campo="domicilio" label="Domicilio" placeholder="Domicilio" />
-          </div>
-          <div className="col-md-4">
-            <FormGroupText campo="localidad" label="Localidad" placeholder="Localidad" />
-          </div>
-          <div className="col-md-4">
-            <FormGroupText campo="provincia" label="Provincia" placeholder="Provincia" />
-          </div>
-          <div className="col-md-4">
-            <FormGroupText campo="codigoPostal" label="Codigo Postal" placeholder="Codigo Postal" />
-          </div>
-          <div
-            className="container"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginInline: "20vw",
-            }}
-          >
-            <div className="col-md-4 container">
-              <FormGroupCheckbox campo="percibeIIBB" label="Percibe IIBB" onChange={() => {}} />
+      <div className="col-md-4">
+        <Form.Item name="nroDocumento" rules={[{ required: true, message: "" }]}>
+          <Input placeholder="DNI / CUIT" />
+        </Form.Item>
+      </div>
+      <div className="col-md-4">
+        <Form.Item name="nombreYApellido" rules={[{ required: true, message: "" }]}>
+          <Input placeholder="NOMBRE Y APELLIDO" />
+        </Form.Item>
+      </div>
+      <div className="col-md-4">
+        <Form.Item name="razonSocial" rules={[{ required: true, message: "" }]}>
+          <Input placeholder="RAZON SOCIAL" defaultValue={props.modelo.razonSocial} />
+        </Form.Item>
+      </div>
+      <div className="col-md-4">
+        <Form.Item name="domicilio" rules={[{ required: true, message: "" }]}>
+          <Input placeholder="DOMICILIO" />
+        </Form.Item>
+      </div>
+      <div className="col-md-4">
+        <Form.Item name="localidad" rules={[{ required: true, message: "" }]}>
+          <Input placeholder="LOCALIDAD" />
+        </Form.Item>
+      </div>
+      <div className="col-md-4">
+        <Form.Item name="provincia" rules={[{ required: true, message: "" }]}>
+          <Input placeholder="PROVINCIA" />
+        </Form.Item>
+      </div>
+      <div className="col-md-4" hidden={true}>
+        <Form.Item name="codigoPostal" rules={[{ required: true, message: "" }]}>
+          <Input />
+        </Form.Item>
+      </div>
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginInline: "20vw",
+        }}
+      >
+        <div className="col-md-7">
+          <Form.Item name="percibeIIBB" valuePropName="checked">
+            <Checkbox>Percibe IIBB</Checkbox>
+          </Form.Item>
 
-              <FormGroupCheckbox campo="percibeIVA" label="Percibe IVA" />
-            </div>
+          <Form.Item name="percibeIVA" valuePropName="checked">
+            <Checkbox>Percibe IVA</Checkbox>
+          </Form.Item>
+        </div>
 
-            <div className="col-md-6">
-              <FormGroupText campo="nroIngresos" label="Numero" placeholder="Numero" />
-            </div>
-          </div>
-          {props.buttonExiste ? (
-            <div className="container" style={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                type="submit"
-                disabled={formikProps.isSubmitting}
-                style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}
-              >
-                {props.buttonText}
-              </Button>
-            </div>
-          ) : null}
-
-          <Button
-            onClick={() => {
-              formikProps.resetForm();
-            }}
-          >
-            limpiar
+        <div className="col-md-8">
+          <Form.Item name="nroIngresos">
+            <Input placeholder="NUMERO" />
+          </Form.Item>
+        </div>
+      </div>
+      {props.buttonExiste ? (
+        <div className="container" style={{ display: "flex", justifyContent: "center" }}>
+          <Button htmlType="submit" style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}>
+            {props.buttonText}
           </Button>
-
-          {/* <div className="col-md-4">
-            <label htmlFor="tipoDocumento">Tipo de Documento</label>
-            <Field className="form-control" as="select" name="tipoDocumento">
-              <option value={0}>Seleccionar tipo de documento</option>
-              <option value={1}>DNI</option>
-              <option value={5}>Pasaporte</option>
-              <option value={6}>CUIT</option>
-              <option value={7}>CUIL</option>
-            </Field>
-          </div> */}
-        </Form>
-      )}
-    </Formik>
+        </div>
+      ) : null}
+    </Form>
   );
 }
 
 interface formularioClientesProps {
   modelo: clienteCrear;
-  onSubmit(valores: clienteCrear, accion: FormikHelpers<clienteCrear>): void;
+  onSubmit(valores: clienteCrear): void;
   setBandera?: () => void;
   buttonText?: string;
   buttonExiste: boolean;
+  id?: number;
 }

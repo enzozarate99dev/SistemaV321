@@ -220,21 +220,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PagoVentaOrder", b =>
-                {
-                    b.Property<int>("PagosId_pago")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VentaOrdersId_VentaOrder")
-                        .HasColumnType("int");
-
-                    b.HasKey("PagosId_pago", "VentaOrdersId_VentaOrder");
-
-                    b.HasIndex("VentaOrdersId_VentaOrder");
-
-                    b.ToTable("VentaOrderPago", (string)null);
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
                 {
                     b.Property<int>("Id_cliente")
@@ -607,40 +592,19 @@ namespace SistemaApi.Migrations
                     b.ToTable("Venta_Lines");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
-                {
-                    b.Property<int>("Id_VentaOrder")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_VentaOrder"), 1L, 1);
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VentaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id_VentaOrder");
-
-                    b.HasIndex("VentaId");
-
-                    b.ToTable("VentaOrders");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrderPago", b =>
+            modelBuilder.Entity("SistemaApi.Entidades.VentaPago", b =>
                 {
                     b.Property<int>("PagoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VentaOrderId")
+                    b.Property<int>("VentaId")
                         .HasColumnType("int");
 
-                    b.HasKey("PagoId", "VentaOrderId");
+                    b.HasKey("PagoId", "VentaId");
 
-                    b.HasIndex("VentaOrderId");
+                    b.HasIndex("VentaId");
 
-                    b.ToTable("VentaOrderPagos");
+                    b.ToTable("VentaPagos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -690,21 +654,6 @@ namespace SistemaApi.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PagoVentaOrder", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.Pago", null)
-                        .WithMany()
-                        .HasForeignKey("PagosId_pago")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SistemaApi.Entidades.VentaOrder", null)
-                        .WithMany()
-                        .HasForeignKey("VentaOrdersId_VentaOrder")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -822,19 +771,7 @@ namespace SistemaApi.Migrations
                     b.Navigation("Venta");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrder", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.Venta", "Venta")
-                        .WithMany("VentaOrders")
-                        .HasForeignKey("VentaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("VentaOrder1");
-
-                    b.Navigation("Venta");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.VentaOrderPago", b =>
+            modelBuilder.Entity("SistemaApi.Entidades.VentaPago", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Pago", "Pago")
                         .WithMany()
@@ -842,15 +779,15 @@ namespace SistemaApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SistemaApi.Entidades.VentaOrder", "VentaOrder")
+                    b.HasOne("SistemaApi.Entidades.Venta", "Venta")
                         .WithMany()
-                        .HasForeignKey("VentaOrderId")
+                        .HasForeignKey("VentaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Pago");
 
-                    b.Navigation("VentaOrder");
+                    b.Navigation("Venta");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
@@ -887,8 +824,6 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.Navigation("VentaLines");
-
-                    b.Navigation("VentaOrders");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaConsumidorFinal", b =>

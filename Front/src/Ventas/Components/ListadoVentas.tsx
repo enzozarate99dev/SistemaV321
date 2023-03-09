@@ -395,7 +395,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <RealizarVenta
                   setFlag={handleFlag}
                   productos={productosTabla2}
-                  montoAPagar={totalConDescuento | subTotal}
+                  montoAPagar={totalConDescuento || subTotal}
                   clientes={clienteSeleccionado}
                 />
               </div>

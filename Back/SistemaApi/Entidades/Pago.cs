@@ -9,7 +9,8 @@ namespace SistemaApi.Entidades
         public double Importe { get; set; }
         public DateTime Fecha { get; set; }
         public int MetodoDePago { get; set; }
-        public ICollection<VentaOrder> VentaOrders { get; set; }
+        public ICollection<Venta> Ventas { get; set; }
+
 
     }
 }

@@ -11,14 +11,14 @@ namespace SistemaApi.Entidades
         public double? PrecioTotal { get; set; }
         [Required]
         public DateTime FechaDeVenta { get; set; }
-      /*  public int FormaDePago { get; set; }*/
         public int TratamientoImpositivo { get; set; }
        /* public string TipoComprobante { get; set; }
         public int IdComprobante { get; set; }
         public int ConfirmacionAfip { get; set; }*/
         public double Adeudada { get; set; }
         public virtual ICollection<VentaLine> VentaLines { get; set; }
-        public virtual ICollection<VentaOrder> VentaOrders { get; set; }
+      /*  public virtual ICollection<VentaOrder> VentaOrders { get; set; }*/
+      public virtual ICollection<Pago> Pagos { get; set; }
 
     }
 }

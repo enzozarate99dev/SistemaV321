@@ -12,17 +12,11 @@ namespace SistemaApi
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-           
-       
             modelBuilder.Entity<Venta>()
                 .HasOne(x => x.Cliente)
                 .WithMany(y => y.Ventas)
                 .HasForeignKey(x => x.ClienteId)
                 .HasConstraintName("Venta1");
-               
-            
-           
 
             modelBuilder.Entity<VentaLine>()
                 .HasOne(x => x.Venta)
@@ -30,34 +24,40 @@ namespace SistemaApi
                 .HasForeignKey(x => x.VentaId)
                 .HasConstraintName("Venta_line1");
           
-
               modelBuilder.Entity<VentaLine>()
                    .HasOne(vl => vl.Producto)
                    .WithMany(p => p.VentaLine)
                    .HasForeignKey(vl => vl.ProductoId)
                    .HasConstraintName("Producto-VentaLine");
 
-            modelBuilder.Entity<VentaOrder>()
-                .HasOne(vo => vo.Venta)
-                .WithMany(v => v.VentaOrders)
-                .HasForeignKey(vo => vo.VentaId)
-                .HasConstraintName("VentaOrder1");
+            modelBuilder.Entity<Venta>()
+            .HasMany(v => v.Pagos)
+            .WithMany(p => p.Ventas)
+            .UsingEntity<VentaPago>(
+                vp => vp.HasOne(vp => vp.Pago).WithMany(),
+                vp => vp.HasOne(vp => vp.Venta).WithMany()
+            );
+/*
+            modelBuilder.Entity<VentaPago>()
+                .HasKey(vp => new { vp.PagoId, vp.VentaId });*/
 
-            modelBuilder.Entity<VentaOrder>()
-                .HasMany(vo => vo.Pagos)
-                .WithMany(p => p.VentaOrders)
-                .UsingEntity(x => x.ToTable("VentaOrderPago"));
+            /*   modelBuilder.Entity<VentaOrder>()
+                   .HasOne(vo => vo.Venta)
+                   .WithMany(v => v.VentaOrders)
+                   .HasForeignKey(vo => vo.VentaId)
+                   .HasConstraintName("VentaOrder1");
 
-            modelBuilder.Entity<VentaOrderPago>()
-                .HasKey(vop => new { vop.PagoId, vop.VentaOrderId });
+               modelBuilder.Entity<VentaOrder>()
+                   .HasMany(vo => vo.Pagos)
+                   .WithMany(p => p.VentaOrders)
+                   .UsingEntity(x => x.ToTable("VentaOrderPago"));
 
-         /*   modelBuilder.Entity<MetodoDePago>()
-                .HasOne(m => m.Pago)
-                .WithMany(p => p.MetodosDePago)
-                .HasForeignKey(m => m.PagoId)
-                .HasConstraintName("MetodoDePago1");*/
+               modelBuilder.Entity<VentaOrderPago>()
+                   .HasKey(vop => new { vop.PagoId, vop.VentaOrderId });*/
 
- 
+
+
+
 
 
 
@@ -84,10 +84,12 @@ namespace SistemaApi
         public DbSet<Producto> Productos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaLine> Venta_Lines { get; set; }
-        public DbSet<VentaOrderPago> VentaOrderPagos { get; set; }
+     /*   public DbSet<VentaOrderPago> VentaOrderPagos { get; set; }*/
         public DbSet<Pago> Pagos { get; set; }
         public DbSet<MetodoDePago> MetodosDePago { get; set; }
-        public DbSet<VentaOrder> VentaOrders { get; set; }
+      /*  public DbSet<VentaOrder> VentaOrders { get; set; }*/
+      public DbSet<VentaPago> VentaPagos { get; set; }
+                       
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
         public DbSet<VentaConsumidorFinal> VentaConsumidorFinal { get; set; }

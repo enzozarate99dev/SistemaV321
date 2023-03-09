@@ -88,9 +88,8 @@ export default function RealizarVenta(props: realizarVentaProps) {
         metodoDePago: formadePago,
       },
     ]);
-    console.log(pagoCreacion);
+    console.log(`pago creacion1: ${pagoCreacion}`);
   }, [formadePago]);
-  console.log(`pago creacion1: ${pagoCreacion}`);
 
   async function finalizarVenta() {
     var venta: ventaCreacionDTO = {
@@ -101,7 +100,6 @@ export default function RealizarVenta(props: realizarVentaProps) {
     crearVenta(venta);
     console.log(venta);
   }
-  console.log(`pago creacion2: ${pagoCreacion}`);
 
   function crearVenta(venta: ventaCreacionDTO) {
     try {

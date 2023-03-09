@@ -31,10 +31,12 @@ namespace SistemaApi.Utilidades
             CreateMap<VentaLineCreacionDTO, VentaLine>();
 
             CreateMap<VentaLine, VentaLineDTO>().ReverseMap();
-
-            CreateMap<VentaOrder, VentaOrderDTO>()
-                .ForMember(x => x.Pagos, opt => opt.MapFrom(MapearVentaOrderPagos));
-
+            /*
+                        CreateMap<VentaOrder, VentaOrderDTO>()
+                            .ForMember(x => x.Pagos, opt => opt.MapFrom(MapearVentaOrderPagos));
+            */
+            CreateMap<PagoCreacionDTO, Pago>();
+            CreateMap<Pago, PagoDTO>().ReverseMap();
 
 
             CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
@@ -55,7 +57,7 @@ namespace SistemaApi.Utilidades
         }
 
 
-        private List<PagoDTO> MapearVentaOrderPagos(VentaOrder ventaOrder, VentaOrderDTO ventaOrderDTO)
+      /*  private List<PagoDTO> MapearVentaOrderPagos(VentaOrder ventaOrder, VentaOrderDTO ventaOrderDTO)
         {
             var resultado = new List<PagoDTO>();
             if (ventaOrder.Pagos != null)
@@ -75,7 +77,7 @@ namespace SistemaApi.Utilidades
             }
             return resultado;
         }
-
+*/
         private List<ProductoDTO> MapearCompraProducto(Compra compra, CompraDTO compraDTO)
         {
             var resultado = new List<ProductoDTO>();

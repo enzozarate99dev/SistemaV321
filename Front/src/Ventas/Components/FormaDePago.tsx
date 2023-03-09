@@ -4,8 +4,7 @@ import TarjetaCredito from "../../assets/TarjetaCredito";
 import TarjetaDebito from "../../assets/TarjetaDebito";
 import Button from "../../utils/Button";
 import "./ventaStyles.css";
-import { pago } from "../../Models/ventas.model";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "./ventaStyles.css";
 
 export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoProps) {
@@ -34,14 +33,6 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
       setBotonSeleccionado(valor);
     }
   };
-  // const buttonStyle = {
-  //   height: 148,
-  //   width: 148,
-  //   backgroundColor: "#FBFBFB",
-  //   boxShadow: botonSeleccionado === 0 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-  //   borderRadius: botonSeleccionado === 0 ? 0 : 10,
-  //   color: "#6A7580",
-  // };
 
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>

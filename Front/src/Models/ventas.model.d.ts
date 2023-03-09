@@ -43,39 +43,11 @@ export interface ventaOrderCreacion {
   ventaOrderPagos: ventaOrderPagosCreacion[];
 }
 
-// export interface ventaOrderPagos {
-//   pagoId: number;
-//   ventaOrderId: number;
-//   pago: pago[];
-// }
-
-// export interface ventaOrderPagosCreacion {
-//   pagoId: number;
-//   ventaOrderId: number;
-//   pago: pagoCreacion[];
-// }
-
-export interface pago {
-  precioTotalAPagar: number;
-  fechaDePago?: Date;
-  metodoDePago: number;
-}
-
 export interface pagoCreacion {
   importe: number;
   // fechaDePago: Date;
   metodoDePago: number;
 }
-
-// export interface metodosDePagoCreacion {
-//   id_pago: number;
-//   formaDePago: string;
-// }
-
-// export interface metodosDePago {
-//   id_pago: number;
-//   formaDePago: string;
-// }
 
 //viejas
 export interface ventasModel {

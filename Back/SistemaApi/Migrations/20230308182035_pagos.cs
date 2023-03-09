@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class VentaOrders1 : Migration
+    public partial class pagos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -82,7 +82,7 @@ namespace SistemaApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Importe = table.Column<double>(type: "float", nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MetodoDePago = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MetodoDePago = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,6 +288,26 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MetodosDePago",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PagoId = table.Column<int>(type: "int", nullable: false),
+                    Metodo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MetodosDePago", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MetodosDePago_Pagos_PagoId",
+                        column: x => x.PagoId,
+                        principalTable: "Pagos",
+                        principalColumn: "Id_pago",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PresupuestoProducto",
                 columns: table => new
                 {
@@ -388,20 +408,23 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VentaOrders",
+                name: "VentaPagos",
                 columns: table => new
                 {
-                    Id_VentaOrder = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     VentaId = table.Column<int>(type: "int", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PagoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VentaOrders", x => x.Id_VentaOrder);
+                    table.PrimaryKey("PK_VentaPagos", x => new { x.PagoId, x.VentaId });
                     table.ForeignKey(
-                        name: "VentaOrder1",
+                        name: "FK_VentaPagos_Pagos_PagoId",
+                        column: x => x.PagoId,
+                        principalTable: "Pagos",
+                        principalColumn: "Id_pago",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VentaPagos_Ventas_VentaId",
                         column: x => x.VentaId,
                         principalTable: "Ventas",
                         principalColumn: "Id_venta",
@@ -430,30 +453,6 @@ namespace SistemaApi.Migrations
                         column: x => x.ProductoId,
                         principalTable: "Productos",
                         principalColumn: "Id_producto",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VentaOrderPagos",
-                columns: table => new
-                {
-                    PagoId = table.Column<int>(type: "int", nullable: false),
-                    VentaOrderId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VentaOrderPagos", x => new { x.PagoId, x.VentaOrderId });
-                    table.ForeignKey(
-                        name: "FK_VentaOrderPagos_Pagos_PagoId",
-                        column: x => x.PagoId,
-                        principalTable: "Pagos",
-                        principalColumn: "Id_pago",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VentaOrderPagos_VentaOrders_VentaOrderId",
-                        column: x => x.VentaOrderId,
-                        principalTable: "VentaOrders",
-                        principalColumn: "Id_VentaOrder",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -507,6 +506,11 @@ namespace SistemaApi.Migrations
                 column: "ProveedorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MetodosDePago_PagoId",
+                table: "MetodosDePago",
+                column: "PagoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PresupuestoProducto_ProductoId",
                 table: "PresupuestoProducto",
                 column: "ProductoId");
@@ -527,13 +531,8 @@ namespace SistemaApi.Migrations
                 column: "ProductoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VentaOrderPagos_VentaOrderId",
-                table: "VentaOrderPagos",
-                column: "VentaOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VentaOrders_VentaId",
-                table: "VentaOrders",
+                name: "IX_VentaPagos_VentaId",
+                table: "VentaPagos",
                 column: "VentaId");
 
             migrationBuilder.CreateIndex(
@@ -563,6 +562,9 @@ namespace SistemaApi.Migrations
                 name: "CompraProductos");
 
             migrationBuilder.DropTable(
+                name: "MetodosDePago");
+
+            migrationBuilder.DropTable(
                 name: "PresupuestoProducto");
 
             migrationBuilder.DropTable(
@@ -572,7 +574,7 @@ namespace SistemaApi.Migrations
                 name: "VentaCFProducto");
 
             migrationBuilder.DropTable(
-                name: "VentaOrderPagos");
+                name: "VentaPagos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -596,13 +598,10 @@ namespace SistemaApi.Migrations
                 name: "Pagos");
 
             migrationBuilder.DropTable(
-                name: "VentaOrders");
+                name: "Ventas");
 
             migrationBuilder.DropTable(
                 name: "Proveedores");
-
-            migrationBuilder.DropTable(
-                name: "Ventas");
 
             migrationBuilder.DropTable(
                 name: "Clientes");

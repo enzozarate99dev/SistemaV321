@@ -55,6 +55,7 @@ namespace SistemaApi.Controllers
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
+                .Include(v => v.Pagos)
                 
                 .ToListAsync();
 
@@ -238,7 +239,7 @@ namespace SistemaApi.Controllers
                 .Include(v => v.Cliente)
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
-                .Include(v => v.VentaOrders)
+                .Include(v => v.Pagos)
                  /*   .ThenInclude(vo => vo.VentaOrderPagos)
                         .ThenInclude(vop => vop.Pago)*/
                
@@ -291,57 +292,73 @@ namespace SistemaApi.Controllers
         [HttpPost]
         public async Task<ActionResult<VentaCreacionDTO>> Post( VentaCreacionDTO ventaCreacion)
         {
+
             var cliente = await context.Clientes.FindAsync(ventaCreacion.ClienteId);
             if (cliente == null)
             {
                 return BadRequest("El cliente no esta registrado");
             }
 
-            /*var venta = new Venta
+            var venta = new Venta
             {
                 FechaDeVenta = DateTime.Now,
                 Cliente = cliente,
                 PrecioTotal = 0,
                 Adeudada = 0,
                 
-            };*/
+            };  
 
-            var venta = mapper.Map<Venta>(ventaCreacion);
-            venta.Cliente = cliente;
-            venta.FechaDeVenta = DateTime.Now;
-            venta.PrecioTotal = 0;
-            venta.Adeudada = 0;
-                
-            foreach (var ventaLineCreacion in  ventaCreacion.VentaLinesCreacion)
+            venta.VentaLines = ventaCreacion.VentaLines.Select(vlc =>
             {
-                var producto = await context.Productos.FindAsync(ventaLineCreacion.ProductoId);
+                var producto = context.Productos.Find(vlc.ProductoId);
                 if (producto == null)
                 {
-                    return BadRequest($"El producto con id {ventaLineCreacion.ProductoId} no existe");
+                    throw new Exception($"El producto con id {vlc.ProductoId} no existe");
                 }
 
-                /*var ventaLine = new VentaLine
+                var ventaLine = new VentaLine
                 {
                     Producto = producto,
                     Venta = venta,
                     VentaId = venta.Id_venta,
                     PrecioUnitario = producto.Precio,
-                    Cantidad = ventaLineCreacion.Cantidad
-                }; 
-                producto.Cantidad -= ventaLineCreacion.Cantidad;
-                venta.PrecioTotal += ventaLineCreacion.Cantidad * ventaLine.PrecioUnitario;*/
+                    Cantidad = vlc.Cantidad
+                };
+                producto.Cantidad -= vlc.Cantidad;
+                venta.PrecioTotal += vlc.Cantidad * ventaLine.PrecioUnitario;
 
-                var ventaLine = mapper.Map<VentaLine>(ventaLineCreacion);
-                ventaLine.Producto = producto;
-                ventaLine.Venta = venta;
-                ventaLine.VentaId = venta.Id_venta;
-                ventaLine.PrecioUnitario = producto.Precio;
-                ventaLine.Cantidad = ventaLineCreacion.Cantidad;
-                producto.Cantidad -= ventaLineCreacion.Cantidad;
-                venta.PrecioTotal += ventaLineCreacion.Cantidad * ventaLine.PrecioUnitario;
+                return ventaLine;
+            }).ToList();
 
-                context.Venta_Lines.Add(ventaLine);            
-            }
+            var pagos = ventaCreacion.Pagos.Select(p => new Pago
+            {
+                Importe = p.Importe,
+                MetodoDePago = p.MetodoDePago,
+                Fecha = DateTime.Now
+            }).ToList();
+            venta.Pagos = pagos;
+
+            context.Pagos.AddRange(pagos);
+
+            // agregar el objeto Venta a la base de datos
+            context.Ventas.Add(venta);
+            await context.SaveChangesAsync();
+
+            return NoContent();
+
+            /* foreach (var pagoCreacion in ventaCreacion.Pagos)
+             {
+                 var pago = new Pago
+                 {
+                     Importe = pagoCreacion.Importe,  
+                     MetodoDePago = pagoCreacion.MetodoDePago,
+                     Fecha = DateTime.Now,
+
+                 };
+              *//*   venta.Pagos.Add(pago);*//*
+                 context.Pagos.Add(pago);
+
+             }*/
 
             /*if (ventaCreacion.Pagos != null)
             {
@@ -351,7 +368,7 @@ namespace SistemaApi.Controllers
                     Fecha = DateTime.Now,
                     VentaId = venta.Id_venta,                   
                     Pagos = new List<Pago>()
-                    
+
                 };
                 foreach (var pagoCreacion in ventaCreacion.Pagos)
                 {
@@ -370,7 +387,7 @@ namespace SistemaApi.Controllers
 
                     if (pago.Importe > venta.PrecioTotal && pago.Importe > cliente.Deuda) { return BadRequest($"Operacion Invalida"); }
 
-                   
+
 
                     ventaOrder.Pagos.Add(pago);
                 }
@@ -379,11 +396,7 @@ namespace SistemaApi.Controllers
             }*/
 
 
-            // agregar el objeto Venta a la base de datos
-            context.Ventas.Add(venta);
-            await context.SaveChangesAsync();   
 
-            return NoContent();
 
         }
 

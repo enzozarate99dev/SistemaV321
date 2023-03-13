@@ -6,33 +6,35 @@ import Button from "../../utils/Button";
 import "./ventaStyles.css";
 import { useState } from "react";
 import "./ventaStyles.css";
+import { pagoCreacion } from "../../Models/ventas.model";
 
-export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoProps) {
-  // const [pago, setPago] = useState<pago[]>([]);
+export default function FormaDePago({ onSuccess, importe, cargarPagos }: formadePagoProps) {
   const [botonSeleccionado, setBotonSeleccionado] = useState(0);
+  const [metodosDePago, setMetodosDePago] = useState<number[]>([]);
 
+  // const onClick = (value: number) => {
+
+  //   setFormaDePago(value);
+  //   if (botonSeleccionado === value) {
+  //     setBotonSeleccionado(0);
+  //   } else {
+  //     setBotonSeleccionado(value);
+  //   }
+  //   console.log(value);
+  // };
   const onClick = (value: number) => {
-    setFormaDePago(value);
-    if (botonSeleccionado === value) {
-      setBotonSeleccionado(0);
-    } else {
-      setBotonSeleccionado(value);
-    }
-    console.log(value);
+    const nuevosMetodosDePago = metodosDePago.includes(value)
+      ? metodosDePago.filter((p) => p !== value) //si value ya esta incluido en metodosDePago, filter crea un nuevo [] que lo saque
+      : [...metodosDePago, value];
+    setMetodosDePago(nuevosMetodosDePago);
+    cargarPagos(nuevosMetodosDePago);
   };
+  console.log("metodo elegido", metodosDePago);
 
-  const pagoCredito = (value: number) => {
-    setFormaDePago(value);
-    onSuccess();
-  };
-
-  const handleButtonClick = (valor: number) => {
-    if (botonSeleccionado === valor) {
-      setBotonSeleccionado(0);
-    } else {
-      setBotonSeleccionado(valor);
-    }
-  };
+  // const pagoCredito = (value: number) => {
+  //   setFormaDePago(value);
+  //   onSuccess();
+  // };
 
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>
@@ -69,7 +71,6 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
             }}
             onClick={() => {
               onClick(2);
-              // handleButtonClick();
             }}
           >
             <TarjetaDebito />
@@ -83,13 +84,12 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
               height: 148,
               width: 148,
               backgroundColor: "#FBFBFB",
-              boxShadow: botonSeleccionado === 3 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: botonSeleccionado === 3 ? 0 : 10,
+              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: 10,
               color: "#6A7580",
             }}
             onClick={() => {
-              pagoCredito(3);
-              // seleccionado();
+              // pagoCredito(3);
             }}
           >
             <TarjetaCredito />
@@ -112,7 +112,6 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
             }}
             onClick={() => {
               onClick(4);
-              // seleccionado();
             }}
           >
             <p> Mercado Pago</p>
@@ -131,7 +130,6 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
             }}
             onClick={() => {
               onClick(5);
-              // seleccionado();
             }}
           >
             <Banco />
@@ -163,7 +161,17 @@ export default function FormaDePago({ setFormaDePago, onSuccess }: formadePagoPr
 }
 
 interface formadePagoProps {
-  formadePago: number;
-  setFormaDePago(formaDePago: number): void;
+  //  formadePago?: number;
+  //  setFormaDePago(formaDePago: number): void;
   onSuccess(): void;
+  importe: number;
+  cargarPagos(metodoDePago: number[]): void;
 }
+
+// se utiliza el hook useState para crear un estado metodosDePago que es un array vacío al inicio. Luego, se define una función onClick que toma
+//  un parámetro value que representa el método de pago seleccionado. La función verifica si value ya está incluido en el array
+//   metodosDePago. Si es así, utiliza el método filter para crear un nuevo array que excluya value. Si no está incluido, utiliza el
+//   spread ... para crear un nuevo array que incluya value.
+
+// Finalmente, la función onClick llama a props.actualizarPagos(metodosDePago) para actualizar el estado del componente Padre con los métodos de
+//  pago seleccionados por el usuario.

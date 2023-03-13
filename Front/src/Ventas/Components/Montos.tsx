@@ -39,7 +39,7 @@ export default function Montos(props: montosProps) {
           style={{ width: 200, marginBottom: "1rem" }}
           onChange={(e) => setContado(parseInt(e.target.value))}
           // onPressEnter={() => calcularMonto()}
-          disabled={props.formaDePago !== 1}
+          // disabled={props.formaDePago !== 1}
         />
       </div>
       <div className="d-flex justify-content-center align-items-center">

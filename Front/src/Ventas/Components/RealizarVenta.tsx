@@ -15,17 +15,10 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
 
   const [current, setCurrent] = useState(0);
-  const [formadePago, setFormadePago] = useState<number>(0);
+  // const [metodosDePago, setMetodosDePago] = useState<number>();
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
   const [pagoCreacion, setPagoCreacion] = useState<pagoCreacion[]>([]);
-
-  // const modelo: ventaCreacionDTO = {
-  //   clienteId: 0,
-  //   tratamientoImpositivo: 0,
-  //   ventaLines: [],
-  //   // ventaOrders: [],
-  // };
 
   const showCargarVenta = () => {
     setOpenFormaDePago(!openFormaDePago);
@@ -39,16 +32,32 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const onChange = (value: number) => {
     setCurrent(value);
   };
+  const cargarPagos = (metodosDePago: number[]) => {
+    const nuevosPagos = metodosDePago.map((metodo) => ({
+      importe: props.montoAPagar,
+      metodoDePago: metodo,
+    }));
+    setPagoCreacion(nuevosPagos);
+  };
+  console.log("pagoCreacion en cargarPagos", pagoCreacion);
 
   const steps = [
     {
       title: "",
-      content: <FormaDePago formadePago={formadePago!} setFormaDePago={setFormadePago} onSuccess={next} />,
+      content: (
+        <FormaDePago
+          cargarPagos={cargarPagos}
+          importe={props.montoAPagar}
+          // formadePago={metodosDePago!}
+          // setFormaDePago={setMetodosDePago}
+          onSuccess={next}
+        />
+      ),
     },
-    {
-      title: "",
-      content: formadePago == 3 ? <PagoCredito /> : <Montos montoAPagar={props.montoAPagar} formaDePago={formadePago!} />,
-    },
+    // {
+    //   title: "",
+    //   content: metodoDePago == 3 ? <PagoCredito /> : <Montos montoAPagar={props.montoAPagar} formaDePago={metodoDePago!} />,
+    // },
   ];
 
   const items = steps.map((item, index) => (
@@ -81,15 +90,15 @@ export default function RealizarVenta(props: realizarVentaProps) {
     console.log(` el ventaline: ${ventaLineCreacion}`);
   }, [props.productos]);
 
-  useEffect(() => {
-    setPagoCreacion([
-      {
-        importe: props.montoAPagar,
-        metodoDePago: formadePago,
-      },
-    ]);
-    console.log(`pago creacion1: ${pagoCreacion}`);
-  }, [formadePago]);
+  // useEffect(() => {
+  //   setPagoCreacion([
+  //     {
+  //       importe: props.montoAPagar,
+  //       metodoDePago: metodosDePago,
+  //     },
+  //   ]);
+  //   console.log(`pago creacion1: ${pagoCreacion}`);
+  // }, [metodosDePago]);
 
   async function finalizarVenta() {
     var venta: ventaCreacionDTO = {
@@ -125,15 +134,7 @@ export default function RealizarVenta(props: realizarVentaProps) {
       >
         PAGAR
       </Button>
-      <Modal
-        title="Cargar venta"
-        width={980}
-        // style={{ height: 579 }}
-        open={openFormaDePago}
-        footer={null}
-        centered
-        onCancel={showCargarVenta}
-      >
+      <Modal title="Cargar venta" width={980} open={openFormaDePago} footer={null} centered onCancel={showCargarVenta}>
         <div>
           <Steps current={current} onChange={onChange}>
             {items}
@@ -141,8 +142,9 @@ export default function RealizarVenta(props: realizarVentaProps) {
           <div style={contentStyle}>{steps[current].content}</div>
           <div style={{ marginTop: 24, display: "flex", justifyContent: "end" }}>
             {current < steps.length - 1 && <Button onClick={() => next()}>Siguiente</Button>}
-            {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>}
+            {/* {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>} */}
           </div>
+          <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>
         </div>
       </Modal>
     </>

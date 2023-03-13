@@ -10,7 +10,7 @@ namespace SistemaApi.Utilidades
         {
             CreateMap<Producto, ProductoDTO>();
             CreateMap<ProductoDTO, Producto>().ReverseMap();
-            CreateMap<Producto, ProductoVentaLineDTO>();
+            CreateMap<Producto, ProductoVentaLineDTO>().ReverseMap();
 
 
             CreateMap<ProductoCreacionDTO, Producto>()

@@ -10,15 +10,11 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import FormularioClientes from "./FormularioClientes";
 
 export default function InfoCliente(props: infoClienteProps) {
-  console.log("first");
   const [cliente, setCliente] = useState<clienteModel>();
-  const [ventasCliente, setVentasCliente] = useState<ventasModel[]>([]);
   const [errores, setErrores] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log("llega", props.id);
     const res = services.getCliente(props.id);
-    console.log("res", res);
     res.then((respuesta: AxiosResponse<clienteModel>) => {
       const modelo: clienteModel = {
         nombreYApellido: respuesta.data.nombreYApellido,
@@ -28,8 +24,8 @@ export default function InfoCliente(props: infoClienteProps) {
         codigoPostal: respuesta.data.codigoPostal,
         localidad: respuesta.data.localidad,
         nroDocumento: respuesta.data.nroDocumento,
-        percibeIIBB: false,
-        percibeIVA: false,
+        percibeIIBB: respuesta.data.percibeIIBB,
+        percibeIVA: respuesta.data.percibeIVA,
         provincia: respuesta.data.provincia,
         razonSocial: respuesta.data.razonSocial,
         tipoDocumento: respuesta.data.tipoDocumento,
@@ -37,17 +33,9 @@ export default function InfoCliente(props: infoClienteProps) {
         nroIngresos: respuesta.data.nroIngresos,
       };
       setCliente(modelo);
-      console.log(modelo);
+      console.log("modelo info", modelo);
     });
   }, [props.id]);
-
-  // este sirve para el estado de cuenta
-  // useEffect(() => {
-  //   const res = ventasServices.ventasCliente(props.id);
-  //   res.then((respuesta: AxiosResponse<ventasModel[]>) => {
-  //     setVentasCliente(respuesta.data);
-  //   });
-  // }, [props.id]);
 
   return (
     <div className="container">

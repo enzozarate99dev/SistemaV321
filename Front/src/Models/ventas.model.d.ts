@@ -45,7 +45,6 @@ export interface ventaOrderCreacion {
 
 export interface pagoCreacion {
   importe: number;
-  // fechaDePago: Date;
   metodoDePago: number;
 }
 

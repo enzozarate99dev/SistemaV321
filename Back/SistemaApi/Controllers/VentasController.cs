@@ -240,9 +240,6 @@ namespace SistemaApi.Controllers
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
                 .Include(v => v.Pagos)
-                 /*   .ThenInclude(vo => vo.VentaOrderPagos)
-                        .ThenInclude(vop => vop.Pago)*/
-               
                 .FirstOrDefaultAsync(v => v.Id_venta == id);
 
             if (venta == null) { return NotFound(); }

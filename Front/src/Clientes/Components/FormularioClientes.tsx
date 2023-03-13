@@ -7,6 +7,7 @@ import * as services from "../Services/clientes.services";
 export default function FormularioClientes(props: formularioClientesProps) {
   const [form] = Form.useForm();
 
+  console.log("valores recibidos", props.modelo);
   form.setFieldsValue({
     ["nroDocumento"]: props.modelo.nroDocumento,
     ["nombreYApellido"]: props.modelo.nombreYApellido,
@@ -18,7 +19,6 @@ export default function FormularioClientes(props: formularioClientesProps) {
     ["percibeIIBB"]: props.modelo.percibeIIBB,
     ["percibeIVA"]: props.modelo.percibeIVA,
   });
-  console.log("llegan", props.modelo);
   return (
     <Form
       form={form}
@@ -80,7 +80,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
             <Checkbox>Percibe IIBB</Checkbox>
           </Form.Item>
 
-          <Form.Item name="percibeIVA" valuePropName="checked">
+          <Form.Item name="percibeIVA" valuePropName="checked" initialValue={props.modelo.percibeIVA}>
             <Checkbox>Percibe IVA</Checkbox>
           </Form.Item>
         </div>

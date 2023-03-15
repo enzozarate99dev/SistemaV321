@@ -4,18 +4,14 @@ import { productoModel } from "../../Models/producto.model";
 import { ventaLineCreacion, ventaCreacionDTO, pagoCreacion } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
 import FormaDePago from "./FormaDePago";
-import Montos from "./Montos";
 import * as services from "../Services/ventas.services";
-import PagoCredito from "./PagoCredito";
 import Swal from "sweetalert2";
-import { clienteModel } from "../../Models/clientes.model";
-import { urlVentas } from "../../Generales/endpoints";
 
 export default function RealizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
 
   const [current, setCurrent] = useState(0);
-  // const [metodosDePago, setMetodosDePago] = useState<number>();
+  const [metodosDePago, setMetodosDePago] = useState<number>();
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
   const [pagoCreacion, setPagoCreacion] = useState<pagoCreacion[]>([]);
@@ -32,24 +28,24 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const onChange = (value: number) => {
     setCurrent(value);
   };
-  const cargarPagos = (metodosDePago: number[]) => {
-    const nuevosPagos = metodosDePago.map((metodo) => ({
-      importe: props.montoAPagar,
-      metodoDePago: metodo,
-    }));
-    setPagoCreacion(nuevosPagos);
-  };
-  console.log("pagoCreacion en cargarPagos", pagoCreacion);
+  // const cargarPagos = (metodosDePago: number[]) => {
+  //   const nuevosPagos = metodosDePago.map((metodo) => ({
+  //     importe: props.montoAPagar,
+  //     metodosDePagoIds: metodo,
+  //   }));
+  //   setPagoCreacion(nuevosPagos);
+  // };
+  // console.log("pagoCreacion en cargarPagos", pagoCreacion);
 
   const steps = [
     {
       title: "",
       content: (
         <FormaDePago
-          cargarPagos={cargarPagos}
+          // cargarPagos={cargarPagos}
           importe={props.montoAPagar}
-          // formadePago={metodosDePago!}
-          // setFormaDePago={setMetodosDePago}
+          formadePago={metodosDePago!}
+          setFormaDePago={setMetodosDePago}
           onSuccess={next}
         />
       ),

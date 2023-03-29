@@ -34,3 +34,8 @@ export async function getNombre(id: number) {
   const res = axios.get(`${urlClientes}/nombre/${id}`);
   return res;
 }
+
+export async function ventasCliente(id: any) {
+  const res = axios.get(`${urlClientes}/ventasCliente/${id}`);
+  return res;
+}

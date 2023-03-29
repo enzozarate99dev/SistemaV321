@@ -7,7 +7,6 @@ import * as services from "../Services/clientes.services";
 export default function FormularioClientes(props: formularioClientesProps) {
   const [form] = Form.useForm();
 
-  console.log("valores recibidos", props.modelo);
   form.setFieldsValue({
     ["nroDocumento"]: props.modelo.nroDocumento,
     ["nombreYApellido"]: props.modelo.nombreYApellido,
@@ -18,6 +17,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
     ["codigoPostal"]: props.modelo.codigoPostal,
     ["percibeIIBB"]: props.modelo.percibeIIBB,
     ["percibeIVA"]: props.modelo.percibeIVA,
+    ["nroIngresos"]: props.modelo.nroIngresos,
   });
   return (
     <Form

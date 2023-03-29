@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230308182035_pagos")]
-    partial class pagos
+    [Migration("20230317153357_ASDASD")]
+    partial class ASDASD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,21 @@ namespace SistemaApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("MetodoDePagoPago", b =>
+                {
+                    b.Property<int>("MetodosDePagoId_metodo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PagosId_pago")
+                        .HasColumnType("int");
+
+                    b.HasKey("MetodosDePagoId_metodo", "PagosId_pago");
+
+                    b.HasIndex("PagosId_pago");
+
+                    b.ToTable("MetodoDePagoPago");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -328,22 +343,17 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("Id_metodo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_metodo"), 1L, 1);
 
-                    b.Property<string>("Metodo")
+                    b.Property<string>("NombreMetodo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PagoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PagoId");
+                    b.HasKey("Id_metodo");
 
                     b.ToTable("MetodosDePago");
                 });
@@ -362,12 +372,24 @@ namespace SistemaApi.Migrations
                     b.Property<double>("Importe")
                         .HasColumnType("float");
 
-                    b.Property<int>("MetodoDePago")
-                        .HasColumnType("int");
-
                     b.HasKey("Id_pago");
 
                     b.ToTable("Pagos");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
+                {
+                    b.Property<int>("MetodoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PagoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MetodoId", "PagoId");
+
+                    b.HasIndex("PagoId");
+
+                    b.ToTable("PagosMetodosDePagos");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
@@ -499,8 +521,15 @@ namespace SistemaApi.Migrations
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("Pagada")
+                        .HasColumnType("bit");
+
                     b.Property<double?>("PrecioTotal")
                         .HasColumnType("float");
+
+                    b.Property<string>("TipoComprobante")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TratamientoImpositivo")
                         .HasColumnType("int");
@@ -609,6 +638,21 @@ namespace SistemaApi.Migrations
                     b.ToTable("VentaPagos");
                 });
 
+            modelBuilder.Entity("MetodoDePagoPago", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.MetodoDePago", null)
+                        .WithMany()
+                        .HasForeignKey("MetodosDePagoId_metodo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SistemaApi.Entidades.Pago", null)
+                        .WithMany()
+                        .HasForeignKey("PagosId_pago")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -691,13 +735,21 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
+            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
                 {
+                    b.HasOne("SistemaApi.Entidades.MetodoDePago", "MetodoDePago")
+                        .WithMany("PagosMetodosDePago")
+                        .HasForeignKey("MetodoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SistemaApi.Entidades.Pago", "Pago")
-                        .WithMany()
+                        .WithMany("PagosMetodosDePago")
                         .HasForeignKey("PagoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MetodoDePago");
 
                     b.Navigation("Pago");
                 });
@@ -800,6 +852,16 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
                 {
                     b.Navigation("CompraProducto");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
+                {
+                    b.Navigation("PagosMetodosDePago");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
+                {
+                    b.Navigation("PagosMetodosDePago");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>

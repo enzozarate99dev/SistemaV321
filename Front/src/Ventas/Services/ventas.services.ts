@@ -1,14 +1,10 @@
 import axios from "axios";
 import { urlVentas } from "../../Generales/endpoints";
-import { nuevoVentasModel, ventaCancelar, ventaCreacionDTO, ventaOrderCreacion } from "../../Models/ventas.model";
+import { nuevoVentasModel, ventaCancelar, ventaCreacionDTO } from "../../Models/ventas.model";
 import { filtroVentasProps } from "../Components/FiltroVentas";
 
 export async function crearVenta(venta: ventaCreacionDTO) {
   await axios.post(`${urlVentas}`, venta);
-}
-
-export async function crearVentaOrder(ventaOrder: ventaOrderCreacion) {
-  await axios.post(`${urlVentas}`, ventaOrder);
 }
 
 export async function editar(ventaEditar: nuevoVentasModel, id: any) {

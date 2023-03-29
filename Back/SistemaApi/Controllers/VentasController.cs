@@ -56,6 +56,7 @@ namespace SistemaApi.Controllers
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
                 .Include(v => v.Pagos)
+                    .ThenInclude(p => p.MetodosDePago)
                 
                 .ToListAsync();
 
@@ -117,10 +118,13 @@ namespace SistemaApi.Controllers
         }*/
 
         [HttpGet("ventasCliente/{id:int}")]
-        public async Task<ActionResult<List<VentaDTO>>> Ventas(int id)
+        public async Task<ActionResult<List<OperacionesClienteDTO>>> Ventas(int id)
         {
-            var ventas = await context.Ventas.Where(x => x.ClienteId == id).ToListAsync();
-            return mapper.Map<List<VentaDTO>>(ventas);
+            var ventas = await context.Ventas.Where(x => x.ClienteId == id)
+                .Include(v => v.Pagos)
+                .ThenInclude(p => p.MetodosDePago)
+                .ToListAsync();
+            return mapper.Map<List<OperacionesClienteDTO>>(ventas);
         }
 
        /* [HttpGet("pagosCliente/{id:int}")]
@@ -240,6 +244,7 @@ namespace SistemaApi.Controllers
                 .Include(v => v.VentaLines)
                     .ThenInclude(vl => vl.Producto)
                 .Include(v => v.Pagos)
+                    .ThenInclude(p => p.MetodosDePago)
                 .FirstOrDefaultAsync(v => v.Id_venta == id);
 
             if (venta == null) { return NotFound(); }
@@ -283,6 +288,13 @@ namespace SistemaApi.Controllers
                  return mapper.Map<List<VentaDTO>>(ventas);
              }       
          }*/
+        [HttpGet("pagoVentas/{idPago:int}")]
+        public async Task<ActionResult<List<VentaPagosDTO>>> VentaPagos(int idPago)
+        {
+            var ventas = await context.Ventas.Where(v => v.Pagos.Any(p => p.Id_pago == idPago)).ToListAsync();
+
+            return mapper.Map<List<VentaPagosDTO>>(ventas);
+        }
 
         
 
@@ -300,10 +312,16 @@ namespace SistemaApi.Controllers
             {
                 FechaDeVenta = DateTime.Now,
                 Cliente = cliente,
-                PrecioTotal = 0,
                 Adeudada = 0,
-                
-            };  
+                Pagada = true,
+                TipoComprobante = "FA",
+                Descuento = 0,
+                PrecioTotal = 0,
+                Pagos = new List<Pago>()
+
+            };
+
+            double precioFinal = 0;
 
             venta.VentaLines = ventaCreacion.VentaLines.Select(vlc =>
             {
@@ -321,21 +339,40 @@ namespace SistemaApi.Controllers
                     PrecioUnitario = producto.Precio,
                     Cantidad = vlc.Cantidad
                 };
-                producto.Cantidad -= vlc.Cantidad;
-                venta.PrecioTotal += vlc.Cantidad * ventaLine.PrecioUnitario;
 
+                if (producto.Cantidad < vlc.Cantidad)
+                {
+                    throw new Exception("No hay suficientes unidades de producto");
+                }
+
+                producto.Cantidad -= vlc.Cantidad;
+                venta.Descuento = ventaCreacion.Descuento; 
+                precioFinal += vlc.Cantidad * ventaLine.PrecioUnitario;
+
+                if (venta.Descuento != null)
+                {
+                   
+                    venta.PrecioTotal += precioFinal - precioFinal * venta.Descuento.Value / 100;
+                }
+                else
+                {
+                    venta.PrecioTotal += precioFinal;
+                }
+              
                 return ventaLine;
             }).ToList();
+
+          
 
             var pagos = ventaCreacion.Pagos.Select(p => new Pago
             {
                 Importe = p.Importe,
-                MetodoDePago = p.MetodoDePago,
-                Fecha = DateTime.Now
+                Fecha = DateTime.Now,
+                MetodosDePago = context.MetodosDePago.Where(m => p.MetodosDePagoIds.Contains(m.Id_metodo)).ToList(),
+                Ventas = new List<Venta>() { venta }
             }).ToList();
-            venta.Pagos = pagos;
 
-            context.Pagos.AddRange(pagos);
+            venta.Pagos = pagos;
 
             // agregar el objeto Venta a la base de datos
             context.Ventas.Add(venta);
@@ -343,120 +380,11 @@ namespace SistemaApi.Controllers
 
             return NoContent();
 
-            /* foreach (var pagoCreacion in ventaCreacion.Pagos)
-             {
-                 var pago = new Pago
-                 {
-                     Importe = pagoCreacion.Importe,  
-                     MetodoDePago = pagoCreacion.MetodoDePago,
-                     Fecha = DateTime.Now,
-
-                 };
-              *//*   venta.Pagos.Add(pago);*//*
-                 context.Pagos.Add(pago);
-
-             }*/
-
-            /*if (ventaCreacion.Pagos != null)
-            {
-                var ventaOrder = new VentaOrder
-                {
-                    Venta = venta,
-                    Fecha = DateTime.Now,
-                    VentaId = venta.Id_venta,                   
-                    Pagos = new List<Pago>()
-
-                };
-                foreach (var pagoCreacion in ventaCreacion.Pagos)
-                {
-                    var pago = new Pago
-                    {
-                        Importe = pagoCreacion.Importe,
-                        MetodoDePago = pagoCreacion.MetodoDePago,
-                        Fecha = DateTime.Now,                                             
-                    };
-
-                  *//*  if (pago.MetodoDePago == 3)
-                    {
-                        venta.Adeudada = pago.Importe;
-                        cliente.Deuda += venta.Adeudada;
-                    }*//*
-
-                    if (pago.Importe > venta.PrecioTotal && pago.Importe > cliente.Deuda) { return BadRequest($"Operacion Invalida"); }
-
-
-
-                    ventaOrder.Pagos.Add(pago);
-                }
-
-               context.VentaOrders.Add(ventaOrder);
-            }*/
-
-
-
+        
 
         }
 
-        /*[HttpPost]
-        public async Task<ActionResult> Post([FromBody] VentaCreacionDTO ventaCreacionDTO)
-        {
-            double total = 0;
-            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == ventaCreacionDTO.ClienteId);
-            if(cliente == null)
-            {
-                return BadRequest("El cliente no esta registrado");
-            }
-
-            if(ventaCreacionDTO.ProductosIds.Count == 0)
-            {
-                return BadRequest("Ingresar al menos un producto");
-            }
-            foreach (var tuple in ventaCreacionDTO.ProductosIds)
-            {
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == tuple[0]);
-                if (tuple[1] > producto.Cantidad)
-                {
-                    return BadRequest("No hay suficientes unidades del producto");
-                }
-            }
-            foreach (var tuple in ventaCreacionDTO.ProductosIds)
-            {
-                var id = tuple[0];
-                var cantidad = tuple[1];
-                var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
-                producto.Cantidad = producto.Cantidad - cantidad;
-                total = total + (producto.Precio * cantidad);
-            }
-            var venta = mapper.Map<Venta>(ventaCreacionDTO);
-            venta.PrecioTotal = total + (total * (ventaCreacionDTO.Iva / 100));
-            venta.FechaDeVenta = DateTime.Now;
-            *//*if (venta.FormaDePago == 2)
-            {
-                venta.Adeudada = total;
-                cliente.Deuda += total;
-            }
-            else
-            {
-                venta.Adeudada = 0;
-                cliente.Deuda += 0;
-            }*//*
-            context.Add(venta);
-            await context.SaveChangesAsync();
-            return NoContent();*/
-        /* var objeto = await CrearRequest(cliente, ventaCreacionDTO);
-         var idComp = await facturas.GenerarFactura(objeto);
-         if(idComp != -1)
-         {
-             venta.IdComprobante = (int)idComp;
-             venta.ConfirmacionAfip = 0;
-             context.Add(venta);
-             await context.SaveChangesAsync();
-             return NoContent();
-         }
-        else
-         {
-             return BadRequest("Error al generar comprobante Facturante.com");
-         } */
+       
     }
 
     /*   [HttpGet("PostGet")]

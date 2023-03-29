@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class pagos : Migration
+    public partial class ASDASD : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,14 +75,26 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MetodosDePago",
+                columns: table => new
+                {
+                    Id_metodo = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreMetodo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MetodosDePago", x => x.Id_metodo);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pagos",
                 columns: table => new
                 {
                     Id_pago = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Importe = table.Column<double>(type: "float", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MetodoDePago = table.Column<int>(type: "int", nullable: false)
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -274,7 +286,9 @@ namespace SistemaApi.Migrations
                     PrecioTotal = table.Column<double>(type: "float", nullable: true),
                     FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TratamientoImpositivo = table.Column<int>(type: "int", nullable: false),
-                    Adeudada = table.Column<double>(type: "float", nullable: false)
+                    TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adeudada = table.Column<double>(type: "float", nullable: false),
+                    Pagada = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,19 +302,47 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MetodosDePago",
+                name: "MetodoDePagoPago",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PagoId = table.Column<int>(type: "int", nullable: false),
-                    Metodo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MetodosDePagoId_metodo = table.Column<int>(type: "int", nullable: false),
+                    PagosId_pago = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MetodosDePago", x => x.Id);
+                    table.PrimaryKey("PK_MetodoDePagoPago", x => new { x.MetodosDePagoId_metodo, x.PagosId_pago });
                     table.ForeignKey(
-                        name: "FK_MetodosDePago_Pagos_PagoId",
+                        name: "FK_MetodoDePagoPago_MetodosDePago_MetodosDePagoId_metodo",
+                        column: x => x.MetodosDePagoId_metodo,
+                        principalTable: "MetodosDePago",
+                        principalColumn: "Id_metodo",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MetodoDePagoPago_Pagos_PagosId_pago",
+                        column: x => x.PagosId_pago,
+                        principalTable: "Pagos",
+                        principalColumn: "Id_pago",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PagosMetodosDePagos",
+                columns: table => new
+                {
+                    MetodoId = table.Column<int>(type: "int", nullable: false),
+                    PagoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PagosMetodosDePagos", x => new { x.MetodoId, x.PagoId });
+                    table.ForeignKey(
+                        name: "FK_PagosMetodosDePagos_MetodosDePago_MetodoId",
+                        column: x => x.MetodoId,
+                        principalTable: "MetodosDePago",
+                        principalColumn: "Id_metodo",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PagosMetodosDePagos_Pagos_PagoId",
                         column: x => x.PagoId,
                         principalTable: "Pagos",
                         principalColumn: "Id_pago",
@@ -506,8 +548,13 @@ namespace SistemaApi.Migrations
                 column: "ProveedorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MetodosDePago_PagoId",
-                table: "MetodosDePago",
+                name: "IX_MetodoDePagoPago_PagosId_pago",
+                table: "MetodoDePagoPago",
+                column: "PagosId_pago");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PagosMetodosDePagos_PagoId",
+                table: "PagosMetodosDePagos",
                 column: "PagoId");
 
             migrationBuilder.CreateIndex(
@@ -562,7 +609,10 @@ namespace SistemaApi.Migrations
                 name: "CompraProductos");
 
             migrationBuilder.DropTable(
-                name: "MetodosDePago");
+                name: "MetodoDePagoPago");
+
+            migrationBuilder.DropTable(
+                name: "PagosMetodosDePagos");
 
             migrationBuilder.DropTable(
                 name: "PresupuestoProducto");
@@ -584,6 +634,9 @@ namespace SistemaApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Compras");
+
+            migrationBuilder.DropTable(
+                name: "MetodosDePago");
 
             migrationBuilder.DropTable(
                 name: "Presupuestos");

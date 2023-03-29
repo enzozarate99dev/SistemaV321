@@ -6,15 +6,19 @@ import Button from "../../utils/Button";
 import FormaDePago from "./FormaDePago";
 import * as services from "../Services/ventas.services";
 import Swal from "sweetalert2";
+import Montos from "./Montos";
+import PagoCredito from "./PagoCredito";
+import MostrarErrores from "../../utils/MostrarErrores";
 
 export default function RealizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
 
   const [current, setCurrent] = useState(0);
-  const [metodosDePago, setMetodosDePago] = useState<number>();
+  const [metodosDePago, setMetodosDePago] = useState<number[]>([]);
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
   const [pagoCreacion, setPagoCreacion] = useState<pagoCreacion[]>([]);
+  const [errores, setErrores] = useState<string[]>([]);
 
   const showCargarVenta = () => {
     setOpenFormaDePago(!openFormaDePago);
@@ -28,32 +32,32 @@ export default function RealizarVenta(props: realizarVentaProps) {
   const onChange = (value: number) => {
     setCurrent(value);
   };
-  // const cargarPagos = (metodosDePago: number[]) => {
-  //   const nuevosPagos = metodosDePago.map((metodo) => ({
-  //     importe: props.montoAPagar,
-  //     metodosDePagoIds: metodo,
-  //   }));
-  //   setPagoCreacion(nuevosPagos);
-  // };
-  // console.log("pagoCreacion en cargarPagos", pagoCreacion);
+
+  const handlePagoSubmit = (selectedMethods: number[]) => {
+    setMetodosDePago(selectedMethods);
+  };
 
   const steps = [
     {
       title: "",
       content: (
         <FormaDePago
-          // cargarPagos={cargarPagos}
           importe={props.montoAPagar}
           formadePago={metodosDePago!}
           setFormaDePago={setMetodosDePago}
           onSuccess={next}
+          handlePagoSubmit={handlePagoSubmit}
         />
       ),
     },
-    // {
-    //   title: "",
-    //   content: metodoDePago == 3 ? <PagoCredito /> : <Montos montoAPagar={props.montoAPagar} formaDePago={metodoDePago!} />,
-    // },
+    {
+      title: "",
+      content: (
+        // metodosDePago == 3 ? <PagoCredito />
+        // :
+        <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago!} finalizarVenta={finalizarVenta} />
+      ),
+    },
   ];
 
   const items = steps.map((item, index) => (
@@ -83,24 +87,23 @@ export default function RealizarVenta(props: realizarVentaProps) {
         cantidad: p.cantidad,
       }))
     );
-    console.log(` el ventaline: ${ventaLineCreacion}`);
   }, [props.productos]);
 
-  // useEffect(() => {
-  //   setPagoCreacion([
-  //     {
-  //       importe: props.montoAPagar,
-  //       metodoDePago: metodosDePago,
-  //     },
-  //   ]);
-  //   console.log(`pago creacion1: ${pagoCreacion}`);
-  // }, [metodosDePago]);
+  useEffect(() => {
+    setPagoCreacion([
+      {
+        importe: props.montoAPagar,
+        metodosDePagoIds: metodosDePago,
+      },
+    ]);
+  }, [metodosDePago]);
 
   async function finalizarVenta() {
     var venta: ventaCreacionDTO = {
       clienteId: props.clientes.id_cliente,
       ventaLines: ventaLineCreacion,
       pagos: pagoCreacion,
+      descuento: props.descuento,
     };
     crearVenta(venta);
     console.log(venta);
@@ -138,9 +141,9 @@ export default function RealizarVenta(props: realizarVentaProps) {
           <div style={contentStyle}>{steps[current].content}</div>
           <div style={{ marginTop: 24, display: "flex", justifyContent: "end" }}>
             {current < steps.length - 1 && <Button onClick={() => next()}>Siguiente</Button>}
-            {/* {current === steps.length - 1 && <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>} */}
+            {current === steps.length - 1}
           </div>
-          <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button>
+          {/* <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button> */}
         </div>
       </Modal>
     </>
@@ -151,4 +154,5 @@ export interface realizarVentaProps {
   productos: productoModel[];
   montoAPagar: number;
   clientes: any;
+  descuento?: number;
 }

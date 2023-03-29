@@ -23,8 +23,12 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const [id, setId] = useState<number>();
 
   const [clientes, setClientes] = useState<clienteModel[]>([]);
-  // const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
+
+  /*
+   * Manejadores de evento para mostrar/ocultar la información detallada, editar y/o el estado de cuenta de un cliente.
+   * Actualizan el estado del componente padre al finalizar la operación.
+   */
 
   const showCuenta = () => {
     setCuenta(!cuenta);
@@ -40,6 +44,9 @@ export default function ListadoClientes(props: propsListadoClientes) {
     props.setFlag();
   };
 
+  /*
+   * Efecto para cargar la lista de clientes desde la API al montar el componente.
+   */
   useEffect(() => {
     async function traerClientes() {
       const result = await axios.get(`${urlClientes}`);
@@ -148,7 +155,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
           <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
         </Modal>
         <Modal title="Estado de Cuenta" width={960} open={cuenta} footer={null} centered onCancel={showCuenta}>
-          <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} />
+          <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} clienteId={id!} />
         </Modal>
 
         <div>

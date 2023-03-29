@@ -20,6 +20,7 @@ import Swal from "sweetalert2";
 import "./ventaStyles.css";
 import "./ventaStyles.css";
 import RealizarVenta from "./RealizarVenta";
+import InputVentas from "../../utils/InputVentas";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   const [openCliente, setOpenCliente] = useState(false);
@@ -34,7 +35,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
   const [subTotal, setSubTotal] = useState(0);
   const [totalConDescuento, setTotalConDescuento] = useState(0);
   const [descuentoAplicado, setDescuentoAplicado] = useState(false);
-  const [botonSeleccionado, setBotonSeleccionado] = useState(0);
+  const [porcentajeBotonSeleccionado, setPorcentajeBotonSeleccionado] = useState(0);
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clientesAgregados, setClientesAgregados] = useState<number[]>([]);
@@ -44,7 +45,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const handleFlag = () => {
     setFlag(!flag);
-    console.log("flag", flag);
   };
 
   //Modales
@@ -106,13 +106,16 @@ export default function ListadoVentas(props: propsListadoVentas) {
     setProductosTabla1(productosTabla1.filter((p) => p.id_producto !== id));
   }
 
-  const cambiarCantidad = (id: number, cantidad: number) => {
+  const cambiarCantidad = (id: number, newCantidad: number) => {
     const newProductosTabla2 = productosTabla2.map((producto) => {
+      console.log(producto.cantidad, "cantidad");
+
       if (producto.id_producto === id) {
-        return { ...producto, cantidad, precioF: producto.precio * cantidad };
+        return { ...producto, cantidad: newCantidad, precioF: producto.precio * newCantidad };
       }
       return producto;
     });
+
     setProductosTabla2(newProductosTabla2);
     setSubTotal(calcularSubtotal(newProductosTabla2));
   };
@@ -152,13 +155,11 @@ export default function ListadoVentas(props: propsListadoVentas) {
       title: "Cantidad",
       dataIndex: "cantidad",
       key: "cantidad",
-      render: (cantidad: number, record: productoModel) => (
-        <InputNumber
-          defaultValue={0}
-          min={1}
-          max={productoSeleccionado?.cantidad}
-          onChange={(value) => cambiarCantidad(record.id_producto, value ? value : 1)}
-        />
+      render: (cantidad: number, prod: productoModel) => (
+        <>
+          {/* <InputNumber defaultValue={1} onChange={(e) => cambiarCantidad(prod.id_producto, e ? e : 1)} /> */}
+          <InputVentas cambiarCantidad={cambiarCantidad} prod={prod} />
+        </>
       ),
     },
     {
@@ -172,6 +173,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
       key: "precioF",
     },
   ];
+
+  /* proximos cambios: crear componente para el input de cantidades */
 
   function exportPdf() {
     const doc = new jsPDF();
@@ -190,19 +193,18 @@ export default function ListadoVentas(props: propsListadoVentas) {
   }
 
   function calcularDescuento(porcentaje: number) {
-    if (descuentoAplicado && porcentaje === botonSeleccionado) {
+    if (descuentoAplicado && porcentaje === porcentajeBotonSeleccionado) {
       //para que se aplique descuento dependiendo de onClick
       setTotalConDescuento(subTotal);
       setDescuentoAplicado(false);
-      setBotonSeleccionado(0);
+      setPorcentajeBotonSeleccionado(0);
     } else {
       const totalConDescuento = subTotal - subTotal * (porcentaje / 100);
       setTotalConDescuento(totalConDescuento);
       setDescuentoAplicado(true);
-      setBotonSeleccionado(porcentaje);
+      setPorcentajeBotonSeleccionado(porcentaje);
     }
   }
-
   return (
     <>
       <Row style={{ minHeight: "100vh" }}>
@@ -349,8 +351,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 <div className="d-flex justify-content-between ">
                   <Button
                     style={{
-                      backgroundColor: botonSeleccionado === 15 ? "#fff" : "#D9D9D9",
-                      border: botonSeleccionado === 15 ? "1px solid #1DCA94" : "1px solid #000000",
+                      backgroundColor: porcentajeBotonSeleccionado === 15 ? "#fff" : "#D9D9D9",
+                      border: porcentajeBotonSeleccionado === 15 ? "1px solid #1DCA94" : "1px solid #000000",
                       borderRadius: 5,
                       color: "black",
                     }}
@@ -360,8 +362,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   </Button>
                   <Button
                     style={{
-                      backgroundColor: botonSeleccionado === 20 ? "#fff" : "#D9D9D9",
-                      border: botonSeleccionado === 20 ? "1px solid #1DCA94" : "1px solid #000000",
+                      backgroundColor: porcentajeBotonSeleccionado === 20 ? "#fff" : "#D9D9D9",
+                      border: porcentajeBotonSeleccionado === 20 ? "1px solid #1DCA94" : "1px solid #000000",
                       borderRadius: 5,
                       color: "black",
                     }}
@@ -371,8 +373,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   </Button>
                   <Button
                     style={{
-                      backgroundColor: botonSeleccionado === 30 ? "#fff" : "#D9D9D9",
-                      border: botonSeleccionado === 30 ? "1px solid #1DCA94" : "1px solid #000000",
+                      backgroundColor: porcentajeBotonSeleccionado === 30 ? "#fff" : "#D9D9D9",
+                      border: porcentajeBotonSeleccionado === 30 ? "1px solid #1DCA94" : "1px solid #000000",
                       borderRadius: 5,
                       color: "black",
                     }}
@@ -397,6 +399,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   productos={productosTabla2}
                   montoAPagar={totalConDescuento || subTotal}
                   clientes={clienteSeleccionado}
+                  descuento={porcentajeBotonSeleccionado}
                 />
               </div>
             </div>

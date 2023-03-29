@@ -1,79 +1,94 @@
-import { Input } from "antd";
-import { useState } from "react";
+import { Input, InputNumber } from "antd";
+import { indexOf } from "lodash";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Button from "../../utils/Button";
-import FormaDePago from "./FormaDePago";
 
 export default function Montos(props: montosProps) {
-  const [contado, setContado] = useState(0);
-  const [debito, setDebito] = useState(0);
-  const [mp, setMP] = useState(0);
-  const [transf, setTransf] = useState(0);
+  const [disabled, setDisabled] = useState([true, true, true, true]);
+  const [inputMonto, setInputMonto] = useState([0, 0, 0, 0]);
+  const [importeEnPantalla, setImporteEnPantalla] = useState(props.montoAPagar);
 
-  function calcularMonto() {
-    const total = contado + debito + mp + transf;
+  useEffect(() => {
+    setDisabled([
+      !props.formaDePago.includes(1),
+      !props.formaDePago.includes(2),
+      !props.formaDePago.includes(4),
+      !props.formaDePago.includes(5),
+    ]);
+  }, [props.formaDePago]);
 
-    if (total > props.montoAPagar) {
-      console.log(`no se puede ingresar mas de ${props.montoAPagar}`);
-      Swal.fire({
-        title: "Error!",
-        text: "La cantidad no puede superar el monto de la venta",
-        icon: "error",
-      });
-    } else if (total < props.montoAPagar) {
-      console.log(`la deuda es ${props.montoAPagar - total}`);
-    } else {
-      console.log("se guardo la venta");
-    }
-  }
+  /*Hace una copia del arr inputMonto y le asigna el valor del input, luego setea esos valores en el arr original. Despues setea el monto a pagar a medida q cambia el valor de cada input */
+  const calcularMontos = (e: any, id_input: number) => {
+    const arrCopia = [...inputMonto];
+    arrCopia[id_input - 1] = e;
+    console.log(e, "e");
+    setInputMonto(arrCopia);
+    const sum = arrCopia.reduce((a, b) => a + b, 0);
+    setImporteEnPantalla(props.montoAPagar - sum);
+  };
 
+  /* proximo cambio: que el importe tambien pueda ser menor que el precioDeVenta, para poder generar deuda */
   return (
     <div className="container">
-      <Button onClick={() => calcularMonto()}> asdasd</Button>
-
+      <h6> Total a pagar ${importeEnPantalla} </h6>
       <div className="d-flex justify-content-center align-items-center">
         <div className="text">CONTADO</div>
-        <Input
+        <InputNumber
           key={1}
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
-          onChange={(e) => setContado(parseInt(e.target.value))}
-          // onPressEnter={() => calcularMonto()}
-          // disabled={props.formaDePago !== 1}
+          disabled={disabled[0]}
+          onChange={(e) => calcularMontos(e, 1)}
         />
       </div>
       <div className="d-flex justify-content-center align-items-center">
         <div className="text">DEBITO</div>
-        <Input
+        <InputNumber
           key={2}
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
-          onChange={(e) => setDebito(parseInt(e.target.value))}
-          disabled={props.formaDePago !== 2}
-          onPressEnter={() => calcularMonto()}
+          disabled={disabled[1]}
+          onChange={(e) => calcularMontos(e, 2)}
         />
       </div>
       <div className="d-flex justify-content-center align-items-center">
         <div className="text"> MERCADO PAGO </div>
-        <Input
+        <InputNumber
           key={4}
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
-          onChange={(e) => setMP(parseInt(e.target.value))}
-          disabled={props.formaDePago !== 4}
-          onPressEnter={() => calcularMonto()}
+          disabled={disabled[2]}
+          onChange={(e) => calcularMontos(e, 3)}
         />
       </div>
       <div className="d-flex justify-content-center align-items-center">
         <div className="text">TRANSFERENCIA</div>
-        <Input
+        <InputNumber
           key={5}
           placeholder="Ingrese el monto"
           style={{ width: 200, marginBottom: "1rem" }}
-          onChange={(e) => setTransf(parseInt(e.target.value))}
-          disabled={props.formaDePago !== 5}
-          onPressEnter={() => calcularMonto()}
+          disabled={disabled[3]}
+          onChange={(e) => calcularMontos(e, 4)}
         />
+      </div>
+      <div>
+        <Button
+          onClick={() => {
+            const suma = inputMonto.reduce((a, b) => a + b);
+            if (suma == props.montoAPagar) {
+              props.finalizarVenta();
+            } else {
+              Swal.fire({
+                title: "Monto inválido",
+                icon: "warning",
+                showConfirmButton: false,
+              });
+            }
+          }}
+        >
+          REALIZAR VENTA
+        </Button>
       </div>
     </div>
   );
@@ -81,5 +96,13 @@ export default function Montos(props: montosProps) {
 
 interface montosProps {
   montoAPagar: number;
-  formaDePago: number;
+  formaDePago: number[];
+  finalizarVenta(): void;
 }
+
+/* los input q se seteen deben poder modificar el monto a pagar. Ese monto puede pagarse con cualquier proporcion de cada pago, pero al final la suma de los inputs 
+no puede ser mayor ni menor que el montoAPagar que llega por props. 
+
+Por ejemplo: Los inputs CONTADO y DEBITO están habilitados, y el montoAPagar es 100. El usuario puede ingresar 20 en CONTADO y 80 en DEBITO
+
+*/

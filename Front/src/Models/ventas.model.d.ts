@@ -9,7 +9,7 @@ export interface ventaCreacionDTO {
   // tratamientoImpositivo: number;
   ventaLines: ventaLineCreacion[];
   pagos: pagoCreacion[];
-  // ventaOrders: ventaOrderCreacion[];
+  descuento?: number;
 }
 
 export interface ventaLine {
@@ -24,29 +24,13 @@ export interface ventaLine {
 export interface ventaLineCreacion {
   cantidad: number;
   productoId: number;
-  // producto: productoModel;
-  // iva: number;
-}
-
-export interface ventaOrders {
-  id_venta_order: number;
-  id_venta: number;
-  fechaOrder: Date;
-  tipoComprobante: string;
-  ventaOrderPagos: ventaOrderPagos[];
-}
-
-export interface ventaOrderCreacion {
-  id_venta: number;
-  fechaOrder: Date;
-  tipoComprobante: string;
-  ventaOrderPagos: ventaOrderPagosCreacion[];
 }
 
 export interface pagoCreacion {
   importe: number;
-  metodoDePago: number;
+  metodosDePagoIds: number[];
 }
+export interface metodoDePago {}
 
 //viejas
 export interface ventasModel {

@@ -8,6 +8,6 @@ namespace SistemaApi.DTOs
         public int Id_pago { get; set; }
         public double Importe { get; set; }
         public DateTime Fecha { get; set; }
-        public int MetodoDePago { get; set; }
+        public List<MetodoDePagoDTO> MetodosDePago { get; set; }
     }
 }

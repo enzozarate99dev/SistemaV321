@@ -5,9 +5,9 @@ namespace SistemaApi.Entidades
     public class MetodoDePago
     {
         [Key]
-        public int Id { get; set; }
-        public int PagoId { get; set; }
-        public string Metodo { get; set; }
-        public virtual Pago Pago { get; set; }
+        public int Id_metodo { get; set; }
+        public string NombreMetodo { get; set; }
+        public  ICollection<Pago> Pagos { get; set; }
+        public virtual  ICollection<PagosMetodosDePago> PagosMetodosDePago { get; set; }
     }
 }

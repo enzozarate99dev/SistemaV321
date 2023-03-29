@@ -23,20 +23,25 @@ namespace SistemaApi.Utilidades
                 .ForMember(x => x.Productos, o => o.MapFrom(MapearVentaCFProducto));
 
             CreateMap<VentaCreacionDTO, Venta>();
-            /*    .ForMember(x=> x.VentaOrders, opt => opt.MapFrom(src => src.enta))*/
-          /*      
-               .ForMember(x => x.VentaLines, opt => opt.MapFrom(src => src.VentaLinesCreacion));*/
+       
             CreateMap<Venta, VentaDTO>().ReverseMap();
+
+            CreateMap<Venta, VentaPagosDTO>();
+
+
+            CreateMap<Venta, OperacionesClienteDTO>()
+                .ForMember(dest => dest.Pagos, opt => opt.MapFrom(src => src.Pagos));
 
             CreateMap<VentaLineCreacionDTO, VentaLine>();
 
             CreateMap<VentaLine, VentaLineDTO>().ReverseMap();
-            /*
-                        CreateMap<VentaOrder, VentaOrderDTO>()
-                            .ForMember(x => x.Pagos, opt => opt.MapFrom(MapearVentaOrderPagos));
-            */
+            
+         
+            
             CreateMap<PagoCreacionDTO, Pago>();
             CreateMap<Pago, PagoDTO>().ReverseMap();
+
+            CreateMap<MetodoDePago, MetodoDePagoDTO>().ReverseMap();
 
 
             CreateMap<ClienteCreacionDTO, ClienteEntidad>(); 
@@ -57,27 +62,7 @@ namespace SistemaApi.Utilidades
         }
 
 
-      /*  private List<PagoDTO> MapearVentaOrderPagos(VentaOrder ventaOrder, VentaOrderDTO ventaOrderDTO)
-        {
-            var resultado = new List<PagoDTO>();
-            if (ventaOrder.Pagos != null)
-            {
-                foreach (var pago in ventaOrder.Pagos)
-                {
-                    resultado.Add(new PagoDTO()
-                    {
-                        Id_pago = pago.Id_pago,
-                        Fecha = pago.Fecha,
-                        MetodoDePago = pago.MetodoDePago,
-                        Importe = pago.Importe,
-
-                    });
-                }
-
-            }
-            return resultado;
-        }
-*/
+  
         private List<ProductoDTO> MapearCompraProducto(Compra compra, CompraDTO compraDTO)
         {
             var resultado = new List<ProductoDTO>();

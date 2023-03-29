@@ -19,14 +19,14 @@ export interface clienteModel {
   label?: string;
 }
 
-export interface clientePagos {
+export interface ventasCliente {
   clienteId: number;
-  fecha?: Date;
-  metodoDePago: number;
-  debe?: number;
-  haber?: number;
-  saldo: number;
-  accciones?: void;
+  id_venta: number;
+  fechaDeVenta: Date;
+  precioTotal: number;
+  tipoComprobante: string;
+  pagada: boolean;
+  pagos: [];
 }
 
 export interface clienteCrear {

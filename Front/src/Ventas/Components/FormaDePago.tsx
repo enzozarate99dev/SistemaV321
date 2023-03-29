@@ -2,38 +2,27 @@ import Banco from "../../assets/Banco";
 import Dinero from "../../assets/Dinero";
 import TarjetaCredito from "../../assets/TarjetaCredito";
 import TarjetaDebito from "../../assets/TarjetaDebito";
+import "./ventaStyles.css";
+import { useEffect, useState } from "react";
+import "./ventaStyles.css";
 import Button from "../../utils/Button";
-import "./ventaStyles.css";
-import { useState } from "react";
-import "./ventaStyles.css";
-import { pagoCreacion } from "../../Models/ventas.model";
 
-export default function FormaDePago({ onSuccess, importe, setFormaDePago }: formadePagoProps) {
-  // const [botonSeleccionado, setBotonSeleccionado] = useState(0);
-  const [metodosDePago, setMetodosDePago] = useState<number[]>([]);
+export default function FormaDePago({ onSuccess, importe, setFormaDePago, handlePagoSubmit }: formadePagoProps) {
+  const [metodosSeleccionados, setMetodosSeleccionados] = useState<number[]>([]);
 
-  const onClick = (value: number) => {
-    setFormaDePago(value);
-    if (botonSeleccionado === value) {
-      setBotonSeleccionado(0);
+  const elegirMetodo = (value: number) => {
+    const index = metodosSeleccionados.indexOf(value);
+    if (index === -1) {
+      setMetodosSeleccionados([...metodosSeleccionados, value]);
     } else {
-      setBotonSeleccionado(value);
+      setMetodosSeleccionados(metodosSeleccionados.filter((_, i) => i !== index));
     }
-    console.log(value);
   };
-  // const onClick = (value: number) => {
-  //   const nuevosMetodosDePago = metodosDePago.includes(value)
-  //     ? metodosDePago.filter((p) => p !== value) //si value ya esta incluido en metodosDePago, filter crea un nuevo [] que lo saque
-  //     : [...metodosDePago, value];
-  //   setMetodosDePago(nuevosMetodosDePago);
-  //   cargarPagos(nuevosMetodosDePago);
-  // };
-  // console.log("metodo elegido", metodosDePago);
+  console.log("arreglo de metods en FormaDePago: ", metodosSeleccionados);
 
-  // const pagoCredito = (value: number) => {
-  //   setFormaDePago(value);
-  //   onSuccess();
-  // };
+  useEffect(() => {
+    handlePagoSubmit(metodosSeleccionados);
+  }, [metodosSeleccionados]);
 
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>
@@ -45,13 +34,11 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago }: form
               height: 148,
               width: 148,
               backgroundColor: "#FBFBFB",
-              // boxShadow: botonSeleccionado === 1 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              // borderRadius: botonSeleccionado === 1 ? 0 : 10,
               color: "#6A7580",
+              boxShadow: metodosSeleccionados.includes(1) ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: 10,
             }}
-            onClick={() => {
-              onClick(1);
-            }}
+            onClick={() => elegirMetodo(1)}
           >
             <Dinero />
             <p>CONTADO</p>
@@ -64,13 +51,11 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago }: form
               height: 148,
               width: 148,
               backgroundColor: "#FBFBFB",
-              // boxShadow: botonSeleccionado === 2 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              // borderRadius: botonSeleccionado === 2 ? 0 : 10,
               color: "#6A7580",
+              boxShadow: metodosSeleccionados.includes(2) ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: 10,
             }}
-            onClick={() => {
-              onClick(2);
-            }}
+            onClick={() => elegirMetodo(2)}
           >
             <TarjetaDebito />
             <p>DEBITO</p>
@@ -83,13 +68,11 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago }: form
               height: 148,
               width: 148,
               backgroundColor: "#FBFBFB",
+              color: "#6A7580",
               boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
               borderRadius: 10,
-              color: "#6A7580",
             }}
-            onClick={() => {
-              // pagoCredito(3);
-            }}
+            onClick={() => {}}
           >
             <TarjetaCredito />
             <p>CREDITO</p>
@@ -105,15 +88,13 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago }: form
               height: 148,
               width: 148,
               backgroundColor: "#FBFBFB",
-              // boxShadow: botonSeleccionado === 4 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              // borderRadius: botonSeleccionado === 4 ? 0 : 10,
               color: "#6A7580",
+              boxShadow: metodosSeleccionados.includes(4) ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: 10,
             }}
-            onClick={() => {
-              onClick(4);
-            }}
+            onClick={() => elegirMetodo(4)}
           >
-            <p> Mercado Pago</p>
+            <p>Mercado Pago</p>
           </Button>
         </div>
         <div className="container">
@@ -123,47 +104,27 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago }: form
               height: 148,
               width: 148,
               backgroundColor: "#FBFBFB",
-              // boxShadow: botonSeleccionado === 5 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              // borderRadius: botonSeleccionado === 5 ? 0 : 10,
               color: "#6A7580",
+              boxShadow: metodosSeleccionados.includes(5) ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              borderRadius: 10,
             }}
-            onClick={() => {
-              onClick(5);
-            }}
+            onClick={() => elegirMetodo(5)}
           >
             <Banco />
             <p>TRANSFERENCIA</p>
           </Button>
         </div>
-        {/* <div className="container">
-          <Button
-            className="btn btn-transparent boton"
-            style={{
-              height: 148,
-              width: 148,
-              backgroundColor: "#FBFBFB",
-              boxShadow: botonSeleccionado === 6 ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: botonSeleccionado === 6 ? 0 : 10,
-              color: "#6A7580",
-            }}
-            onClick={() => {
-              onClick(6);
-            }}
-          >
-            <Dinero />
-            <p>Cta Corriente</p>
-          </Button>
-        </div> */}
       </div>
     </div>
   );
 }
 
 interface formadePagoProps {
-  formadePago?: number;
-  setFormaDePago(formaDePago: number): void;
+  formadePago?: number[];
+  setFormaDePago(formaDePago: number[]): void;
   onSuccess(): void;
   importe: number;
+  handlePagoSubmit(metodosSeleccionados: number[]): void;
   // cargarPagos(metodoDePago: number[]): void;
 }
 

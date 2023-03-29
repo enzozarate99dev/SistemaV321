@@ -23,7 +23,7 @@ namespace SistemaApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ClienteDTO>>> GetTodos()
         {
-            var clientes = await context.Clientes.Include(x => x.Ventas).ThenInclude(y => y.VentaLines).ThenInclude(z => z.Producto).ToListAsync();
+            var clientes = await context.Clientes.ToListAsync();
             return mapper.Map<List<ClienteDTO>>(clientes);
         }
 
@@ -46,12 +46,22 @@ namespace SistemaApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ClienteDTO>> Get(int id)
         {
-            var cliente = await context.Clientes.Include(x=>x.Ventas).ThenInclude(y=>y.VentaLines).ThenInclude(z=>z.Producto).FirstOrDefaultAsync(x => x.Id_cliente== id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente== id);
 
             if (cliente == null) { return NotFound(); }
 
             var dto = mapper.Map<ClienteDTO>(cliente);
             return dto;
+        }
+
+        [HttpGet("ventasCliente/{id:int}")]
+        public async Task<ActionResult<List<OperacionesClienteDTO>>> Ventas(int id)
+        {
+            var ventas = await context.Ventas.Where(x => x.ClienteId == id)
+                .Include(v => v.Pagos)
+                .ThenInclude(p => p.MetodosDePago)
+                .ToListAsync();
+            return mapper.Map<List<OperacionesClienteDTO>>(ventas);
         }
 
         [HttpPost]

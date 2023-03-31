@@ -22,19 +22,11 @@ function App() {
   }
 
   function esAdmin() {
-    return (
-      claims.findIndex(
-        (claim) => claim.nombre === "role" && claim.valor === "admin"
-      ) > -1
-    );
+    return claims.findIndex((claim) => claim.nombre === "role" && claim.valor === "admin") > -1;
   }
 
   function esCajero() {
-    return (
-      claims.findIndex(
-        (claim) => claim.nombre === "role" && claim.valor === "cajero"
-      ) > -1
-    );
+    return claims.findIndex((claim) => claim.nombre === "role" && claim.valor === "cajero") > -1;
   }
 
   return (
@@ -49,13 +41,7 @@ function App() {
                   {ruta.esCajero && !esCajero() && !esAdmin() ? (
                     <>No tienes permiso</>
                   ) : (
-                    <>
-                      {ruta.esAdmin && !esAdmin() ? (
-                        <>No tienes permiso</>
-                      ) : (
-                        <ruta.componente />
-                      )}
-                    </>
+                    <>{ruta.esAdmin && !esAdmin() ? <>No tienes permiso</> : <ruta.componente />}</>
                   )}
                 </Route>
               ))}

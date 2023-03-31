@@ -110,19 +110,16 @@ export default function RealizarVenta(props: realizarVentaProps) {
   }
 
   function crearVenta(venta: ventaCreacionDTO) {
-    try {
-      services.crearVenta(venta);
-      Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success");
-    } catch (error) {
-      console.log(error.response.data);
-    }
+    services
+      .crearVenta(venta)
+      .then(() => Swal.fire("Carga Correcta", "La venta fue cargada correctamente", "success"))
+      .catch(() => Swal.fire("Carga incorrecta", "No hay suficientes unidades de producto", "error"));
   }
 
   return (
     <>
       <Button
         style={{
-          width: 100,
           backgroundColor: "#fff",
           border: "3px solid #11A629",
           boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",

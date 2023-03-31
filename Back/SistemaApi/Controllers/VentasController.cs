@@ -329,6 +329,7 @@ namespace SistemaApi.Controllers
                 if (producto == null)
                 {
                     throw new Exception($"El producto con id {vlc.ProductoId} no existe");
+                    /*return BadRequest($"El producto con id {vlc.ProductoId} no existe");*/
                 }
 
                 var ventaLine = new VentaLine

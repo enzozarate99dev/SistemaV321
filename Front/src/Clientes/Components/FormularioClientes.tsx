@@ -1,12 +1,15 @@
 import { Checkbox, Form, Input, Button } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { clienteCrear } from "../../Models/clientes.model";
 import * as services from "../Services/clientes.services";
+import "../clientesStyles.css";
 
 export default function FormularioClientes(props: formularioClientesProps) {
+  const [disabled, setDisabled] = useState(false);
   const [form] = Form.useForm();
 
+  //establecer los valores iniciales del formulario utilizando los valores del objeto modelo.
   form.setFieldsValue({
     ["nroDocumento"]: props.modelo.nroDocumento,
     ["nombreYApellido"]: props.modelo.nombreYApellido,
@@ -19,6 +22,13 @@ export default function FormularioClientes(props: formularioClientesProps) {
     ["percibeIVA"]: props.modelo.percibeIVA,
     ["nroIngresos"]: props.modelo.nroIngresos,
   });
+
+  useEffect(() => {
+    if (props.disabled == true) {
+      setDisabled(true);
+    }
+  }, []);
+
   return (
     <Form
       form={form}
@@ -34,32 +44,32 @@ export default function FormularioClientes(props: formularioClientesProps) {
     >
       <div className="col-md-4">
         <Form.Item name="nroDocumento" rules={[{ required: true, message: "" }]}>
-          <Input placeholder="DNI / CUIT" />
+          <Input placeholder="DNI / CUIT" disabled={disabled} />
         </Form.Item>
       </div>
       <div className="col-md-4">
         <Form.Item name="nombreYApellido" rules={[{ required: true, message: "" }]}>
-          <Input placeholder="NOMBRE Y APELLIDO" />
+          <Input placeholder="NOMBRE Y APELLIDO" disabled={disabled} />
         </Form.Item>
       </div>
       <div className="col-md-4">
         <Form.Item name="razonSocial" rules={[{ required: true, message: "" }]}>
-          <Input placeholder="RAZON SOCIAL" defaultValue={props.modelo.razonSocial} />
+          <Input placeholder="RAZON SOCIAL" defaultValue={props.modelo.razonSocial} disabled={disabled} />
         </Form.Item>
       </div>
       <div className="col-md-4">
         <Form.Item name="domicilio" rules={[{ required: true, message: "" }]}>
-          <Input placeholder="DOMICILIO" />
+          <Input placeholder="DOMICILIO" disabled={disabled} />
         </Form.Item>
       </div>
       <div className="col-md-4">
         <Form.Item name="localidad" rules={[{ required: true, message: "" }]}>
-          <Input placeholder="LOCALIDAD" />
+          <Input placeholder="LOCALIDAD" disabled={disabled} />
         </Form.Item>
       </div>
       <div className="col-md-4">
         <Form.Item name="provincia" rules={[{ required: true, message: "" }]}>
-          <Input placeholder="PROVINCIA" />
+          <Input placeholder="PROVINCIA" disabled={disabled} />
         </Form.Item>
       </div>
       <div className="col-md-4" hidden={true}>
@@ -77,17 +87,17 @@ export default function FormularioClientes(props: formularioClientesProps) {
       >
         <div className="col-md-7">
           <Form.Item name="percibeIIBB" valuePropName="checked">
-            <Checkbox>Percibe IIBB</Checkbox>
+            <Checkbox disabled={disabled}>Percibe IIBB</Checkbox>
           </Form.Item>
 
           <Form.Item name="percibeIVA" valuePropName="checked" initialValue={props.modelo.percibeIVA}>
-            <Checkbox>Percibe IVA</Checkbox>
+            <Checkbox disabled={disabled}>Percibe IVA</Checkbox>
           </Form.Item>
         </div>
 
         <div className="col-md-8">
           <Form.Item name="nroIngresos">
-            <Input placeholder="NUMERO" />
+            <Input placeholder="NUMERO" disabled={disabled} />
           </Form.Item>
         </div>
       </div>
@@ -109,4 +119,5 @@ interface formularioClientesProps {
   buttonText?: string;
   buttonExiste: boolean;
   id?: number;
+  disabled?: boolean;
 }

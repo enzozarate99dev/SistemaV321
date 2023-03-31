@@ -40,7 +40,7 @@ export default function InfoCliente(props: infoClienteProps) {
   return (
     <div className="container">
       <MostrarErrores errores={errores} />
-      {cliente ? <FormularioClientes modelo={cliente} buttonExiste={false} onSubmit={() => {}} /> : <Cargando />}
+      {cliente ? <FormularioClientes modelo={cliente} buttonExiste={false} onSubmit={() => {}} disabled={true} /> : <Cargando />}
     </div>
   );
 }

@@ -60,7 +60,6 @@ export default function MiLayout(props: MenuProps) {
         <Content
           style={{
             textAlign: "center",
-            minHeight: "100vh",
             backgroundColor: "#fff",
           }}
         >

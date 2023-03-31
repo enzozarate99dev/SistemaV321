@@ -1,4 +1,4 @@
-import { AutoComplete, Modal, Select, Table } from "antd";
+import { AutoComplete, Modal, Row, Select, Table } from "antd";
 import { useEffect, useState } from "react";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
@@ -15,6 +15,8 @@ import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
 import "../clientesStyles.css";
 import "../../utils/modal.css";
 import EstadoCuenta from "./EstadoCuenta";
+import { Input } from "antd";
+import { Col } from "react-bootstrap";
 
 export default function ListadoClientes(props: propsListadoClientes) {
   const [cuenta, setCuenta] = useState(false);
@@ -24,6 +26,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
 
   const [clientes, setClientes] = useState<clienteModel[]>([]);
   const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
+  const [busqueda, setBusqueda] = useState("");
 
   /*
    * Manejadores de evento para mostrar/ocultar la información detallada, editar y/o el estado de cuenta de un cliente.
@@ -60,6 +63,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
     }
     traerClientes();
   }, []);
+
+  const filtrarClientes = clientesTabla.filter((customer) => customer.nombreYApellido.toLowerCase().includes(busqueda.toLowerCase()));
 
   const columns = [
     {
@@ -157,27 +162,21 @@ export default function ListadoClientes(props: propsListadoClientes) {
         <Modal title="Estado de Cuenta" width={960} open={cuenta} footer={null} centered onCancel={showCuenta}>
           <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} clienteId={id!} />
         </Modal>
-
-        <div>
-          <AutoComplete
-            className="input"
-            placeholder="Buscar cliente"
-            dropdownMatchSelectWidth={200}
-            options={clientes}
-            style={{ width: 200 }}
-            onSearch={() => {}}
-            open={false}
-          ></AutoComplete>
-          <Select placeholder="Ordenar por..." className="input" />
-        </div>
-        <div className="container">
-          <Table
-            dataSource={clientesTabla}
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-            style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: 40 }}
-          />
-        </div>
+        <Row>
+          <Col sm="12">
+            <Input placeholder="Buscar cliente" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} style={{ width: 200 }} />
+          </Col>
+        </Row>
+        <Row>
+          <Col sm="12">
+            <Table
+              dataSource={filtrarClientes}
+              columns={columns}
+              pagination={{ pageSize: 5 }}
+              style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: 40 }}
+            />
+          </Col>
+        </Row>
       </div>
     </>
   );

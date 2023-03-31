@@ -1,4 +1,4 @@
-import { Col, Divider, Modal, Row, Select, Table, Switch, InputNumber, Input, AutoComplete } from "antd";
+import { Col, Divider, Modal, Row, Select, Table, Switch, Input, AutoComplete } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
@@ -7,27 +7,25 @@ import CargarCliente from "../../Clientes/Components/CargarCliente";
 import { urlClientes, urlProductos } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
-import { ventaCreacionDTO, ventaLineCreacion, ventasModel } from "../../Models/ventas.model";
+import { ventasModel } from "../../Models/ventas.model";
 import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import CargarProducto from "../../Productos/Components/CargarProducto";
 import Button from "../../utils/Button";
-import * as services from "../Services/ventas.services";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import "../../utils/modal.css";
 import TrashIcon from "../../assets/TrashIcon";
-import Swal from "sweetalert2";
-import "./ventaStyles.css";
 import "./ventaStyles.css";
 import RealizarVenta from "./RealizarVenta";
 import InputVentas from "../../utils/InputVentas";
+import ButtonDescuento from "../../utils/ButtonDescuento";
+import { relative } from "path";
 
 export default function ListadoVentas(props: propsListadoVentas) {
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
 
   const [productos, setProductos] = useState<productoModel[]>([]);
-  const [productoSeleccionado, setProductoSeleccionado] = useState<productoModel | null>();
   const [productosTabla1, setProductosTabla1] = useState<productoModel[]>([]);
   const [productosTabla2, setProductosTabla2] = useState<productoModel[]>([]);
   const [productosFiltro, setProductosFiltro] = useState<productoModel[]>([]);
@@ -108,8 +106,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
 
   const cambiarCantidad = (id: number, newCantidad: number) => {
     const newProductosTabla2 = productosTabla2.map((producto) => {
-      console.log(producto.cantidad, "cantidad");
-
       if (producto.id_producto === id) {
         return { ...producto, cantidad: newCantidad, precioF: producto.precio * newCantidad };
       }
@@ -158,7 +154,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
       render: (cantidad: number, prod: productoModel) => (
         <>
           {/* <InputNumber defaultValue={1} onChange={(e) => cambiarCantidad(prod.id_producto, e ? e : 1)} /> */}
-          <InputVentas cambiarCantidad={cambiarCantidad} prod={prod} />
+          <InputVentas cambiarCantidad={cambiarCantidad} prod={prod} cantidad={prod.cantidad} />
         </>
       ),
     },
@@ -207,205 +203,194 @@ export default function ListadoVentas(props: propsListadoVentas) {
   }
   return (
     <>
-      <Row style={{ minHeight: "100vh" }}>
-        <Col span={7} style={{ display: "flex" }}>
-          <div className="container">
-            <div
+      <div style={{ position: "relative" }}>
+        <Row className="my-row">
+          <Col lg={7} md={19} style={{ display: "flex" }} className="col1">
+            <div className="container">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <AutoComplete
+                  placeholder="Cargar articulo"
+                  dropdownMatchSelectWidth={200}
+                  options={productosFiltro.map((p) => ({ value: p.id_producto, label: p.nombre }))}
+                  style={{ width: 250 }}
+                  onSearch={buscarProd}
+                  open={false}
+                ></AutoComplete>
+                <Button
+                  style={{}}
+                  onClick={() => {
+                    showCargarProducto();
+                  }}
+                  className="btn btn-transparent"
+                >
+                  <AddIcon />
+                </Button>
+                <Modal title="Cargar Producto" width={1150} open={openProducto} footer={null} centered onCancel={showCargarProducto}>
+                  <p>
+                    <CargarProducto setFlagModal={showCargarProducto} setFlagListado={props.setFlag} />
+                  </p>
+                </Modal>
+              </div>
+              <div className="container">
+                {productosTabla1.length > 0 && (
+                  <Table
+                    dataSource={productosTabla1}
+                    columns={columnsTabla1}
+                    showHeader={false}
+                    pagination={{ pageSize: 5 }}
+                    onRow={(productoTabla: productoModel) => {
+                      return {
+                        onClick: () => moverProductos(productoTabla.id_producto),
+                      };
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+            <Col md={0} lg={1}>
+              <Divider type="vertical" style={{ backgroundColor: "#33384D", height: "100vh", marginBlock: "10vh" }} />
+            </Col>
+          </Col>
+          <Col lg={12} className="col2" md={19}>
+            <div className="container">
+              <h6>Articulos Cargados</h6>
+              <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
+            </div>
+            <Button
+              onClick={() => exportPdf()}
+              className="btn btn-transparent d-flex  justify-content-start "
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                backgroundColor: "#F5F5F5",
+                boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                borderRadius: 7,
+                width: 80,
+                height: 50,
               }}
             >
-              <AutoComplete
-                placeholder="Cargar articulo"
-                dropdownMatchSelectWidth={200}
-                options={productosFiltro.map((p) => ({ value: p.id_producto, label: p.nombre }))}
-                style={{ width: 250 }}
-                onSearch={buscarProd}
-                open={false}
-              ></AutoComplete>
-              <Button
-                style={{}}
-                onClick={() => {
-                  showCargarProducto();
-                }}
-                className="btn btn-transparent"
+              <div
+                className="d-flex flex-column justify-content-center align-items-center  "
+                style={{ position: "relative", width: "100%", height: "100%", margin: 0 }}
               >
-                <AddIcon />
-              </Button>
-              <Modal title="Cargar Producto" width={1150} open={openProducto} footer={null} centered onCancel={showCargarProducto}>
-                <p>
-                  <CargarProducto setFlagModal={showCargarProducto} setFlagListado={props.setFlag} />
-                </p>
-              </Modal>
-            </div>
-            <div className="container">
-              {productosTabla1.length > 0 && (
-                <Table
-                  dataSource={productosTabla1}
-                  columns={columnsTabla1}
-                  showHeader={false}
-                  pagination={{ pageSize: 5 }}
-                  onRow={(productoTabla: productoModel) => {
-                    return {
-                      onClick: () => moverProductos(productoTabla.id_producto),
-                    };
-                  }}
-                />
-              )}
-            </div>
-          </div>
-          <Divider type="vertical" style={{ backgroundColor: "#33384D", height: "100vh", marginBlock: "10vh" }} />
-        </Col>
-        <Col span={12}>
-          <div className="container">
-            <h6>Articulos Cargados</h6>
-            <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
-          </div>
-          <Button
-            onClick={() => exportPdf()}
-            className="btn btn-transparent d-flex  justify-content-start "
+                <PdfIcon />
+                <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
+              </div>
+            </Button>
+          </Col>
+
+          <Col
+            lg={{ push: 0, pull: 0 }}
+            md={5}
             style={{
               backgroundColor: "#F5F5F5",
-              boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-              borderRadius: 7,
-              width: 80,
-              height: 50,
+              boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              minHeight: "100vh",
             }}
+            className="col3"
           >
-            <div
-              className="d-flex flex-column justify-content-center align-items-center  "
-              style={{ position: "relative", width: "100%", height: "100%", margin: 0 }}
-            >
-              <PdfIcon />
-              <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
-            </div>
-          </Button>
-        </Col>
-
-        <Col span={5} style={{ backgroundColor: "#F5F5F5", boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)" }}>
-          <div className="container">
-            <div className="container d-flex justify-content-center align-items-center">
-              <Select
-                showSearch
-                onSelect={selectCliente}
-                style={{ width: 200 }}
-                placeholder="Seleccionar cliente"
-                showArrow={false}
-                optionFilterProp="children"
-                filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
-                options={clientes}
-              />
-              <Button
-                style={{}}
-                onClick={() => {
-                  showCargarCliente();
-                }}
-                className="btn btn-transparent"
-              >
-                <AddIcon />
-              </Button>
-              <Modal title="Cargar Cliente" width={1150} open={openCliente} footer={null} centered onCancel={showCargarCliente}>
-                <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
-              </Modal>
-            </div>
             <div className="container">
-              <div className="container">
-                <p>CONDICION</p>
-                <div
-                  style={{
-                    marginInline: 30,
-                    display: "flex",
-                    alignItems: "middle",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <p>C.F</p>
-                  <Switch style={{ backgroundColor: "#3B4256" }} />
-                  <p>R.I</p>
-                </div>
-              </div>
-
-              <Input placeholder="DNI/CUIT" value={clienteSeleccionado?.nroDocumento} />
-              <Divider />
-              <div>
-                <p>Datos del Cliente</p>
-                <Input
-                  placeholder="Nombre/Razon Social"
-                  value={
-                    clienteSeleccionado?.nombreYApellido && clienteSeleccionado?.razonSocial
-                      ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
-                      : ""
+              <div className="container d-flex justify-content-center align-items-center">
+                <Select
+                  showSearch
+                  onSelect={selectCliente}
+                  style={{ width: "80%" }}
+                  placeholder="Seleccionar cliente"
+                  showArrow={false}
+                  optionFilterProp="children"
+                  filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                  filterSort={(optionA, optionB) =>
+                    (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())
                   }
-                  key={clienteSeleccionado?.id_cliente}
+                  options={clientes}
                 />
+                <Button
+                  style={{ width: "20%" }}
+                  onClick={() => {
+                    showCargarCliente();
+                  }}
+                  className="btn btn-transparent"
+                >
+                  <AddIcon />
+                </Button>
+                <Modal title="Cargar Cliente" width={1150} open={openCliente} footer={null} centered onCancel={showCargarCliente}>
+                  <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
+                </Modal>
               </div>
-              <Divider />
-              <div>
-                <p>Importe</p>
-                <p>Subtotal: ${subTotal}</p>
-              </div>
-              <div className="mt-4">
-                <div className="d-flex justify-content-between ">
-                  <Button
+              <div className="container">
+                <div className="d-flex flex-column justify-content-center ">
+                  <p>CONDICION</p>
+                  <div
+                    className="mx-1 mx-lg-5 my-2"
                     style={{
-                      backgroundColor: porcentajeBotonSeleccionado === 15 ? "#fff" : "#D9D9D9",
-                      border: porcentajeBotonSeleccionado === 15 ? "1px solid #1DCA94" : "1px solid #000000",
-                      borderRadius: 5,
-                      color: "black",
+                      display: "flex",
+                      alignItems: "middle",
+                      justifyContent: "space-between",
                     }}
-                    onClick={() => calcularDescuento(15)}
                   >
-                    15%
-                  </Button>
-                  <Button
-                    style={{
-                      backgroundColor: porcentajeBotonSeleccionado === 20 ? "#fff" : "#D9D9D9",
-                      border: porcentajeBotonSeleccionado === 20 ? "1px solid #1DCA94" : "1px solid #000000",
-                      borderRadius: 5,
-                      color: "black",
-                    }}
-                    onClick={() => calcularDescuento(20)}
-                  >
-                    20%
-                  </Button>
-                  <Button
-                    style={{
-                      backgroundColor: porcentajeBotonSeleccionado === 30 ? "#fff" : "#D9D9D9",
-                      border: porcentajeBotonSeleccionado === 30 ? "1px solid #1DCA94" : "1px solid #000000",
-                      borderRadius: 5,
-                      color: "black",
-                    }}
-                    onClick={() => calcularDescuento(30)}
-                  >
-                    30%
-                  </Button>
+                    <p>C.F</p>
+                    <Switch style={{ backgroundColor: "#3B4256" }} />
+                    <p>R.I</p>
+                  </div>
+                </div>
+
+                <Input placeholder="DNI/CUIT" value={clienteSeleccionado?.nroDocumento} />
+                <Divider />
+                <div>
+                  <p>Datos del Cliente</p>
+                  <Input
+                    placeholder="Nombre/Razon Social"
+                    value={
+                      clienteSeleccionado?.nombreYApellido && clienteSeleccionado?.razonSocial
+                        ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
+                        : ""
+                    }
+                    key={clienteSeleccionado?.id_cliente}
+                  />
+                </div>
+                <Divider />
+                <div>
+                  <p>Importe</p>
+                  <p>Subtotal: ${subTotal}</p>
+                </div>
+                <div className="mt-4">
+                  <div className="d-flex flex-wrap justify-content-center  ">
+                    <ButtonDescuento calcularDescuento={calcularDescuento} valor={15} porcentaje={porcentajeBotonSeleccionado} />
+                    <ButtonDescuento calcularDescuento={calcularDescuento} valor={20} porcentaje={porcentajeBotonSeleccionado} />
+                    <ButtonDescuento calcularDescuento={calcularDescuento} valor={30} porcentaje={porcentajeBotonSeleccionado} />
+                  </div>
+                  <div className="container mt-4">
+                    <h6>IMPORTE TOTAL</h6>
+
+                    <Input
+                      style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
+                      disabled={true}
+                      value={`$ ${totalConDescuento || subTotal}`}
+                    ></Input>
+                  </div>
                 </div>
                 <div className="container mt-4">
-                  <h6>IMPORTE TOTAL</h6>
-
-                  <Input
-                    style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
-                    disabled={true}
-                    value={`$ ${totalConDescuento || subTotal}`}
-                  ></Input>
+                  <RealizarVenta
+                    setFlag={handleFlag}
+                    productos={productosTabla2}
+                    montoAPagar={totalConDescuento || subTotal}
+                    clientes={clienteSeleccionado}
+                    descuento={porcentajeBotonSeleccionado}
+                  />
                 </div>
               </div>
-              <div className="container mt-4">
-                <RealizarVenta
-                  setFlag={handleFlag}
-                  productos={productosTabla2}
-                  montoAPagar={totalConDescuento || subTotal}
-                  clientes={clienteSeleccionado}
-                  descuento={porcentajeBotonSeleccionado}
-                />
-              </div>
             </div>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </div>
     </>
   );
 }

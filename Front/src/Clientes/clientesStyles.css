@@ -24,3 +24,7 @@ margin-bottom: 80px;
  .cliente-alert{
   background-color: #D9D9D9 !important;
  }
+
+ .ant-input-disabled{
+  background-color: white !important;
+ }

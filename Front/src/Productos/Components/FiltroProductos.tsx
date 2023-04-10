@@ -74,11 +74,10 @@ export default function FiltroProductos() {
     modificarURL(valores);
     const response = services.filtrar(valores);
     await response.then((respuesta: AxiosResponse<productoModel[]>) => {
-      const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
+      const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"] || "10", 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-      console.log(respuesta.headers["date"]);
-
       setProductos(respuesta.data);
+      console.log(respuesta.headers);
     });
   };
   return (

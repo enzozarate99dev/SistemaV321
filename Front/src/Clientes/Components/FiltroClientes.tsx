@@ -55,11 +55,11 @@ export default function FiltroClientes() {
     modificarURL(valores);
     const data = services.filtrar(valores);
     data.then((respuesta: AxiosResponse<clienteModel[]>) => {
-      // console.log(respuesta, "headers");
+      console.log(respuesta, "headers");
 
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-      // console.log(totalDeRegistros, "total de registros");
+      console.log(totalDeRegistros, "total de registros");
       // console.log(valorInicial.recordsPorPagina, "records");
 
       setClientes(respuesta.data);

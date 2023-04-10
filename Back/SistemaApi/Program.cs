@@ -47,11 +47,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
 builder.Services.AddCors(options =>
 {
-    var frontendUrl = configuration.GetValue<string>("frontend_url");
+    var frontendURL = configuration.GetValue<string>("frontend_url");
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins(frontendUrl).AllowAnyMethod().AllowAnyHeader()
-        .WithExposedHeaders(new string[] { "cantidadtotalregistros" });
+        builder.WithOrigins(frontendURL).AllowAnyMethod().AllowAnyHeader()
+        .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
     });
 });
 
@@ -76,16 +76,13 @@ app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true) // allow any origin
-                .AllowCredentials());
+app.UseCors();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints => {
     endpoints.MapControllers();
+
 });
-//app.MapControllers();
+app.MapControllers();
 
 app.Run();

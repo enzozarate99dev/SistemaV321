@@ -1,5 +1,5 @@
 import { AutoComplete, Modal, Row, Select, Table } from "antd";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import { clienteModel } from "../../Models/clientes.model";
@@ -8,7 +8,7 @@ import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/clientes.services";
 import EditarCliente from "./EditarCliente";
 import InfoCliente from "./InfoCliente";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { urlClientes } from "../../Generales/endpoints";
 import VerIcon from "../../assets/VerIcon";
 import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
@@ -17,16 +17,26 @@ import "../../utils/modal.css";
 import EstadoCuenta from "./EstadoCuenta";
 import { Input } from "antd";
 import { Col } from "react-bootstrap";
+import { noAuto } from "@fortawesome/fontawesome-svg-core";
+import { couldStartTrivia } from "typescript";
+import Paginacion from "../../utils/Paginacion";
 
 export default function ListadoClientes(props: propsListadoClientes) {
   const [cuenta, setCuenta] = useState(false);
   const [edit, setEdit] = useState(false);
   const [info, setInfo] = useState(false);
   const [id, setId] = useState<number>();
+  const [esPantallaPequena, setEsPantallaPequena] = useState(false);
+  const { Option } = Select;
 
-  const [clientes, setClientes] = useState<clienteModel[]>([]);
-  const [clientesTabla, setClientesTabla] = useState<clienteModel[]>([]);
-  const [busqueda, setBusqueda] = useState("");
+  useEffect(() => {
+    const handleResize = () => {
+      setEsPantallaPequena(window.innerWidth <= 992);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   /*
    * Manejadores de evento para mostrar/ocultar la información detallada, editar y/o el estado de cuenta de un cliente.
@@ -47,24 +57,22 @@ export default function ListadoClientes(props: propsListadoClientes) {
     props.setFlag();
   };
 
-  /*
-   * Efecto para cargar la lista de clientes desde la API al montar el componente.
-   */
-  useEffect(() => {
-    async function traerClientes() {
-      const result = await axios.get(`${urlClientes}`);
-      setClientes(
-        result.data.map((cliente: clienteModel) => ({
-          value: cliente.id_cliente,
-          label: cliente.nombreYApellido,
-        }))
-      );
-      setClientesTabla(result.data);
+  const onChangeSelect = (value: string, id: number) => {
+    console.log(value, id, "value, id");
+    if (value === "info") {
+      showInfo();
+      setId(id);
+    } else if (value === "edit") {
+      setId(id);
+      showEdit();
+    } else if (value === "cuenta") {
+      setId(id);
+      showCuenta();
+    } else if (value === "borrar") {
+      setId(id);
+      confirmar(() => borrar(id));
     }
-    traerClientes();
-  }, []);
-
-  const filtrarClientes = clientesTabla.filter((customer) => customer.nombreYApellido.toLowerCase().includes(busqueda.toLowerCase()));
+  };
 
   const columns = [
     {
@@ -96,7 +104,20 @@ export default function ListadoClientes(props: propsListadoClientes) {
     {
       title: "Acciones",
       key: "acciones",
-      render: (_: undefined, cliente: clienteModel) => <div className="container">{botones(cliente.id_cliente)}</div>,
+      render: (_: undefined, cliente: clienteModel) => {
+        if (esPantallaPequena) {
+          return (
+            <Select style={{ maxWidth: "80%" }} onChange={(value) => onChangeSelect(value, cliente.id_cliente)} defaultValue="Acciones">
+              <Option value="info">Ver información</Option>
+              <Option value="edit">Editar</Option>
+              <Option value="cuenta">Estado de cuenta</Option>
+              <Option value="borrar">Eliminar</Option>
+            </Select>
+          );
+        } else {
+          return <div className="container">{botones(cliente.id_cliente)}</div>;
+        }
+      },
     },
   ];
 
@@ -110,13 +131,11 @@ export default function ListadoClientes(props: propsListadoClientes) {
   }
 
   const botones = (id: number) => (
-    <>
+    <div className="d-flex flex-nowrap">
       <Button
         style={{ marginRight: "1rem" }}
         className="btn btn-transparent"
         onClick={() => {
-          console.log(id, "row");
-          console.log(clientesTabla, "data");
           showInfo();
           setId(id);
         }}
@@ -146,7 +165,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
       <Button onClick={() => confirmar(() => borrar(id))} className="btn btn-transparent">
         <TrashIcon />
       </Button>
-    </>
+    </div>
   );
 
   return (
@@ -163,17 +182,17 @@ export default function ListadoClientes(props: propsListadoClientes) {
           <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} clienteId={id!} />
         </Modal>
         <Row>
-          <Col sm="12">
-            <Input placeholder="Buscar cliente" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} style={{ width: 200 }} />
+          <Col style={{ display: "flex", justifyContent: "center" }} sm="12">
+            <div>{props.buscador}</div>
           </Col>
         </Row>
         <Row>
-          <Col sm="12">
+          <Col>
             <Table
-              dataSource={filtrarClientes}
+              dataSource={props.clientes}
               columns={columns}
-              pagination={{ pageSize: 5 }}
-              style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: 40 }}
+              pagination={false}
+              style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: "10%" }}
             />
           </Col>
         </Row>
@@ -185,4 +204,5 @@ export default function ListadoClientes(props: propsListadoClientes) {
 interface propsListadoClientes {
   clientes: clienteModel[];
   setFlag: () => void;
+  buscador: JSX.Element;
 }

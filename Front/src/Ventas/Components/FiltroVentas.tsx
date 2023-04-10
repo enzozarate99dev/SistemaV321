@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -10,8 +10,9 @@ import Button from "../../utils/Button";
 import FormGroupFecha from "../../utils/FormGroupFecha";
 import Paginacion from "../../utils/Paginacion";
 import * as servicesCF from "../../VentasConsFinal/Services/consumidorFinal.services";
-import * as services from "../Services/ventas.services";
+import * as services from "../../Productos/Services/productos.services";
 import ListadoVentas from "./ListadoVentas";
+import { urlProductos } from "../../Generales/endpoints";
 
 export default function FiltroVentas() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
@@ -38,7 +39,7 @@ export default function FiltroVentas() {
   // };
 
   // useEffect(() => {
-  //   const res = services.getProductos();
+  //   const res = axios.get(`${urlProductos}`)
   //   res.then((respuesta: AxiosResponse<ventasPostGetModel>) => {
   //     setProductos(respuesta.data.productos);
   //   });
@@ -83,13 +84,8 @@ export default function FiltroVentas() {
   //   modificarURL(valores);
   //   const res = servicesCF.filtrar(valores);
   //   res.then((respuesta: AxiosResponse<ventasConsumidorFinalModel[]>) => {
-  //     const totalDeRegistros = parseInt(
-  //       respuesta.headers["cantidadtotalregistros"],
-  //       10
-  //     );
-  //     setTotalDePaginas(
-  //       Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina)
-  //     );
+  //     const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
+  //     setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
   //     setVentasCF(respuesta.data);
   //   });
   // }
@@ -98,16 +94,13 @@ export default function FiltroVentas() {
   //   modificarURL(valores);
   //   const res = services.filtrar(valores);
   //   res.then((respuesta: AxiosResponse<ventasModel[]>) => {
-  //     const totalDeRegistros = parseInt(
-  //       respuesta.headers["cantidadtotalregistros"],
-  //       10
-  //     );
-  //     setTotalDePaginas(
-  //       Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina)
-  //     );
+  //     const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
+  //     setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
   //     setVentas(respuesta.data);
   //   });
   // }
+
+  console.log(productos, "productos filtroventas");
 
   return (
     <>

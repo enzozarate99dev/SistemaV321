@@ -1,6 +1,5 @@
-import { Modal } from "antd";
+import { Form, Input, Modal } from "antd";
 import { AxiosResponse } from "axios";
-import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import AddIcon from "../../assets/AddIcon";
@@ -12,18 +11,18 @@ import Paginacion from "../../utils/Paginacion";
 import * as services from "../Services/clientes.services";
 import CargarCliente from "./CargarCliente";
 import ListadoClientes from "./ListadoClientes";
+import { Formik } from "formik";
 
 export default function FiltroClientes() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
   const [clientes, setClientes] = useState<clienteModel[]>([]);
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [flag, setFlag] = useState(false);
+  const [form] = Form.useForm();
 
   const handleFlag = () => {
     setFlag(!flag);
-    console.log(flag);
   };
 
   const valorInicial: filtroClientesProps = {
@@ -56,13 +55,20 @@ export default function FiltroClientes() {
     modificarURL(valores);
     const data = services.filtrar(valores);
     data.then((respuesta: AxiosResponse<clienteModel[]>) => {
-      console.log(respuesta);
+      // console.log(respuesta, "headers");
+
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
+      // console.log(totalDeRegistros, "total de registros");
+      // console.log(valorInicial.recordsPorPagina, "records");
 
       setClientes(respuesta.data);
     });
   }
+  // console.log(totalDePaginas, "total de paginas");
+
+  // console.log(clientes, "clientes paginados");
+  // console.log(totalDePaginas, "total de PAGINAS");
 
   return (
     <>
@@ -75,35 +81,27 @@ export default function FiltroClientes() {
       >
         {(formikProps) => (
           <>
-            <Form>
-              {mostrarFiltros ? (
-                <div className="form-inline">
-                  <div className="form-group mb-2">
-                    <FormGroupText onChange={() => formikProps.submitForm()} campo="nombreYApellido" placeholder="Nombre del cliente" />
-                  </div>
-                  <Button
-                    className="btn btn-danger mb-2"
-                    style={{ marginLeft: "10px" }}
-                    onClick={() => {
-                      formikProps.setValues(valorInicial);
-                      buscarCliente(valorInicial);
-                    }}
-                  >
-                    Limpiar
-                  </Button>
-                </div>
-              ) : null}
-            </Form>
-
-            <ListadoClientes clientes={clientes} setFlag={handleFlag} />
-            {/* <Paginacion
+            <ListadoClientes
+              clientes={clientes}
+              setFlag={handleFlag}
+              buscador={
+                <FormGroupText
+                  onChange={() => formikProps.submitForm()}
+                  campo="nombreYApellido"
+                  placeholder="Buscar cliente"
+                  style={{ maxWidth: 200 }}
+                />
+              }
+            />
+            <Paginacion
               cantidadTotalDePaginas={totalDePaginas}
               paginaActual={formikProps.values.pagina}
               onChange={(nuevaPagina) => {
                 formikProps.values.pagina = nuevaPagina;
                 buscarCliente(formikProps.values);
               }}
-            /> */}
+              data={clientes}
+            />
           </>
         )}
       </Formik>

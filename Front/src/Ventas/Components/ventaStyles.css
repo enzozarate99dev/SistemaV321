@@ -30,21 +30,11 @@ p{
   margin: 0 !important;
 }
 
-/* @media (max-width: 768px) { 
-  .ant-row.my-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
+@media (max-width: 960.98px) {
+  .col2 {
+    margin-top: -300px!important;
   }
-  
-  .ant-row.my-row .col1,
-  .ant-row.my-row .col2 {
-    order: 1;
-    width: 100%;
+  .col1 {
+    margin-bottom:300px!important;
   }
-  
-  .ant-row.my-row .col3 {
-    order: 2;
-  }
-} */
+}

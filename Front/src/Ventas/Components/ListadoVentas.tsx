@@ -123,7 +123,7 @@ export default function ListadoVentas(props: propsListadoVentas) {
     setProductosTabla2(productosTabla2.filter((p) => p.id_producto !== id));
     setSubTotal(calcularSubtotal(productosTabla2.filter((p) => p.id_producto !== id)));
   };
-
+  console.log(productos);
   const columnsTabla1 = [
     {
       title: "Producto",
@@ -153,7 +153,6 @@ export default function ListadoVentas(props: propsListadoVentas) {
       key: "cantidad",
       render: (cantidad: number, prod: productoModel) => (
         <>
-          {/* <InputNumber defaultValue={1} onChange={(e) => cambiarCantidad(prod.id_producto, e ? e : 1)} /> */}
           <InputVentas cambiarCantidad={cambiarCantidad} prod={prod} cantidad={prod.cantidad} />
         </>
       ),
@@ -204,8 +203,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
   return (
     <>
       <div style={{ position: "relative" }}>
-        <Row className="my-row">
-          <Col lg={7} md={19} style={{ display: "flex" }} className="col1">
+        <Row style={{ width: "100%" }}>
+          <Col lg={7} md={19} style={{ display: "flex", maxHeight: "50vh" }} className="col1">
             <div className="container">
               <div
                 style={{
@@ -253,18 +252,17 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 )}
               </div>
             </div>
-            <Col md={0} lg={1}>
-              <Divider type="vertical" style={{ backgroundColor: "#33384D", height: "100vh", marginBlock: "10vh" }} />
-            </Col>
           </Col>
-          <Col lg={12} className="col2" md={19}>
-            <div className="container">
-              <h6>Articulos Cargados</h6>
-              <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} />
-            </div>
+          <Col lg={{ span: 0 }} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <Divider type="vertical" style={{ backgroundColor: "black", height: "80vh", margin: "10vh 0" }} />
+          </Col>
+          <Col lg={12} className="col2" md={19} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <h6>Articulos Cargados</h6>
+            <Table dataSource={productosTabla2} columns={columnsTabla2} pagination={false} style={{ maxWidth: "95vw" }} />
+
             <Button
               onClick={() => exportPdf()}
-              className="btn btn-transparent d-flex  justify-content-start "
+              className="btn btn-transparent "
               style={{
                 backgroundColor: "#F5F5F5",
                 boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -273,19 +271,15 @@ export default function ListadoVentas(props: propsListadoVentas) {
                 height: 50,
               }}
             >
-              <div
-                className="d-flex flex-column justify-content-center align-items-center  "
-                style={{ position: "relative", width: "100%", height: "100%", margin: 0 }}
-              >
-                <PdfIcon />
-                <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
-              </div>
+              <PdfIcon />
+              <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
             </Button>
           </Col>
 
           <Col
-            lg={{ push: 0, pull: 0 }}
-            md={5}
+            xl={{ push: 0, pull: 0 }}
+            lg={5}
+            sm={5}
             style={{
               backgroundColor: "#F5F5F5",
               boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)",
@@ -294,6 +288,8 @@ export default function ListadoVentas(props: propsListadoVentas) {
               right: 0,
               bottom: 0,
               minHeight: "100vh",
+              display: "flex",
+              justifyContent: "space-between",
             }}
             className="col3"
           >
@@ -325,20 +321,22 @@ export default function ListadoVentas(props: propsListadoVentas) {
                   <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
                 </Modal>
               </div>
-              <div className="container">
-                <div className="d-flex flex-column justify-content-center ">
+              <div className="d-flex flex-column justify-content-center align-items-center  ">
+                <div className="d-flex flex-column justify-content-center align-items-center ">
                   <p>CONDICION</p>
                   <div
-                    className="mx-1 mx-lg-5 my-2"
+                    // className="d-flex g-col-5 justify-content-center align-items-center my-2"
                     style={{
+                      marginBlock: "15%",
                       display: "flex",
                       alignItems: "middle",
-                      justifyContent: "space-between",
+                      justifyContent: "center",
+                      gap: "20%",
                     }}
                   >
-                    <p>C.F</p>
+                    C.F
                     <Switch style={{ backgroundColor: "#3B4256" }} />
-                    <p>R.I</p>
+                    R.I
                   </div>
                 </div>
 
@@ -367,11 +365,17 @@ export default function ListadoVentas(props: propsListadoVentas) {
                     <ButtonDescuento calcularDescuento={calcularDescuento} valor={20} porcentaje={porcentajeBotonSeleccionado} />
                     <ButtonDescuento calcularDescuento={calcularDescuento} valor={30} porcentaje={porcentajeBotonSeleccionado} />
                   </div>
-                  <div className="container mt-4">
+                  <div className="mx-1">
                     <h6>IMPORTE TOTAL</h6>
 
                     <Input
-                      style={{ backgroundColor: "white", color: "black", border: "3px solid #33384C", borderRadius: "7px" }}
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "3px solid #33384C",
+                        borderRadius: "7px",
+                        minWidth: "100%",
+                      }}
                       disabled={true}
                       value={`$ ${totalConDescuento || subTotal}`}
                     ></Input>

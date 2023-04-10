@@ -18,7 +18,7 @@ export default function Menu() {
 
   return (
     <Navbar collapseOnSelect expand="lg" variant="dark" style={{ backgroundColor: "#33384D" }}>
-      <Navbar.Brand style={{ padding: "0 100px" }} href="/">
+      {/* <Navbar.Brand style={{ padding: "0 100px" }} href="/">
         <DashboardIcon />
       </Navbar.Brand>
       <Container>
@@ -77,7 +77,7 @@ export default function Menu() {
             }
           />
         </Navbar.Collapse>
-      </Container>
+      </Container> */}
     </Navbar>
   );
 }

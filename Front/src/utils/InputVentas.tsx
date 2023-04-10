@@ -37,7 +37,13 @@ export default function InputVentas(props: inputVentasProps) {
         <RestaIcon />
       </Button>
 
-      <InputNumber type="number" value={valor} onChange={(value) => setValor(value ? value : 1)} controls={false} style={{ width: 100 }} />
+      <InputNumber
+        type="number"
+        value={valor}
+        onChange={(value) => setValor(value ? value : 1)}
+        controls={false}
+        style={{ maxWidth: 50 }}
+      />
       <Button className="btn btn-transparent " onClick={() => aumentar(props.prod)}>
         <AddIcon height="16" width="16" />
       </Button>

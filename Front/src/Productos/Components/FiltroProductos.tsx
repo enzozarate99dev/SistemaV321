@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -10,11 +10,12 @@ import Paginacion from "../../utils/Paginacion";
 import * as services from "../Services/productos.services";
 import "../styles.css";
 import ListadoProductos from "./ListadoProductos";
+import { urlProductos } from "../../Generales/endpoints";
 
 export default function FiltroProductos() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
   const [productos, setProductos] = useState<productoModel[]>();
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [flag, setFlag] = useState(false);
 
   const cambiarFlag = () => {
@@ -75,12 +76,11 @@ export default function FiltroProductos() {
     await response.then((respuesta: AxiosResponse<productoModel[]>) => {
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
+      console.log(respuesta.headers["date"]);
 
       setProductos(respuesta.data);
-      console.log(`en el filtro ${respuesta.data}`);
     });
   };
-
   return (
     <>
       <h3 style={{ marginTop: "1rem" }}>Administrar Productos</h3>
@@ -94,7 +94,7 @@ export default function FiltroProductos() {
         {(formikProps) => (
           <>
             <Form>
-              <Button
+              {/* <Button
                 style={{ marginBottom: "1rem" }}
                 onClick={() => {
                   setMostrarFiltros(!mostrarFiltros);
@@ -102,7 +102,7 @@ export default function FiltroProductos() {
                 className="btn btn-secondary"
               >
                 <FilterIcon />
-              </Button>
+              </Button> */}
 
               {mostrarFiltros ? (
                 <div className="form-inline">

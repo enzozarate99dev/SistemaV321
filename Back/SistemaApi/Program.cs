@@ -45,15 +45,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("defaultConnection")));
 
-/*builder.Services.AddCors(options =>
+builder.Services.AddCors(options =>
 {
     var frontendUrl = configuration.GetValue<string>("frontend_url");
     options.AddDefaultPolicy(builder =>
     {
         builder.WithOrigins(frontendUrl).AllowAnyMethod().AllowAnyHeader()
-        .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
+        .WithExposedHeaders(new string[] { "cantidadtotalregistros" });
     });
-});*/
+});
+
+
 
 JsonSerializerOptions options = new()
 {

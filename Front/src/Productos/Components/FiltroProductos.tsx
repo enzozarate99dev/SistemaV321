@@ -14,7 +14,7 @@ import { urlProductos } from "../../Generales/endpoints";
 
 export default function FiltroProductos() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
-  const [productos, setProductos] = useState<productoModel[]>();
+  const [productos, setProductos] = useState<productoModel[]>([]);
   const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [flag, setFlag] = useState(false);
 
@@ -25,59 +25,62 @@ export default function FiltroProductos() {
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
 
-  const valorInicial: filtroVentasProps = {
+  const valorInicial: filtroProductosProps = {
     nombre: "",
     precio: 0,
+    codigo: "",
     stockDisponible: false,
     sinStock: false,
     pagina: 1,
-    recordsPorPagina: 10,
+    recordsPorPagina: 5,
   };
 
   useEffect(() => {
     if (query.get("nombre")) {
       valorInicial.nombre = query.get("nombre")!;
     }
-    if (query.get("precio")) {
-      valorInicial.precio = parseInt(query.get("precio")!, 10);
+    if (query.get("codigo")) {
+      valorInicial.codigo = query.get("codigo")!;
     }
-    if (query.get("stockDisponible")) {
-      valorInicial.stockDisponible = true;
-    }
-    if (query.get("sinStock")) {
-      valorInicial.sinStock = true;
+    // if (query.get("stockDisponible")) {
+    //   valorInicial.stockDisponible = true;
+    // }
+    // if (query.get("sinStock")) {
+    //   valorInicial.sinStock = true;
+    // }
+    if (query.get("pagina")) {
+      valorInicial.pagina = parseInt(query.get("pagina")!, 10);
     }
 
     buscarProducto(valorInicial);
   }, [flag]);
 
-  function modificarURL(valores: filtroVentasProps) {
+  function modificarURL(valores: filtroProductosProps) {
     const queryStrings: string[] = [];
     if (valores.nombre) {
       queryStrings.push(`nombre=${valores.nombre}`);
     }
-    if (valores.precio) {
-      queryStrings.push(`precio=${valores.precio}`);
+    if (valores.codigo) {
+      queryStrings.push(`codigo=${valores.codigo}`);
     }
-    if (valores.stockDisponible) {
-      queryStrings.push(`stockDisponible=${valores.stockDisponible}`);
-    }
-    if (valores.sinStock) {
-      queryStrings.push(`sinStock=${valores.sinStock}`);
-    }
+    // if (valores.stockDisponible) {
+    //   queryStrings.push(`stockDisponible=${valores.stockDisponible}`);
+    // }
+    // if (valores.sinStock) {
+    //   queryStrings.push(`sinStock=${valores.sinStock}`);
+    // }
 
     queryStrings.push(`pagina=${valores.pagina}`);
     history.push(`/listadoProductos?${queryStrings.join("&")}`);
   }
 
-  const buscarProducto = async (valores: filtroVentasProps) => {
+  const buscarProducto = async (valores: filtroProductosProps) => {
     modificarURL(valores);
     const response = services.filtrar(valores);
     await response.then((respuesta: AxiosResponse<productoModel[]>) => {
-      const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"] || "10", 10);
+      const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
       setProductos(respuesta.data);
-      console.log(respuesta.headers);
     });
   };
   return (
@@ -93,60 +96,22 @@ export default function FiltroProductos() {
         {(formikProps) => (
           <>
             <Form>
-              {/* <Button
-                style={{ marginBottom: "1rem" }}
-                onClick={() => {
-                  setMostrarFiltros(!mostrarFiltros);
-                }}
-                className="btn btn-secondary"
-              >
-                <FilterIcon />
-              </Button> */}
-
-              {mostrarFiltros ? (
-                <div className="form-inline">
-                  <div className="form-group mb-2">
-                    <FormGroupText onChange={() => formikProps.submitForm()} campo="nombre" placeholder="Nombre del producto" />
-                  </div>
-                  <div className="form-group mb-2" style={{ marginLeft: "5px" }}>
-                    <FormGroupText onChange={() => formikProps.submitForm()} campo="precio" placeholder="Precio maximo" />
-                  </div>
-                  <div className="form-group mx-sm-3 mb-2">
-                    <Field
-                      onClick={() => formikProps.submitForm()}
-                      className="form-check-input"
-                      id="stockDisponible"
-                      name="stockDisponible"
-                      type="checkbox"
-                    />
-                    <label className="form-check-label" htmlFor="stockDisponible">
-                      Stock Disponible
-                    </label>
-                  </div>
-                  <div className="form-group mx-sm-3 mb-2">
-                    <Field
-                      onClick={() => formikProps.submitForm()}
-                      className="form-check-input"
-                      id="sinStock"
-                      name="sinStock"
-                      type="checkbox"
-                    />
-                    <label className="form-check-label" htmlFor="sinStock">
-                      Sin Stock
-                    </label>
-                  </div>
-                  <Button
-                    style={{ marginLeft: "5px" }}
-                    className="btn btn-danger mb-2"
-                    onClick={() => {
-                      formikProps.setValues(valorInicial);
-                      buscarProducto(valorInicial);
-                    }}
-                  >
-                    Limpiar
-                  </Button>
+              <div className="form-inline d-flex justify-content-center">
+                <div className="form-group  ">
+                  <FormGroupText
+                    style={{ background: "#F8FAFC", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", marginInline: "1rem" }}
+                    onChange={() => formikProps.submitForm()}
+                    campo="nombre"
+                    placeholder="Buscar por nombre"
+                  />
+                  <FormGroupText
+                    style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", marginInline: "1rem" }}
+                    onChange={() => formikProps.submitForm()}
+                    campo="codigo"
+                    placeholder="Buscar por codigo"
+                  />
                 </div>
-              ) : null}
+              </div>
             </Form>
 
             <ListadoProductos productos={productos} setFlag={cambiarFlag} />
@@ -166,8 +131,9 @@ export default function FiltroProductos() {
   );
 }
 
-export interface filtroVentasProps {
+export interface filtroProductosProps {
   nombre: string;
+  codigo: string;
   precio?: number;
   stockDisponible: boolean;
   sinStock: boolean;

@@ -29,6 +29,8 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const [esPantallaPequena, setEsPantallaPequena] = useState(false);
   const { Option } = Select;
 
+  console.log(props.clientes);
+
   useEffect(() => {
     const handleResize = () => {
       setEsPantallaPequena(window.innerWidth <= 992);
@@ -189,10 +191,12 @@ export default function ListadoClientes(props: propsListadoClientes) {
         <Row>
           <Col>
             <Table
+              size="small"
+              scroll={{ x: 500 }}
               dataSource={props.clientes}
               columns={columns}
               pagination={false}
-              style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, margin: "10%" }}
+              style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, marginInline: "2%", padding: 0 }}
             />
           </Col>
         </Row>

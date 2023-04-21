@@ -19,7 +19,6 @@ export default function FiltroClientes() {
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
   const [flag, setFlag] = useState(false);
-  const [form] = Form.useForm();
 
   const handleFlag = () => {
     setFlag(!flag);
@@ -28,7 +27,7 @@ export default function FiltroClientes() {
   const valorInicial: filtroClientesProps = {
     nombreYApellido: "",
     pagina: 1,
-    recordsPorPagina: 10,
+    recordsPorPagina: 5,
   };
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function FiltroClientes() {
       valorInicial.nombreYApellido = query.get("nombreYApellido")!;
     }
     if (query.get("pagina")) {
-      valorInicial.pagina = parseInt(query.get("pagina")!, 10);
+      valorInicial.pagina = parseInt(query.get("pagina")!, 5);
     }
 
     buscarCliente(valorInicial);
@@ -55,20 +54,12 @@ export default function FiltroClientes() {
     modificarURL(valores);
     const data = services.filtrar(valores);
     data.then((respuesta: AxiosResponse<clienteModel[]>) => {
-      console.log(respuesta, "headers");
-
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-      console.log(totalDeRegistros, "total de registros");
-      // console.log(valorInicial.recordsPorPagina, "records");
 
       setClientes(respuesta.data);
     });
   }
-  // console.log(totalDePaginas, "total de paginas");
-
-  // console.log(clientes, "clientes paginados");
-  // console.log(totalDePaginas, "total de PAGINAS");
 
   return (
     <>
@@ -89,7 +80,7 @@ export default function FiltroClientes() {
                   onChange={() => formikProps.submitForm()}
                   campo="nombreYApellido"
                   placeholder="Buscar cliente"
-                  style={{ maxWidth: 200 }}
+                  style={{ width: 300, background: "#F8FAFC", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: "4px" }}
                 />
               }
             />

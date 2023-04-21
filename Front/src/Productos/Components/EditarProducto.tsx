@@ -33,6 +33,8 @@ export default function EditarProducto(props: editarProductoProps) {
         descripcion: respuesta.data.descripcion,
         categoria: respuesta.data.categoria,
         cantidad: respuesta.data.cantidad,
+        fotoURL: respuesta.data.fotoURL,
+        foto: respuesta.data.foto,
       };
       setProducto(modelo);
       console.log(`en editarcomponent ${modelo}`);
@@ -43,7 +45,16 @@ export default function EditarProducto(props: editarProductoProps) {
     <>
       <h3 style={{ marginTop: "1rem" }}>Editar Producto</h3>
       <MostrarErrores errores={errores} />
-      {producto ? <FormularioProductos modelo={producto} onSubmit={async (valores) => await editar(valores)} /> : <Cargando />}
+      {producto ? (
+        <FormularioProductos
+          buttonExiste={true}
+          buttonText="Editar"
+          modelo={producto}
+          onSubmit={async (valores) => await editar(valores)}
+        />
+      ) : (
+        <Cargando />
+      )}
     </>
   );
 }

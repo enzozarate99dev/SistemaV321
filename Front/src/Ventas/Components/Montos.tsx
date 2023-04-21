@@ -31,7 +31,7 @@ export default function Montos(props: montosProps) {
   /* proximo cambio: que el importe tambien pueda ser menor que el precioDeVenta, para poder generar deuda */
   return (
     <div className="container">
-      <h6> Total a pagar ${importeEnPantalla} </h6>
+      <h6> Total a pagar ${importeEnPantalla.toFixed(2)} </h6>
       <div className="d-flex justify-content-center align-items-center">
         <div className="text">CONTADO</div>
         <InputNumber

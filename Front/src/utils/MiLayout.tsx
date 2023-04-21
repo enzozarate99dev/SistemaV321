@@ -16,7 +16,7 @@ const items: MenuProps["items"] = [
   {
     key: "1",
     icon: (
-      <Link to="/listadoVentas" className="menu-icon">
+      <Link to="/ventas/generar" className="menu-icon">
         <ShopIcon />
       </Link>
     ),
@@ -41,7 +41,7 @@ const items: MenuProps["items"] = [
   {
     key: "4",
     icon: (
-      <Link to="/" className="menu-icon">
+      <Link to="/listadoVentas" className="menu-icon">
         <DocsIcon />
       </Link>
     ),

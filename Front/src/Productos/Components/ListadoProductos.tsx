@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Modal, Select, Table } from "antd";
 import { Field, Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
@@ -28,8 +28,6 @@ export default function ListadoProductos(props: propsListadoProductos) {
   const showEdit = () => {
     setEdit(!edit);
   };
-
-  const history = useHistory();
 
   async function borrar(id: number) {
     try {
@@ -76,133 +74,59 @@ export default function ListadoProductos(props: propsListadoProductos) {
       </Button>
     </>
   );
+  const columns = [
+    {
+      title: "#",
+      dataIndex: "codigo",
+      key: "codigo",
+    },
+    {
+      title: "Nombre",
+      dataIndex: "nombre",
+      key: "nombre",
+    },
+    {
+      title: "Precio",
+      dataIndex: "precio",
+      key: "precio",
+    },
+    {
+      title: "Unidades",
+      dataIndex: "cantidad",
+      key: "cantidad",
+    },
+    {
+      title: "Imagen",
+      key: "imagen",
+      render: (producto: productoModel) => <img width="50" height="50" src={producto.foto} alt="Poster" />,
+    },
+    {
+      title: "",
+      key: "id_producto",
+      render: (_: undefined, producto: productoModel) => <div className="container">{botones(producto.id_producto)}</div>,
+    },
+  ];
 
   return (
     <>
-      <Button
-        style={{
-          marginBottom: "1rem",
-          marginLeft: "63.5rem",
-          marginTop: "-85px",
-        }}
-        className="btn btn-transparent"
-        onClick={showModal}
-      >
-        <AddIcon />
-      </Button>
       <Modal title="Cargar Producto" width={1150} open={open} footer={null} centered onCancel={showModal}>
         <CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag} />
       </Modal>
-      <Modal title="Editar Producto" width={1150} open={edit} footer={null} centered onCancel={showEdit}>
+      <Modal width={1150} open={edit} footer={null} centered onCancel={showEdit}>
         <EditarProducto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
       </Modal>
+      <div className="d-flex justify-content-center align-items-start">
+        <Button className="btn btn-transparent " onClick={showModal}>
+          <AddIcon />
+        </Button>
+      </div>
       <Verificar listado={props.productos}>
         <Formik initialValues={{}} onSubmit={async (valores) => await actualizar(valores)}>
           {(formikProps) => (
             <Form>
-              <Button
-                style={{ marginTop: "0.5rem" }}
-                onClick={() => {
-                  setActualizarPrecios(!actualizarPrecios);
-                }}
-              >
-                Actualizar Precios
-              </Button>
-              <Button
-                style={{ marginTop: "0.5rem", marginLeft: "0.5rem" }}
-                onClick={() => {
-                  setEliminarMultiple(!eliminarMultiple);
-                }}
-              >
-                Eliminar Multiple
-              </Button>
-              <table style={{ marginTop: "1rem", backgroundColor: "GrayText" }} className="table">
-                <thead className="table-dark">
-                  <tr>
-                    <th>#</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Unidades</th>
-                    <th>Imagen</th>
-                    <th></th>
-                    {actualizarPrecios ? <th>Actualizar</th> : null}
-                    {eliminarMultiple ? <th>Eliminar</th> : null}
-                  </tr>
-                </thead>
-                <tbody className="">
-                  {props.productos?.map((producto) => (
-                    <tr key={producto.id_producto}>
-                      <td>{producto.id_producto}</td>
-                      <td>{producto.nombre}</td>
-                      <td>{producto.precio}</td>
-                      <td>{producto.cantidad}</td>
-                      <td>
-                        <img width="50" height="50" src={producto.foto} alt="Poster" />
-                      </td>
-                      <td>{botones(producto.id_producto)}</td>
-                      {actualizarPrecios ? (
-                        <td>
-                          <Field
-                            style={{ marginLeft: "30px" }}
-                            name="ids"
-                            id="ids"
-                            value={producto.id_producto.toString()}
-                            type="checkbox"
-                          />
-                        </td>
-                      ) : null}
-                      {eliminarMultiple ? (
-                        <td>
-                          <Field
-                            style={{ marginLeft: "30px" }}
-                            name="ids2"
-                            id="ids2"
-                            value={producto.id_producto.toString()}
-                            type="checkbox"
-                          />
-                        </td>
-                      ) : null}
-                    </tr>
-                  ))}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    {actualizarPrecios ? (
-                      <td>
-                        <Field name="valor" style={{ width: "70px" }} className="form-control" placeholder="%" />
-                        <div className="form-check" style={{ marginTop: "0.5rem" }}>
-                          <Field className="form-check-input" id="aumentar" name="aumentar" type="checkbox" />
-                          <label className="form-check-label" htmlFor="aumentar">
-                            Aumento
-                          </label>
-                        </div>
-                        <div className="form-check">
-                          <Field className="form-check-input" id="descontar" name="descontar" type="checkbox" />
-                          <label className="form-check-label" htmlFor="descontar">
-                            Descuento
-                          </label>
-                        </div>
-                        <Button disabled={formikProps.isSubmitting} style={{ marginTop: "0.5rem" }} type="submit">
-                          Actualizar
-                        </Button>
-                      </td>
-                    ) : null}
-                    {eliminarMultiple ? (
-                      <td>
-                        <Button type="submit" className="btn btn-danger">
-                          <TrashIcon />
-                        </Button>
-                      </td>
-                    ) : null}
-
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="container">
+                <Table columns={columns} dataSource={props.productos} />
+              </div>
             </Form>
           )}
         </Formik>
@@ -212,6 +136,6 @@ export default function ListadoProductos(props: propsListadoProductos) {
 }
 
 interface propsListadoProductos {
-  productos?: productoModel[];
+  productos: productoModel[];
   setFlag: () => void;
 }

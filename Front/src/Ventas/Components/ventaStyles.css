@@ -30,11 +30,12 @@ p{
   margin: 0 !important;
 }
 
-@media (max-width: 960.98px) {
-  .col2 {
-    margin-top: -300px!important;
-  }
-  .col1 {
-    margin-bottom:300px!important;
-  }
+.col3::-webkit-scrollbar {
+  display: none;
 }
+
+/* Hide scrollbar for IE and Edge */
+.col3 {
+  -ms-overflow-style: none;
+}
+

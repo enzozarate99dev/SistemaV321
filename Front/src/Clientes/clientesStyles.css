@@ -28,3 +28,6 @@ margin-bottom: 80px;
  .ant-input-disabled{
   background-color: white !important;
  }
+ .rows{
+  height: 100px !important;
+ }

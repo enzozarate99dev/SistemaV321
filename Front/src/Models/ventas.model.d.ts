@@ -14,7 +14,7 @@ export interface ventaCreacionDTO {
 
 export interface ventaLine {
   id_venta_line: number;
-  id_venta: number;
+  ventaId: number;
   precioUnitario: number;
   cantidad: number;
   iva: number;
@@ -30,11 +30,20 @@ export interface pagoCreacion {
   importe: number;
   metodosDePagoIds: number[];
 }
-export interface metodoDePago {}
+export interface pagos {
+  id_pago: number;
+  importe: number;
+  fecha: Date;
+  metodos: metodosDePago[];
+}
+export interface metodosDePago {
+  id_metodo: number;
+  nombreMetodo: string;
+}
 
 //viejas
 export interface ventasModel {
-  id: number;
+  id_venta: number;
   clienteId: number;
   productos: productoModel[];
   precioTotal?: number;
@@ -45,6 +54,8 @@ export interface ventasModel {
   adeudada: number;
   cliente: clienteModel;
   idComprobante: number;
+  ventaLines: ventaLine[];
+  pagos: pagos[];
 }
 
 export interface listadoVentas {

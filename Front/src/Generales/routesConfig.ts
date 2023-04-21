@@ -9,6 +9,8 @@ import ListadoUsuarios from "../Usuarios/Components/ListadoUsuarios";
 import Redireccionar from "../utils/Redireccionar";
 import CancelarVenta from "../Ventas/Components/CancelarVenta";
 import FiltroVentas from "../Ventas/Components/FiltroVentas";
+import GenerarVentas from "../Ventas/Components/GenerarVentas";
+import Ventas from "../Ventas/Components/Ventas";
 import HomePage from "./HomePage";
 
 const rutas = [
@@ -25,6 +27,13 @@ const rutas = [
     exact: true,
     esCajero: true,
   },
+  {
+    path: "/ventas/generar",
+    componente: Ventas,
+    exact: true,
+    esCajero: true,
+  },
+
   {
     path: "/listadoVentas",
     componente: FiltroVentas,

@@ -39,6 +39,8 @@ export default function CargarProducto(props: cargarProductoProps) {
         onSubmit={async (valores) => {
           await crear(valores);
         }}
+        buttonExiste={true}
+        buttonText="Cargar"
       />
     </>
   );

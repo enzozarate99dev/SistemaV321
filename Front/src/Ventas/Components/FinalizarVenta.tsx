@@ -10,7 +10,7 @@ import Montos from "./Montos";
 import PagoCredito from "./PagoCredito";
 import MostrarErrores from "../../utils/MostrarErrores";
 
-export default function RealizarVenta(props: realizarVentaProps) {
+export default function FinalizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
 
   const [current, setCurrent] = useState(0);
@@ -52,10 +52,12 @@ export default function RealizarVenta(props: realizarVentaProps) {
     },
     {
       title: "",
-      content: (
-        // metodosDePago == 3 ? <PagoCredito />
-        // :
-        <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago!} finalizarVenta={finalizarVenta} />
+      content: metodosDePago.map((metodoId) =>
+        metodoId == 3 ? (
+          <PagoCredito />
+        ) : (
+          <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago!} finalizarVenta={finalizarVenta} />
+        )
       ),
     },
   ];

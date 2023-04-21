@@ -127,6 +127,7 @@ namespace SistemaApi.Controllers
             return mapper.Map<List<OperacionesClienteDTO>>(ventas);
         }
 
+
        /* [HttpGet("pagosCliente/{id:int}")]
         public async Task<ActionResult<List<PagosDTO>>> Pagos(int id)
         {
@@ -253,7 +254,7 @@ namespace SistemaApi.Controllers
             return dto;
         }
 
-        /* [HttpGet("filtrar")]
+         [HttpGet("filtrar")]
          public async Task<ActionResult<List<VentaDTO>>> Filtrar([FromQuery] VentaFiltrarDTO ventaFiltrarDTO)
          {
              if (ventaFiltrarDTO.Consumidor && !ventaFiltrarDTO.Registrado)
@@ -265,13 +266,13 @@ namespace SistemaApi.Controllers
                  var ventasQueryable = context.Ventas.AsQueryable();
                  if (ventaFiltrarDTO.ClienteId != 0)
                  {
-                     ventasQueryable = ventasQueryable.Where(x => x.Id_cliente == ventaFiltrarDTO.ClienteId);
+                     ventasQueryable = ventasQueryable.Where(x => x.ClienteId == ventaFiltrarDTO.ClienteId);
                  }
 
                  if (ventaFiltrarDTO.ProductoId != 0)
                  {
                      ventasQueryable = ventasQueryable
-                         .Where(x => x.Venta_Lines.Select(y => y.Id_producto)
+                         .Where(x => x.VentaLines.Select(y => y.ProductoId)
                          .Contains(ventaFiltrarDTO.ProductoId));
                  }
 
@@ -283,11 +284,18 @@ namespace SistemaApi.Controllers
 
                  await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
 
-                 var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO).Include(y=>y.Cliente).OrderBy(x=>x.Id_cliente).ToListAsync();
+                 var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO)
+                    .Include(y=>y.Cliente)
+                     .Include(y => y.VentaLines)
+                         .ThenInclude(vl => vl.Producto)
+                    .Include(y => y.Pagos)
+                        .ThenInclude(p => p.MetodosDePago)
+                    .OrderBy(x=>x.FechaDeVenta)
+                    .ToListAsync();
 
                  return mapper.Map<List<VentaDTO>>(ventas);
              }       
-         }*/
+         }
         [HttpGet("pagoVentas/{idPago:int}")]
         public async Task<ActionResult<List<VentaPagosDTO>>> VentaPagos(int idPago)
         {
@@ -385,52 +393,54 @@ namespace SistemaApi.Controllers
 
         }
 
-       
+        [HttpPut("cancelar/{id:int}")]
+        public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
+        {
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
+            var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == venta.ClienteId);
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+            venta.Adeudada -= ventaCancelarDTO.Pago;
+            cliente.Deuda -= ventaCancelarDTO.Pago;
+
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 
-    /*   [HttpGet("PostGet")]
-       public async Task<ActionResult<VentasPostGetDTO>> PostGet()
+
+ /*   [HttpGet("PostGet")]
+    public async Task<ActionResult<VentasPostGetDTO>> PostGet()
+    {
+        var productos = await context.Productos
+            .Where(x => x.Cantidad > 0)
+            .OrderBy(x => x.Nombre)
+            .ToListAsync();
+        var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
+        return new VentasPostGetDTO() { Productos = productosDTO };
+    }*/
+
+
+
+
+    /*     [HttpDelete("{id:int}")]
+       public async Task<ActionResult> Delete(int id)
        {
-           var productos = await context.Productos
-               .Where(x => x.Cantidad > 0)
-               .OrderBy(x => x.Nombre)
-               .ToListAsync();
-           var productosDTO = mapper.Map<List<ProductoDTO>>(productos);
-           return new VentasPostGetDTO() { Productos = productosDTO };
-       }*/
+           var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
 
-    /* [HttpPut("cancelar/{id:int}")]
-     public async Task<ActionResult> Cancelar(int id, [FromBody] VentaCancelarDTO ventaCancelarDTO)
-     {
-         var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
-         var cliente = await context.Clientes.FirstOrDefaultAsync(x => x.Id_cliente == venta.Id_cliente);
+           if (venta == null)
+           {
+               return NotFound();
+           }
 
-         if (venta == null)
-         {
-             return NotFound();
-         }
-         venta.Adeudada -= ventaCancelarDTO.Pago;
-         cliente.Deuda -= ventaCancelarDTO.Pago;
-
-         await context.SaveChangesAsync();
-         return NoContent();
-     }
-
-     [HttpDelete("{id:int}")]
-     public async Task<ActionResult> Delete(int id)
-     {
-         var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
-
-         if (venta == null)
-         {
-             return NotFound();
-         }
-
-         context.Remove(venta);
-         await context.SaveChangesAsync();
-         return NoContent();
-     }*/
-
+           context.Remove(venta);
+           await context.SaveChangesAsync();
+           return NoContent();
+       }
+   */
     /* private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
      {
          CrearComprobanteRequest request = new CrearComprobanteRequest();

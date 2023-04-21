@@ -34,7 +34,7 @@ export interface productoCrear {
   categoria?: string;
   descripcion?: string;
   foto?: File;
-  fotoURL?: strng;
+  fotoURL?: string;
 }
 
 export interface actualizar {

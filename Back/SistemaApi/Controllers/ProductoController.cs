@@ -55,6 +55,10 @@ namespace SistemaApi.Controllers
             {
                 productosQueryable = productosQueryable.Where(x => x.Nombre.Contains(productoFiltrarDTO.Nombre));
             }
+            if (!string.IsNullOrEmpty(productoFiltrarDTO.Codigo))
+            {
+                productosQueryable = productosQueryable.Where(x => x.Codigo.Contains(productoFiltrarDTO.Codigo));
+            }
             if (productoFiltrarDTO.Precio != 0)
             {
                 productosQueryable = productosQueryable.Where(x => x.Precio <= productoFiltrarDTO.Precio).AsQueryable();
@@ -91,7 +95,7 @@ namespace SistemaApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, [FromBody] ProductoCreacionDTO productoCreacionDTO)
+        public async Task<ActionResult> Put(int id, [FromForm] ProductoCreacionDTO productoCreacionDTO)
         {
             var producto = await context.Productos.FirstOrDefaultAsync(x => x.Id_producto == id);
 
@@ -101,6 +105,12 @@ namespace SistemaApi.Controllers
             }
 
             producto = mapper.Map(productoCreacionDTO, producto);
+
+            if (productoCreacionDTO.Foto != null)
+            {
+                producto.Foto = await almacenadorArchivos.EditarArchivo(contenedor, productoCreacionDTO.Foto, producto.Foto);
+            }
+
             await context.SaveChangesAsync();
             return NoContent();
         }

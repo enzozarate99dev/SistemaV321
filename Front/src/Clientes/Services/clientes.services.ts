@@ -7,7 +7,7 @@ export async function crear(cliente: clienteCrear) {
   await axios.post(urlClientes, cliente);
 }
 
-export async function editar(clienteEditar: clienteCrear, id: any) {
+export async function editar(clienteEditar: clienteCrear, id: number) {
   await axios.put(`${urlClientes}/${id}`, clienteEditar);
 }
 

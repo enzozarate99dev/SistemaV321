@@ -69,10 +69,10 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago, handle
               width: 148,
               backgroundColor: "#FBFBFB",
               color: "#6A7580",
-              boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              boxShadow: metodosSeleccionados.includes(3) ? "" : "4px 4px 4px rgba(0, 0, 0, 0.25)",
               borderRadius: 10,
             }}
-            onClick={() => {}}
+            onClick={() => elegirMetodo(3)}
           >
             <TarjetaCredito />
             <p>CREDITO</p>

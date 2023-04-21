@@ -3,13 +3,6 @@ import { clienteModel } from "../Models/clientes.model";
 
 export default function Paginacion(props: paginacionProps) {
   const [listadoLinks, setListadoLinks] = useState<modeloLink[]>([]);
-  const [siguienteHabilitado, setSiguienteHabilitado] = useState(false);
-
-  useEffect(() => {
-    if (props.data?.length !== 0) {
-      setSiguienteHabilitado(true);
-    }
-  }, []);
 
   useEffect(() => {
     const paginaAnteriorHabilitada = props.paginaActual !== 1;
@@ -42,7 +35,6 @@ export default function Paginacion(props: paginacionProps) {
       habilitado: paginaSiguienteHabilitada,
       activo: false,
     });
-    console.log(siguienteHabilitado);
     setListadoLinks(links);
   }, [props.paginaActual, props.cantidadTotalDePaginas, props.radio]);
 
@@ -95,5 +87,5 @@ interface paginacionProps {
 }
 
 Paginacion.defaultProps = {
-  radio: 3,
+  radio: 1,
 };

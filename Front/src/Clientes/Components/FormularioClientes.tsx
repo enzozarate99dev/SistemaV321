@@ -39,7 +39,6 @@ export default function FormularioClientes(props: formularioClientesProps) {
       style={{ marginTop: "-1px", backgroundColor: "#D9D9D9" }}
       initialValues={props.modelo}
       onFinish={props.onSubmit}
-      // onValuesChange={() => {}}
       autoComplete="off"
     >
       <div className="col-md-4">

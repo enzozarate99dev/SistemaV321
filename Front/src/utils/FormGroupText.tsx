@@ -29,4 +29,5 @@ interface formGroupTextProps {
 
 FormGroupText.defaultProps = {
   type: "text",
+  style: { borderRadius: "4px", background: "#F8FAFC" },
 };

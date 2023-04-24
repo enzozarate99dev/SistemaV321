@@ -72,7 +72,15 @@ export default function Ventas() {
     await response.then((respuesta: AxiosResponse<productoModel[]>) => {
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
-      setProductos(respuesta.data);
+      // Filtrar los productos por las primeras tres letras del nombre
+      const productosFiltrados = respuesta.data.filter((producto) => {
+        const nombre = producto.nombre.toLowerCase();
+        const filtro = valores.nombre.toLowerCase().slice(0, 3);
+        return nombre.indexOf(filtro) === 0;
+      });
+
+      setProductos(valores.nombre == "" ? [] : productosFiltrados);
+      // setProductos(respuesta.data);
     });
   };
   console.log(productos, "productos buscador");

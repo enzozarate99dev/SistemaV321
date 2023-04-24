@@ -6,7 +6,6 @@ import { productoModel } from "../Models/producto.model";
 import Button from "./Button";
 
 export default function InputVentas(props: inputVentasProps) {
-  console.log(props.cantidad, "llega cant");
   const [valor, setValor] = useState<number>(1);
   const [maxVal, setMaxVal] = useState<number>(props.cantidad);
 

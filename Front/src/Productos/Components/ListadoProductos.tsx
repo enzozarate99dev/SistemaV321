@@ -125,7 +125,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
           {(formikProps) => (
             <Form>
               <div className="container">
-                <Table columns={columns} dataSource={props.productos} />
+                <Table columns={columns} dataSource={props.productos} pagination={false} />
               </div>
             </Form>
           )}

@@ -106,7 +106,7 @@ export default function ListadoVentas(props: listadoVentasProps) {
   ];
   return (
     <>
-      <Modal title="Informacion del cliente" width={1150} open={info} footer={null} centered onCancel={showInfo}>
+      <Modal width={1150} open={info} footer={null} centered onCancel={showInfo}>
         <DetalleVentas setFlagModal={showInfo} setFlagListado={props.setFlag} venta={ventaSeleccionada!} />
       </Modal>
       <h1>Ventas</h1>

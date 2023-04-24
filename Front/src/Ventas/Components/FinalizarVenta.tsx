@@ -50,14 +50,13 @@ export default function FinalizarVenta(props: realizarVentaProps) {
         />
       ),
     },
+
     {
       title: "",
-      content: metodosDePago.map((metodoId) =>
-        metodoId == 3 ? (
-          <PagoCredito />
-        ) : (
-          <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago!} finalizarVenta={finalizarVenta} />
-        )
+      content: metodosDePago.includes(3) ? (
+        <PagoCredito />
+      ) : (
+        <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago} finalizarVenta={finalizarVenta} />
       ),
     },
   ];
@@ -108,7 +107,6 @@ export default function FinalizarVenta(props: realizarVentaProps) {
       descuento: props.descuento,
     };
     crearVenta(venta);
-    console.log(venta);
   }
 
   function crearVenta(venta: ventaCreacionDTO) {

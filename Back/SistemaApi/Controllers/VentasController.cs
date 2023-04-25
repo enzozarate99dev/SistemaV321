@@ -284,13 +284,13 @@ namespace SistemaApi.Controllers
 
                  await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
 
-                 var ventas = await ventasQueryable.Paginar(ventaFiltrarDTO.PaginacionDTO)
+                 var ventas = await ventasQueryable.OrderByDescending(x => x.FechaDeVenta).Paginar(ventaFiltrarDTO.PaginacionDTO)
                     .Include(y=>y.Cliente)
-                     .Include(y => y.VentaLines)
-                         .ThenInclude(vl => vl.Producto)
+                    .Include(y => y.VentaLines)
+                        .ThenInclude(vl => vl.Producto)
                     .Include(y => y.Pagos)
                         .ThenInclude(p => p.MetodosDePago)
-                    .OrderBy(x=>x.FechaDeVenta)
+                    
                     .ToListAsync();
 
                  return mapper.Map<List<VentaDTO>>(ventas);

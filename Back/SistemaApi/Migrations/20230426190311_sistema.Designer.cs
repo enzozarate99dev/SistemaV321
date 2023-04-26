@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230317153357_ASDASD")]
-    partial class ASDASD
+    [Migration("20230426190311_sistema")]
+    partial class sistema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -517,6 +517,9 @@ namespace SistemaApi.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
+
+                    b.Property<double?>("Descuento")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("FechaDeVenta")
                         .HasColumnType("datetime2");

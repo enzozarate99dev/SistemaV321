@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class ASDASD : Migration
+    public partial class sistema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -288,7 +288,8 @@ namespace SistemaApi.Migrations
                     TratamientoImpositivo = table.Column<int>(type: "int", nullable: false),
                     TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Adeudada = table.Column<double>(type: "float", nullable: false),
-                    Pagada = table.Column<bool>(type: "bit", nullable: false)
+                    Pagada = table.Column<bool>(type: "bit", nullable: false),
+                    Descuento = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {

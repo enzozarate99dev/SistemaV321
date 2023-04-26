@@ -9,6 +9,7 @@ import DocsIcon from "../assets/DocsIcon";
 import Autorizado from "../auth/Autorizado";
 import { Link } from "react-router-dom";
 import "./miLayout.css";
+import UsersIcon from "../assets/UsersIcon";
 
 const { Content } = Layout;
 
@@ -46,7 +47,15 @@ const items: MenuProps["items"] = [
       </Link>
     ),
   },
-].map((item) => item);
+  {
+    key: "5",
+    icon: (
+      <Link to="/listadoUsuarios" className="menu-icon">
+        <UsersIcon />
+      </Link>
+    ),
+  },
+];
 
 export default function MiLayout(props: MenuProps) {
   return (
@@ -54,6 +63,15 @@ export default function MiLayout(props: MenuProps) {
       {
         <>
           <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />
+
+          {/* <Autorizado
+            autorizado={
+              <>
+                <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />
+              </>
+            }
+            noAutorizado={<Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />}
+          /> */}
         </>
       }
       <Layout className="site-layout">

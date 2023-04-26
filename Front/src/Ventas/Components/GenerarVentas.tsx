@@ -27,7 +27,6 @@ export default function GenerarVentas(props: propsListadoVentas) {
   const [openCliente, setOpenCliente] = useState(false);
   const [openProducto, setOpenProducto] = useState(false);
 
-  const [productos, setProductos] = useState<productoModel[]>([]);
   const [productosTabla1, setProductosTabla1] = useState<productoModel[]>([]);
   const [productosTabla2, setProductosTabla2] = useState<productoModel[]>([]);
   const [productosFiltro, setProductosFiltro] = useState<productoModel[]>([]);
@@ -62,8 +61,6 @@ export default function GenerarVentas(props: propsListadoVentas) {
   useEffect(() => {
     setProductosTabla1(props.productos);
   }, [props.productos]);
-
-  console.log(productosTabla1, "prodtabla1");
 
   useEffect(() => {
     async function traerClientes() {
@@ -126,7 +123,8 @@ export default function GenerarVentas(props: propsListadoVentas) {
 
   //Ventas
   function calcularSubtotal(productos: productoModel[]) {
-    return productos.reduce((suma, producto) => suma + producto.precioF!, 0);
+    const subtotal = productos.reduce((suma, producto) => suma + producto.precioF!, 0);
+    return subtotal;
   }
 
   function calcularDescuento(porcentaje: number) {
@@ -142,6 +140,8 @@ export default function GenerarVentas(props: propsListadoVentas) {
       setPorcentajeBotonSeleccionado(porcentaje);
     }
   }
+  console.log(subTotal, "subTotal");
+  console.log(montoAPagarFinal, "total");
 
   return (
     <div style={{ position: "relative" }}>
@@ -174,7 +174,7 @@ export default function GenerarVentas(props: propsListadoVentas) {
             </div>
           </div>
         </Col>
-        <Col md={0} xs={0} lg={1} style={{ maxWidth: "0.1%" }}>
+        <Col md={0} xs={0} lg={1}>
           <Divider type="vertical" style={{ backgroundColor: "black", height: "75vh", marginBlock: "5vw" }} />
         </Col>
         <Col lg={11} md={19} xs={19} style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "0%" }}>
@@ -195,123 +195,124 @@ export default function GenerarVentas(props: propsListadoVentas) {
             <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
           </Button>
         </Col>
-      </Row>
+        {/* </Row> */}
 
-      <Col
-        xl={{ push: 0, pull: 0 }}
-        lg={5}
-        sm={5}
-        style={{
-          backgroundColor: "#F5F5F5",
-          boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)",
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "space-between",
-          overflow: "scroll",
-        }}
-        className="col3"
-      >
-        <div className="container">
-          <div className="container d-flex justify-content-center align-items-center">
-            <Select
-              showSearch
-              onSelect={selectCliente}
-              style={{ width: "80%" }}
-              placeholder="Seleccionar cliente"
-              showArrow={false}
-              optionFilterProp="children"
-              filterOption={(input, option) => (option?.label ?? "").includes(input)}
-              filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
-              options={clientes}
-            />
-            <Button
-              style={{ width: "20%" }}
-              onClick={() => {
-                showCargarCliente();
-              }}
-              className="btn btn-transparent"
-            >
-              <AddIcon />
-            </Button>
-            <Modal title="Cargar Cliente" width={1150} open={openCliente} footer={null} centered onCancel={showCargarCliente}>
-              <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
-            </Modal>
-          </div>
-          <div className="d-flex flex-column justify-content-center align-items-center  ">
-            <div className="d-flex flex-column justify-content-center align-items-center ">
-              <p>CONDICION</p>
-              <div
-                style={{
-                  marginBlock: "15%",
-                  display: "flex",
-                  alignItems: "middle",
-                  justifyContent: "center",
-                  gap: "20%",
+        <Col
+          xl={{ push: 0, pull: 0 }}
+          lg={5}
+          sm={5}
+          style={{
+            backgroundColor: "#F5F5F5",
+            boxShadow: "-3px 0px 4px rgba(0, 0, 0, 0.25)",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            minHeight: "100vh",
+            display: "flex",
+            justifyContent: "space-between",
+            overflow: "scroll",
+          }}
+          className="col3"
+        >
+          <div className="container">
+            <div className="container d-flex justify-content-center align-items-center">
+              <Select
+                showSearch
+                onSelect={selectCliente}
+                style={{ width: "80%" }}
+                placeholder="Seleccionar cliente"
+                showArrow={false}
+                optionFilterProp="children"
+                filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                options={clientes}
+              />
+              <Button
+                style={{ width: "20%" }}
+                onClick={() => {
+                  showCargarCliente();
                 }}
+                className="btn btn-transparent"
               >
-                C.F
-                <Switch style={{ backgroundColor: "#3B4256" }} />
-                R.I
-              </div>
+                <AddIcon />
+              </Button>
+              <Modal title="Cargar Cliente" width={1150} open={openCliente} footer={null} centered onCancel={showCargarCliente}>
+                <CargarCliente setFlagModal={showCargarCliente} setFlagListado={props.setFlag} />
+              </Modal>
             </div>
-
-            <Input placeholder="DNI/CUIT" value={clienteSeleccionado?.nroDocumento} />
-            <Divider />
-            <div>
-              <p>Datos del Cliente</p>
-              <Input
-                placeholder="Nombre/Razon Social"
-                value={
-                  clienteSeleccionado?.nombreYApellido && clienteSeleccionado?.razonSocial
-                    ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
-                    : ""
-                }
-                key={clienteSeleccionado?.id_cliente}
-              />
-            </div>
-            <Divider />
-            <div>
-              <p>Importe</p>
-              <p>Subtotal: ${subTotal}</p>
-            </div>
-            <div className="mt-4">
-              <div className="d-flex flex-wrap justify-content-center  ">
-                <ButtonDescuento calcularDescuento={calcularDescuento} valor={15} porcentaje={porcentajeBotonSeleccionado} />
-                <ButtonDescuento calcularDescuento={calcularDescuento} valor={20} porcentaje={porcentajeBotonSeleccionado} />
-                <ButtonDescuento calcularDescuento={calcularDescuento} valor={30} porcentaje={porcentajeBotonSeleccionado} />
-              </div>
-              <div className="mx-1">
-                <h6>IMPORTE TOTAL</h6>
-
-                <Input
+            <div className="d-flex flex-column justify-content-center align-items-center  ">
+              <div className="d-flex flex-column justify-content-center align-items-center ">
+                <p>CONDICION</p>
+                <div
                   style={{
-                    backgroundColor: "white",
-                    color: "black",
-                    border: "3px solid #33384C",
-                    borderRadius: "7px",
-                    minWidth: "100%",
+                    marginBlock: "15%",
+                    display: "flex",
+                    alignItems: "middle",
+                    justifyContent: "center",
+                    gap: "20%",
                   }}
-                  disabled={true}
-                  value={`$ ${montoAPagarFinal || subTotal}`}
-                ></Input>
+                >
+                  C.F
+                  <Switch style={{ backgroundColor: "#3B4256" }} />
+                  R.I
+                </div>
               </div>
-            </div>
-            <div className="container mt-4">
-              <FinalizarVenta
-                setFlag={handleFlag}
-                productos={productosTabla2}
-                montoAPagar={montoAPagarFinal || subTotal}
-                clientes={clienteSeleccionado}
-                descuento={porcentajeBotonSeleccionado}
-              />
+
+              <Input placeholder="DNI/CUIT" value={clienteSeleccionado?.nroDocumento} />
+              <Divider />
+              <div>
+                <p>Datos del Cliente</p>
+                <Input
+                  placeholder="Nombre/Razon Social"
+                  value={
+                    clienteSeleccionado?.nombreYApellido && clienteSeleccionado?.razonSocial
+                      ? `${clienteSeleccionado?.nombreYApellido} / ${clienteSeleccionado?.razonSocial}`
+                      : ""
+                  }
+                  key={clienteSeleccionado?.id_cliente}
+                />
+              </div>
+              <Divider />
+              <div>
+                <p>Importe</p>
+                <p>Subtotal: ${subTotal}</p>
+              </div>
+              <div className="mt-4">
+                <div className="d-flex flex-wrap justify-content-center  ">
+                  <ButtonDescuento calcularDescuento={calcularDescuento} valor={15} porcentaje={porcentajeBotonSeleccionado} />
+                  <ButtonDescuento calcularDescuento={calcularDescuento} valor={20} porcentaje={porcentajeBotonSeleccionado} />
+                  <ButtonDescuento calcularDescuento={calcularDescuento} valor={30} porcentaje={porcentajeBotonSeleccionado} />
+                </div>
+                <div className="mx-1">
+                  <h6>IMPORTE TOTAL</h6>
+
+                  <Input
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "3px solid #33384C",
+                      borderRadius: "7px",
+                      minWidth: "100%",
+                    }}
+                    disabled={true}
+                    value={`$ ${montoAPagarFinal || subTotal}`}
+                  ></Input>
+                </div>
+              </div>
+              <div className="container mt-4">
+                <FinalizarVenta
+                  setFlag={handleFlag}
+                  productos={productosTabla2}
+                  montoAPagar={montoAPagarFinal || subTotal}
+                  clientes={clienteSeleccionado}
+                  descuento={porcentajeBotonSeleccionado}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </Col>
+        </Col>
+      </Row>
     </div>
   );
 }

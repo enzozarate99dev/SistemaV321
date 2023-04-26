@@ -50,14 +50,14 @@ export default function FinalizarVenta(props: realizarVentaProps) {
         />
       ),
     },
-
     {
       title: "",
-      content: metodosDePago.includes(3) ? (
-        <PagoCredito />
-      ) : (
-        <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago} finalizarVenta={finalizarVenta} />
-      ),
+      content:
+        metodosDePago.length === 1 && metodosDePago[0] === 3 ? (
+          <PagoCredito />
+        ) : (
+          <Montos montoAPagar={props.montoAPagar} formaDePago={metodosDePago} finalizarVenta={finalizarVenta} />
+        ),
     },
   ];
 

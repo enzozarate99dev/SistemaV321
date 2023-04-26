@@ -289,8 +289,7 @@ namespace SistemaApi.Controllers
                     .Include(y => y.VentaLines)
                         .ThenInclude(vl => vl.Producto)
                     .Include(y => y.Pagos)
-                        .ThenInclude(p => p.MetodosDePago)
-                    
+                        .ThenInclude(p => p.MetodosDePago)                 
                     .ToListAsync();
 
                  return mapper.Map<List<VentaDTO>>(ventas);

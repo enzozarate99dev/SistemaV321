@@ -41,7 +41,7 @@ function App() {
                   {ruta.esCajero && !esCajero() && !esAdmin() ? (
                     <h1>No tienes permisooooooooo</h1>
                   ) : (
-                    <>{ruta.esAdmin && !esAdmin() ? <h1>No tienes permiso</h1> : <ruta.componente />}</>
+                    <>{ruta.esAdmin && !esAdmin() ? <h1>No tienes permiso1</h1> : <ruta.componente />}</>
                   )}
                 </Route>
               ))}

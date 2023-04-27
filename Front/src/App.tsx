@@ -39,7 +39,7 @@ function App() {
               {rutas.map((ruta) => (
                 <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
                   {ruta.esCajero && !esCajero() && !esAdmin() ? (
-                    <h1>No tienes permiso</h1>
+                    <h1>No tienes permisooooooooo</h1>
                   ) : (
                     <>{ruta.esAdmin && !esAdmin() ? <h1>No tienes permiso</h1> : <ruta.componente />}</>
                   )}

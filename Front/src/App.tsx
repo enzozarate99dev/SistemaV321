@@ -38,11 +38,14 @@ function App() {
             <Switch>
               {rutas.map((ruta) => (
                 <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
-                  {ruta.esCajero && !esCajero() && !esAdmin() ? (
+                  {/* {ruta.esCajero && !esCajero() && !esAdmin() ? (
                     <h1>No tienes permisooooooooo</h1>
                   ) : (
-                    <>{ruta.esAdmin && !esAdmin() ? <h1>No tienes permiso1</h1> : <ruta.componente />}</>
-                  )}
+                    <>{ruta.esAdmin && !esAdmin() ? <h1>No tienes permiso1</h1> : <ruta.componente />}
+                    
+                    </>
+                  )} */}
+                  <ruta.componente />
                 </Route>
               ))}
             </Switch>

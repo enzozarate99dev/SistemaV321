@@ -24,8 +24,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
-
-builder.Services.AddTransient<IFacturas, Facturas>();
+/*
+builder.Services.AddTransient<IFacturas, Facturas>();*/
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -42,9 +42,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"])),
         ClockSkew = TimeSpan.Zero
     });
-/*
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("defaultConnection")));
+
+/*builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("defaultConnection")));
 */
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(configuration.GetConnectionString("DefaultConnection")));
 
 
 builder.Services.AddCors(options =>

@@ -9,7 +9,11 @@ namespace SistemaApi
         public ApplicationDbContext(DbContextOptions options): base(options)
         {
         }
-    
+       /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseMySQL("Server=127.0.0.1;Database=u402506303_sistema_makers;Uid=u402506303_admin;Pwd=Makers.MM666;");
+        }
+*/
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,5 +98,9 @@ namespace SistemaApi
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraProducto> CompraProductos { get; set; }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseMySQL("server=localhost;user=root;password=;database=u402506303_sistema_makers");
+        }
     }
 }

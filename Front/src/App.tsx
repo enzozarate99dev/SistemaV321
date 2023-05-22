@@ -6,7 +6,6 @@ import { obtenerClaims } from "./auth/handlerJWT";
 import "./fondo.css";
 import rutas from "./Generales/routesConfig";
 import { claim } from "./Models/auth.model";
-import MenuNavbar from "./utils/MenuNavbar";
 import MiLayout from "./utils/MiLayout";
 
 function App() {
@@ -33,19 +32,17 @@ function App() {
     <>
       <BrowserRouter>
         <AutenticacionContext.Provider value={{ claims, actualizar }}>
-          <MenuNavbar />
+          {/* <MenuNavbar /> */}
           <MiLayout>
             <Switch>
               {rutas.map((ruta) => (
                 <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
-                  {/* {ruta.esCajero && !esCajero() && !esAdmin() ? (
-                    <h1>No tienes permisooooooooo</h1>
+                  {ruta.esCajero && !esCajero() && !esAdmin() ? (
+                    <h1>Debes iniciar sesión</h1>
                   ) : (
-                    <>{ruta.esAdmin && !esAdmin() ? <h1>No tienes permiso1</h1> : <ruta.componente />}
-                    
-                    </>
-                  )} */}
-                  <ruta.componente />
+                    <>{ruta.esAdmin && !esAdmin() ? <h1>No eres administrador</h1> : <ruta.componente />}</>
+                  )}
+                  {/* <ruta.componente /> */}
                 </Route>
               ))}
             </Switch>

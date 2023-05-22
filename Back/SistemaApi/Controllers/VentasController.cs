@@ -408,6 +408,22 @@ namespace SistemaApi.Controllers
             await context.SaveChangesAsync();
             return NoContent();
         }
+
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(venta);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 
 
@@ -425,21 +441,7 @@ namespace SistemaApi.Controllers
 
 
 
-    /*     [HttpDelete("{id:int}")]
-       public async Task<ActionResult> Delete(int id)
-       {
-           var venta = await context.Ventas.FirstOrDefaultAsync(x => x.Id_venta == id);
-
-           if (venta == null)
-           {
-               return NotFound();
-           }
-
-           context.Remove(venta);
-           await context.SaveChangesAsync();
-           return NoContent();
-       }
-   */
+   
     /* private async Task<CrearComprobanteRequest> CrearRequest(ClienteEntidad cliente, VentaCreacionDTO ventaCreacionDTO)
      {
          CrearComprobanteRequest request = new CrearComprobanteRequest();

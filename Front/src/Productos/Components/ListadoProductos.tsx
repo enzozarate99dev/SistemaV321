@@ -1,7 +1,6 @@
-import { Modal, Select, Table } from "antd";
-import { Field, Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Modal, Table } from "antd";
+import { Form, Formik } from "formik";
+import { useState } from "react";
 import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
@@ -13,10 +12,11 @@ import * as services from "../Services/productos.services";
 import "../styles.css";
 import CargarProducto from "./CargarProducto";
 import EditarProducto from "./EditarProducto";
+import "../styles.css";
 
 export default function ListadoProductos(props: propsListadoProductos) {
-  const [actualizarPrecios, setActualizarPrecios] = useState(false);
-  const [eliminarMultiple, setEliminarMultiple] = useState(false);
+  // const [actualizarPrecios, setActualizarPrecios] = useState(false);
+  // const [eliminarMultiple, setEliminarMultiple] = useState(false);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
   const [id, setId] = useState<number>();
@@ -69,7 +69,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
       >
         <EditIcon />
       </Button>
-      <Button onClick={() => confirmar(() => borrar(id))} className="btn btn-transparent">
+      <Button onClick={() => confirmar(() => borrar(id))} className="btn btn-transparent" key={id}>
         <TrashIcon />
       </Button>
     </>
@@ -78,22 +78,26 @@ export default function ListadoProductos(props: propsListadoProductos) {
     {
       title: "#",
       dataIndex: "codigo",
+      align: "center" as const,
       key: "codigo",
     },
     {
       title: "Nombre",
       dataIndex: "nombre",
+      align: "center" as const,
       key: "nombre",
     },
     {
       title: "Precio",
       dataIndex: "precio",
+      align: "center" as const,
       key: "precio",
     },
     {
       title: "Unidades",
       dataIndex: "cantidad",
       key: "cantidad",
+      align: "center" as const,
     },
     {
       title: "Imagen",
@@ -101,9 +105,12 @@ export default function ListadoProductos(props: propsListadoProductos) {
       render: (producto: productoModel) => <img width="50" height="50" src={producto.foto} alt="Poster" />,
     },
     {
-      title: "",
+      title: "Acciones",
       key: "id_producto",
-      render: (_: undefined, producto: productoModel) => <div className="container">{botones(producto.id_producto)}</div>,
+      align: "center" as const,
+      render: (_: undefined, producto: productoModel) => (
+        <div className="container d-flex justify-content-around">{botones(producto.id_producto)}</div>
+      ),
     },
   ];
 
@@ -125,7 +132,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
           {(formikProps) => (
             <Form>
               <div className="container">
-                <Table columns={columns} dataSource={props.productos} pagination={false} />
+                <Table columns={columns} dataSource={props.productos} pagination={false} key={id} />
               </div>
             </Form>
           )}

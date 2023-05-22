@@ -19,7 +19,7 @@ export interface clienteModel {
   label?: string;
 }
 
-export interface ventasCliente {
+export interface operacionesCliente {
   clienteId: number;
   id_venta: number;
   fechaDeVenta: Date;

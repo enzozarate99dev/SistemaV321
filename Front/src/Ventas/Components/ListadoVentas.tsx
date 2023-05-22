@@ -1,23 +1,28 @@
-import { useHistory } from "react-router-dom";
-import { ventasModel, pagos, metodosDePago } from "../../Models/ventas.model";
+import { ventasModel } from "../../Models/ventas.model";
 import { useEffect, useState } from "react";
-import * as services from "../Services/ventas.services";
+import * as servicesClientes from "../../Clientes/Services/clientes.services";
+import * as servicesVentas from "../Services/ventas.services";
 import confirmar from "../../utils/Confirmar";
 import Button from "../../utils/Button";
 import TrashIcon from "../../assets/TrashIcon";
-import { Row, Col, Table, Modal } from "antd";
+import { Col, Table, Modal } from "antd";
 import DetalleVentas from "./DetalleVentas";
+import { useHistory } from "react-router-dom";
+import { clienteModel } from "../../Models/clientes.model";
+import axios, { AxiosResponse } from "axios";
+import { urlClientes, urlVentas } from "../../Generales/endpoints";
 
 export default function ListadoVentas(props: listadoVentasProps) {
-  const history = useHistory();
-  const [open, setOpen] = useState(false);
   const [info, setInfo] = useState(false);
   const [id, setId] = useState<number>();
   const [ventas, setVentas] = useState<any[]>([]);
-  const [ventaSeleccionada, setVentaSeleccionada] = useState<ventasModel>();
+  const [detalle, setDetalle] = useState<any>();
+  // console.log(props.ventas);
 
   useEffect(() => {
     const result = props.ventas;
+    console.log(result, "result");
+
     let a: any[] = [];
     result.forEach((venta: any) => {
       venta.pagos.forEach((pago: any) => {
@@ -30,7 +35,6 @@ export default function ListadoVentas(props: listadoVentasProps) {
             fechaDeVenta: pago?.fecha.slice(0, 10),
             tipoComprobante: "Recibo",
             metodoDePago: metodosDePago?.join(" - "),
-            // pagos: pago,
             ventaLine: venta.ventaLines,
           },
         ]);
@@ -41,10 +45,6 @@ export default function ListadoVentas(props: listadoVentasProps) {
     //devolver array ordenado
     setVentas(a);
   }, [props.ventas]);
-  const showModal = () => {
-    setOpen(!open);
-    props.setFlag();
-  };
 
   const showInfo = () => {
     setInfo(!info);
@@ -52,11 +52,9 @@ export default function ListadoVentas(props: listadoVentasProps) {
 
   async function borrar(id: number) {
     try {
-      services.borrar(id);
+      servicesVentas.borrar(id);
       props.setFlag();
-    } catch (error) {
-      console.log(error.response.data);
-    }
+    } catch (error) {}
   }
 
   const acciones = (venta: ventasModel) => (
@@ -64,10 +62,20 @@ export default function ListadoVentas(props: listadoVentasProps) {
       <Button
         style={{ marginRight: "1rem" }}
         className="btn btn-info"
-        onClick={() => {
+        onClick={async () => {
+          const cliente = (await axios.get(`${urlClientes}/${venta.clienteId}`)).data;
+          const array = {
+            clienteInfor: {
+              cliente: cliente.nombreYApellido,
+              domicilio: cliente.domicilio,
+              nroDocumento: cliente.nroDocumento,
+              email: cliente.email ? cliente.email : " - ",
+              condicion: cliente.condicion ? cliente.condicion : "No especifica",
+            },
+            articulos: venta.ventaLine,
+          };
+          setDetalle(array);
           showInfo();
-          setId(venta.id_venta);
-          setVentaSeleccionada(venta);
         }}
       >
         Detalle
@@ -82,32 +90,37 @@ export default function ListadoVentas(props: listadoVentasProps) {
     {
       title: "N° de Venta",
       dataIndex: "id_venta",
+      align: "center" as const,
       key: "id_venta",
     },
     {
       title: "Fecha",
       dataIndex: "fechaDeVenta",
+      align: "center" as const,
       key: "fechaDeVenta",
     },
     {
       title: "Total",
       dataIndex: "precioTotal",
+      align: "center" as const,
       key: "precioTotal",
     },
     {
       title: "Forma De Pago",
       key: "metodoDePago",
+      align: "center" as const,
       dataIndex: "metodoDePago",
     },
     {
       title: "",
+      align: "center" as const,
       render: (venta: ventasModel) => <div className="container">{acciones(venta)}</div>,
     },
   ];
   return (
     <>
       <Modal width={1150} open={info} footer={null} centered onCancel={showInfo}>
-        <DetalleVentas setFlagModal={showInfo} setFlagListado={props.setFlag} venta={ventaSeleccionada!} />
+        <DetalleVentas setFlagModal={showInfo} setFlagListado={props.setFlag} detalle={detalle} />
       </Modal>
       <h1>Ventas</h1>
       <Col lg={24}>

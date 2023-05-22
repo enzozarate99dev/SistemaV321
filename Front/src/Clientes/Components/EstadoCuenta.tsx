@@ -1,13 +1,21 @@
-import { Table } from "antd";
-import axios, { AxiosResponse } from "axios";
-import { result } from "lodash";
+import { Modal, Table } from "antd";
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { urlClientes } from "../../Generales/endpoints";
-import { clienteModel, ventasCliente } from "../../Models/clientes.model";
-import * as services from "../Services/clientes.services";
+import { urlClientes, urlVentas } from "../../Generales/endpoints";
+import { clienteModel, operacionesCliente } from "../../Models/clientes.model";
+import Button from "../../utils/Button";
+import VerIcon from "../../assets/VerIcon";
+import DetalleVentas from "../../Ventas/Components/DetalleVentas";
 
 export default function EstadoCuenta(props: estadoCuentaProps) {
   const [estadoCuentaCliente, setEstadoCuentaCliente] = useState<any[]>([]);
+  const [info, setInfo] = useState(false);
+  // const [id, setId] = useState<number>();
+  const [detalle, setDetalle] = useState<any>();
+
+  const showInfo = () => {
+    setInfo(!info);
+  };
 
   useEffect(() => {
     async function getVentasCliente(id: number) {
@@ -17,42 +25,70 @@ export default function EstadoCuenta(props: estadoCuentaProps) {
         element.pagos.forEach((pago: any) => {
           const metodosDePago = pago?.metodosDePago?.map((metodo: any) => metodo.nombreMetodo.toUpperCase())?.filter(Boolean);
           const array = a.concat([
-            //pagos
+            //recibos
             {
+              id_recibo: pago?.id_pago,
               fechaDeVenta: pago?.fecha.slice(0, 10),
               tipoComprobante: "Recibo",
               metodoDePago: metodosDePago?.join(" - "),
-              debe: element.debe,
+              debe: 0,
               haber: "$" + pago?.importe,
-              saldo: element.saldo,
-              acciones: element.acciones,
+              saldo: 0,
+              // acciones: element.acciones,
             },
           ]);
           a = array;
         });
-
         //facturas
         const array = a.concat([
           {
+            id_venta: element.id_venta,
             fechaDeVenta: element.fechaDeVenta.slice(0, 10),
             tipoComprobante: element.tipoComprobante,
             metodoDePago: " - ",
             debe: "$" + element.precioTotal,
-            haber: element.haber,
+            haber: 0,
             saldo: "$" + element.precioTotal,
             acciones: element.acciones,
+            cliente: element.cliente,
+            clienteId: element.clienteId,
           },
         ]);
         a = array;
       });
-
       //devolver array ordenado
       setEstadoCuentaCliente(a.sort((a, b) => new Date(b.fechaDeVenta).getTime() - new Date(a.fechaDeVenta).getTime()));
     }
     getVentasCliente(props.clienteId);
   }, [props.clienteId]);
 
-  const calcularSaldo = () => {};
+  const verDetallesVenta = (idVenta: number) => (
+    <>
+      <Button
+        style={{ marginRight: "1rem" }}
+        className="btn btn-transparent"
+        onClick={async () => {
+          const dataVenta = (await axios.get(`${urlVentas}/${idVenta}`)).data;
+          const arr = {
+            clienteInfor: {},
+            articulos: dataVenta.ventaLines,
+          };
+          setDetalle(arr);
+          showInfo();
+          // setId(idVenta);
+        }}
+      >
+        <VerIcon />
+      </Button>
+    </>
+  );
+  const verDetallesRecibo = () => (
+    <>
+      <Button style={{ marginRight: "1rem" }} className="btn btn-transparent" onClick={() => console.log(estadoCuentaCliente[0].id_recibo)}>
+        <VerIcon />
+      </Button>
+    </>
+  );
 
   const columns = [
     {
@@ -86,21 +122,31 @@ export default function EstadoCuenta(props: estadoCuentaProps) {
       key: "saldo",
     },
     {
-      title: "Acciones",
-      key: "acciones",
-      // render: (_: undefined, cliente: clienteModel) => <div className="container">{}</div>,
+      title: "Detalle",
+      key: "detalle",
+      render: (_: undefined, op: operacionesCliente) => {
+        if (op.tipoComprobante === "Recibo") {
+          return <div className="container">{verDetallesRecibo()}</div>;
+        } else {
+          return <div className="container">{verDetallesVenta(op.id_venta)}</div>;
+        }
+      },
     },
   ];
 
   return (
     <>
       <div className="container"> </div>
-      <Table columns={columns} dataSource={estadoCuentaCliente} rowKey={(r) => r.columnaId} />
+      <Modal width={1150} open={info} footer={null} centered onCancel={showInfo}>
+        <DetalleVentas setFlagModal={showInfo} setFlagListado={props.setFlagListado} detalle={detalle} ocultarInfo={true} />
+      </Modal>
+      <Table columns={columns} dataSource={estadoCuentaCliente} />
     </>
   );
 }
 interface estadoCuentaProps {
   clienteId: number;
+  clientes: clienteModel[];
   setFlagModal: () => void;
   setFlagListado: () => void;
 }

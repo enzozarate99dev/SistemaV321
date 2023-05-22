@@ -25,6 +25,5 @@ namespace SistemaApi.Entidades
         public string? NroIngresos   { get; set; }
         public double? Deuda { get; set; }
         public virtual ICollection<Venta> Ventas { get; set; }
-       /* public virtual ICollection<Pago> Pagos { get; set; }*/
     }
 }

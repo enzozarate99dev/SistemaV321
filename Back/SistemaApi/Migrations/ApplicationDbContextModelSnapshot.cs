@@ -375,21 +375,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("Pagos");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
-                {
-                    b.Property<int>("MetodoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PagoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MetodoId", "PagoId");
-
-                    b.HasIndex("PagoId");
-
-                    b.ToTable("PagosMetodosDePagos");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.Property<int>("PresupuestoId")
@@ -736,25 +721,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.MetodoDePago", "MetodoDePago")
-                        .WithMany("PagosMetodosDePago")
-                        .HasForeignKey("MetodoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SistemaApi.Entidades.Pago", "Pago")
-                        .WithMany("PagosMetodosDePago")
-                        .HasForeignKey("PagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MetodoDePago");
-
-                    b.Navigation("Pago");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Presupuestos", "Presupuesto")
@@ -853,16 +819,6 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
                 {
                     b.Navigation("CompraProducto");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.Navigation("PagosMetodosDePago");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
-                {
-                    b.Navigation("PagosMetodosDePago");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>

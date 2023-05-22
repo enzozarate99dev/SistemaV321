@@ -11,7 +11,7 @@ namespace SistemaApi.Entidades
    /*     public virtual ClienteEntidad Cliente { get; set; }*/
         public DateTime Fecha { get; set; }
         public  ICollection<MetodoDePago> MetodosDePago { get; set; }
-        public virtual ICollection<PagosMetodosDePago> PagosMetodosDePago { get; set; }
+      /*  public virtual ICollection<PagosMetodosDePago> PagosMetodosDePago { get; set; }*/
         public  ICollection<Venta> Ventas { get; set; }
 
 

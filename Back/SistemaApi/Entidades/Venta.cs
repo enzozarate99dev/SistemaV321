@@ -19,7 +19,6 @@ namespace SistemaApi.Entidades
         public bool Pagada { get; set; }
         public double? Descuento {get; set; }
         public virtual List<VentaLine> VentaLines { get; set; }
-      /*  public virtual ICollection<VentaOrder> VentaOrders { get; set; }*/
       public virtual ICollection<Pago> Pagos { get; set; }
 
     }

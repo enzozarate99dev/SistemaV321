@@ -59,8 +59,12 @@ namespace SistemaApi.Controllers
         {
             var ventas = await context.Ventas.Where(x => x.ClienteId == id)
                 .Include(v => v.Pagos)
-                .ThenInclude(p => p.MetodosDePago)
+                    .ThenInclude(p => p.MetodosDePago)
+                .Include(v => v.VentaLines)
+                    .ThenInclude(vl => vl.Producto)
+                .Include(v=>v.Cliente)
                 .ToListAsync();
+
             return mapper.Map<List<OperacionesClienteDTO>>(ventas);
         }
 

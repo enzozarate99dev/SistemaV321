@@ -29,7 +29,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
   const [esPantallaPequena, setEsPantallaPequena] = useState(false);
   const { Option } = Select;
 
-  console.log(props.clientes);
+  // console.log(props.clientes, "clientes");
 
   useEffect(() => {
     const handleResize = () => {
@@ -81,6 +81,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
       title: "DNI/CUIT",
       dataIndex: "nroDocumento",
       key: "nroDocumento",
+      align: "center" as const,
       sortDirection: ["desc", "asc"],
       sorter: (a: any, b: any) => a.nroDocumento.localeCompare(b.nroDocumento),
     },
@@ -88,6 +89,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
       title: "Nombre",
       dataIndex: "nombreYApellido",
       key: "nombreYApellido",
+      align: "center" as const,
       sortDirection: ["desc", "asc"],
       sorter: (a: any, b: any) => a.nombreYApellido.localeCompare(b.nombreYApellido),
     },
@@ -95,16 +97,19 @@ export default function ListadoClientes(props: propsListadoClientes) {
       title: "Razon Social",
       dataIndex: "razonSocial",
       key: "razonSocial",
+      align: "center" as const,
       sortDirection: ["desc", "asc"],
       sorter: (a: any, b: any) => a.razonSocial.localeCompare(b.razonSocial),
     },
     {
       title: "Deuda",
       dataIndex: "deuda",
+      align: "center" as const,
       key: "deuda",
     },
     {
       title: "Acciones",
+      align: "center" as const,
       key: "acciones",
       render: (_: undefined, cliente: clienteModel) => {
         if (esPantallaPequena) {
@@ -117,7 +122,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
             </Select>
           );
         } else {
-          return <div className="container">{botones(cliente.id_cliente)}</div>;
+          return <div className="container ">{botones(cliente.id_cliente)}</div>;
         }
       },
     },
@@ -133,7 +138,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
   }
 
   const botones = (id: number) => (
-    <div className="d-flex flex-nowrap">
+    <div className="d-flex flex-nowrap d-flex justify-content-around">
       <Button
         style={{ marginRight: "1rem" }}
         className="btn btn-transparent"
@@ -181,7 +186,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
           <EditarCliente id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
         </Modal>
         <Modal title="Estado de Cuenta" width={960} open={cuenta} footer={null} centered onCancel={showCuenta}>
-          <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} clienteId={id!} />
+          <EstadoCuenta setFlagModal={showCuenta} setFlagListado={props.setFlag} clienteId={id!} clientes={props.clientes} />
         </Modal>
         <Row>
           <Col style={{ display: "flex", justifyContent: "center" }} sm="12">

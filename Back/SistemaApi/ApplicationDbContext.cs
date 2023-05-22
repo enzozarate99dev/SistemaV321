@@ -49,7 +49,7 @@ namespace SistemaApi
                 vp => vp.HasOne(vp => vp.Pago).WithMany(),
                 vp => vp.HasOne(vp => vp.Venta).WithMany()
             );
-            modelBuilder.Entity<PagosMetodosDePago>()
+       /*     modelBuilder.Entity<PagosMetodosDePago>()
                        .HasKey(mp => new { mp.MetodoId, mp.PagoId });
 
             modelBuilder.Entity<PagosMetodosDePago>()
@@ -60,7 +60,7 @@ namespace SistemaApi
             modelBuilder.Entity<PagosMetodosDePago>()
                 .HasOne(mp => mp.Pago)
                 .WithMany(p => p.PagosMetodosDePago)
-                .HasForeignKey(mp => mp.PagoId);
+                .HasForeignKey(mp => mp.PagoId);*/
            
 
             modelBuilder.Entity<VentaCFProducto>()
@@ -87,8 +87,8 @@ namespace SistemaApi
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaLine> Venta_Lines { get; set; }
         public DbSet<Pago> Pagos { get; set; }
-        public DbSet<MetodoDePago> MetodosDePago { get; set; }
-        public DbSet<PagosMetodosDePago> PagosMetodosDePagos { get; set; }
+        public DbSet<MetodoDePago> MetodosDePago { get; set; }/*
+        public DbSet<PagosMetodosDePago> PagosMetodosDePagos { get; set; }*/
         public DbSet<VentaPago> VentaPagos { get; set; }
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }
@@ -98,9 +98,11 @@ namespace SistemaApi
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraProducto> CompraProductos { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+       /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            *//*optionsBuilder.UseMySQL("server=185.206.160.3;user=u402506303_admin;password=Makers.MM666;database=u402506303_sistema_makers");*//*
             optionsBuilder.UseMySQL("server=localhost;user=root;password=;database=u402506303_sistema_makers");
-        }
+        hay q instalar pomelo y mysql entity framework
+        }*/
     }
 }

@@ -1,15 +1,15 @@
-import React from "react";
-import { Divider, MenuProps } from "antd";
-import { Layout, Menu, theme } from "antd";
-import UserIcon from "../assets/UserIcon";
+import { MenuProps } from "antd";
+import { Layout, Menu } from "antd";
 import ShopIcon from "../assets/ShopIcon";
 import UserIconSidebar from "../assets/UserIconSidebar";
 import BoxIcon from "../assets/BoxIcon";
 import DocsIcon from "../assets/DocsIcon";
-import Autorizado from "../auth/Autorizado";
 import { Link } from "react-router-dom";
 import "./miLayout.css";
 import UsersIcon from "../assets/UsersIcon";
+import { Header } from "antd/es/layout/layout";
+import MenuNavbar from "./MenuNavbar";
+import "../Configuration/modelColors.css";
 
 const { Content } = Layout;
 
@@ -62,7 +62,7 @@ export default function MiLayout(props: MenuProps) {
     <Layout hasSider style={{ minHeight: "100vh" }}>
       {
         <>
-          <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />
+          <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} />
 
           {/* <Autorizado
             autorizado={
@@ -74,11 +74,16 @@ export default function MiLayout(props: MenuProps) {
           /> */}
         </>
       }
-      <Layout className="site-layout">
+
+      <Layout className="site-layout ">
+        <Header className="header ">
+          <MenuNavbar />
+        </Header>
         <Content
           style={{
             textAlign: "center",
             backgroundColor: "#fff",
+            minHeight: "100vh",
           }}
         >
           <div>{props.children}</div>

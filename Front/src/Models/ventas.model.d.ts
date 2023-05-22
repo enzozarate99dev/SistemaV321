@@ -54,7 +54,7 @@ export interface ventasModel {
   adeudada: number;
   cliente: clienteModel;
   idComprobante: number;
-  ventaLines: ventaLine[];
+  ventaLine: ventaLine[];
   pagos: pagos[];
 }
 

@@ -11,23 +11,17 @@ export default function FormularioClientes(props: formularioClientesProps) {
 
   //establecer los valores iniciales del formulario utilizando los valores del objeto modelo.
   form.setFieldsValue({
-    ["nroDocumento"]: props.modelo.nroDocumento,
-    ["nombreYApellido"]: props.modelo.nombreYApellido,
-    ["razonSocial"]: props.modelo.razonSocial,
-    ["domicilio"]: props.modelo.domicilio,
-    ["localidad"]: props.modelo.localidad,
-    ["provincia"]: props.modelo.provincia,
-    ["codigoPostal"]: props.modelo.codigoPostal,
-    ["percibeIIBB"]: props.modelo.percibeIIBB,
-    ["percibeIVA"]: props.modelo.percibeIVA,
-    ["nroIngresos"]: props.modelo.nroIngresos,
+    nroDocumento: props.modelo.nroDocumento,
+    nombreYApellido: props.modelo.nombreYApellido,
+    razonSocial: props.modelo.razonSocial,
+    domicilio: props.modelo.domicilio,
+    localidad: props.modelo.localidad,
+    provincia: props.modelo.provincia,
+    codigoPostal: props.modelo.codigoPostal,
+    percibeIIBB: props.modelo.percibeIIBB,
+    percibeIVA: props.modelo.percibeIVA,
+    nroIngresos: props.modelo.nroIngresos,
   });
-
-  useEffect(() => {
-    if (props.disabled == true) {
-      setDisabled(true);
-    }
-  }, []);
 
   return (
     <Form

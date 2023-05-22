@@ -1,23 +1,9 @@
 import { AxiosResponse } from "axios";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
-import * as Yup from "yup";
-import TrashIcon from "../../assets/TrashIcon";
-import * as cliServices from "../../Clientes/Services/clientes.services";
-import { clienteModel } from "../../Models/clientes.model";
+import { useHistory, useLocation } from "react-router-dom";
 import { productoModel } from "../../Models/producto.model";
-import { nuevoVentasModel, ventasCrear, ventasModel, ventasPostGetModel } from "../../Models/ventas.model";
-import NuevoProductoPresupuesto from "../../Presupuestos/Components/NuevoProductoPresupuesto";
-import { valoresPrevProps } from "../../Presupuestos/Components/Presupuesto";
-import Button from "../../utils/Button";
-import FormGroupCheckbox from "../../utils/FormGroupCheckbox";
-import MostrarErrores from "../../utils/MostrarErrores";
-import * as services from "../Services/ventas.services";
 import GenerarVentas from "./GenerarVentas";
-import Usuarios from "../../Usuarios/Components/Usuarios";
-import { ventasConsumidorFinalModel } from "../../Models/ventasCf.model";
 import FormGroupText from "../../utils/FormGroupText";
 import Paginacion from "../../utils/Paginacion";
 import * as servicesProd from "../../Productos/Services/productos.services";
@@ -25,9 +11,6 @@ import * as servicesProd from "../../Productos/Services/productos.services";
 export default function Ventas() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
   const [productos, setProductos] = useState<productoModel[]>([]);
-  const [ventas, setVentas] = useState<ventasModel[]>([]);
-  const [ventasCF, setVentasCF] = useState<ventasConsumidorFinalModel[]>([]);
-  const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [flag, setFlag] = useState(false);
 
   const handleFlag = () => {
@@ -79,11 +62,10 @@ export default function Ventas() {
         return nombre.indexOf(filtro) === 0;
       });
 
-      setProductos(valores.nombre == "" ? [] : productosFiltrados);
+      setProductos(valores.nombre === "" ? [] : productosFiltrados);
       // setProductos(respuesta.data);
     });
   };
-  console.log(productos, "productos buscador");
 
   return (
     <>

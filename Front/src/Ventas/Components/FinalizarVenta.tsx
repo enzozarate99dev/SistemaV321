@@ -8,7 +8,6 @@ import * as services from "../Services/ventas.services";
 import Swal from "sweetalert2";
 import Montos from "./Montos";
 import PagoCredito from "./PagoCredito";
-import MostrarErrores from "../../utils/MostrarErrores";
 
 export default function FinalizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
@@ -18,7 +17,6 @@ export default function FinalizarVenta(props: realizarVentaProps) {
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
   const [pagoCreacion, setPagoCreacion] = useState<pagoCreacion[]>([]);
-  const [errores, setErrores] = useState<string[]>([]);
 
   const showCargarVenta = () => {
     setOpenFormaDePago(!openFormaDePago);
@@ -97,7 +95,7 @@ export default function FinalizarVenta(props: realizarVentaProps) {
         metodosDePagoIds: metodosDePago,
       },
     ]);
-  }, [metodosDePago]);
+  }, [metodosDePago, props.montoAPagar]);
 
   async function finalizarVenta() {
     var venta: ventaCreacionDTO = {

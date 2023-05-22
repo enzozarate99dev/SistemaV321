@@ -6,6 +6,7 @@ import { filtroProductosProps } from "../Components/FiltroProductos";
 
 export async function crear(producto: productoCrear) {
   const formData = convertirProductoAFormData(producto);
+  console.log(producto, "Crear Product");
   await axios({
     method: "post",
     url: urlProductos,

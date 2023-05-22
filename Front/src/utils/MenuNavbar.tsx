@@ -17,7 +17,7 @@ export default function MenuNavbar() {
   const history = useHistory();
 
   return (
-    <Navbar collapseOnSelect expand="lg" variant="dark" style={{ backgroundColor: "#33384D" }}>
+    <Navbar variant="dark" style={{ backgroundColor: "#33384D" }}>
       {/* <Navbar.Brand style={{ padding: "0 100px" }} href="/">
         <DashboardIcon />
       </Navbar.Brand> */}

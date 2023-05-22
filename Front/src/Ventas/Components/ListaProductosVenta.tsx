@@ -1,6 +1,5 @@
 import { Table } from "antd";
 import { productoModel } from "../../Models/producto.model";
-import { size } from "lodash";
 
 export default function ListaProductosVenta(props: listaProductosVentaProps) {
   const columns = [
@@ -20,6 +19,7 @@ export default function ListaProductosVenta(props: listaProductosVentaProps) {
         onRow={(producto: productoModel) => {
           return {
             onClick: () => props.moverProductos(producto.id_producto),
+            key: producto.nombre,
           };
         }}
       />

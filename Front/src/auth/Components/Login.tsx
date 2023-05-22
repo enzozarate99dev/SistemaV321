@@ -14,7 +14,6 @@ export default function Login() {
   const history = useHistory();
 
   async function login(credenciales: credencialesUsuario) {
-    console.log(credenciales, "credenciales login");
     try {
       const respuesta = await axios.post<respuestaAutenticacion>(`${urlCuentas}/login`, credenciales);
       guardarTokenLocalStorage(respuesta.data);

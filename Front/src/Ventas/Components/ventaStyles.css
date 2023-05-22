@@ -39,3 +39,7 @@ p{
   -ms-overflow-style: none;
 }
 
+.p {
+  font-weight: bold;
+}
+

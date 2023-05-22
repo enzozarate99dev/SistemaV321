@@ -18,11 +18,10 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago, handle
       setMetodosSeleccionados(metodosSeleccionados.filter((_, i) => i !== index));
     }
   };
-  console.log("arreglo de metods en FormaDePago: ", metodosSeleccionados);
 
   useEffect(() => {
     handlePagoSubmit(metodosSeleccionados);
-  }, [metodosSeleccionados]);
+  }, [handlePagoSubmit, metodosSeleccionados]);
 
   return (
     <div className="d-flex flex-column" style={{ padding: "30px" }}>

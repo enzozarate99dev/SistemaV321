@@ -1,5 +1,4 @@
-import { Input, InputNumber } from "antd";
-import { indexOf } from "lodash";
+import { InputNumber } from "antd";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Button from "../../utils/Button";
@@ -76,7 +75,7 @@ export default function Montos(props: montosProps) {
         <Button
           onClick={() => {
             const suma = inputMonto.reduce((a, b) => a + b);
-            if (suma == props.montoAPagar) {
+            if (suma === props.montoAPagar) {
               props.finalizarVenta();
             } else {
               Swal.fire({

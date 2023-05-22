@@ -60,7 +60,6 @@ export default function FiltroClientes() {
       setClientes(respuesta.data);
     });
   }
-
   return (
     <>
       <Formik

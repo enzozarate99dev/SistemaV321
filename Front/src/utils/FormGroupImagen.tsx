@@ -8,41 +8,16 @@ export default function FormGroupImagen(props: formGroupImagen) {
 
   const [imagenBase64, setImagenBase64] = useState("");
   const [imagenURL, setImagenURL] = useState(props.imagenURL);
-  const [form] = useForm();
+  const { values } = useFormikContext<any>();
 
-  // const {values} = useFormikContext<any>();
-
-  useEffect(() => {
-    form.setFieldsValue({ [props.campo]: imagenBase64 });
-  }, [imagenBase64, props.campo, form]);
-
-  // const ManejarOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   if (e.currentTarget.files) {
-  //     const archivo = e.currentTarget.files[0];
-  //     aBase64(archivo)
-  //       .then((representacionBase64: string) => setImagenBase64(representacionBase64))
-  //       .catch((error) => console.error(error));
-
-  //     // values[props.campo] = archivo;
-  //     setImagenURL("");
-  //   }
-  // };
-
-  // const aBase64 = (file: File) => {
-  //   return new Promise<string>((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => resolve(reader.result as string);
-  //     reader.onerror = (error) => reject(error);
-  //   });
-  // };
-  const ManejarOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const ManejarOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files) {
       const archivo = e.currentTarget.files[0];
       aBase64(archivo)
         .then((representacionBase64: string) => setImagenBase64(representacionBase64))
         .catch((error) => console.error(error));
 
+      values[props.campo] = archivo;
       setImagenURL("");
     }
   };

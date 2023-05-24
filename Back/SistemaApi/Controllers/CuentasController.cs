@@ -16,13 +16,13 @@ namespace SistemaApi.Controllers
     [Route("api/cuentas")]
     public class CuentasController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<Usuario> userManager;
+        private readonly SignInManager<Usuario> signInManager;
         private readonly IConfiguration configuration;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly ApplicationDbContext context;
 
-        public CuentasController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        public CuentasController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -39,7 +39,7 @@ namespace SistemaApi.Controllers
             foreach(var usuario in usuarios)
             {
                 var roles = await userManager.GetRolesAsync(usuario);
-                listado.Add(new UsuariosDTO { UserName = usuario.UserName, Email= usuario.Email, Role = roles[0] });
+                listado.Add(new UsuariosDTO { UserName = usuario.UserName, Email= usuario.Email, Role = roles[0], SucursalId = usuario.SucursalId });
             }
             return listado;
         }
@@ -50,19 +50,24 @@ namespace SistemaApi.Controllers
             var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == id);
             var userRol = await userManager.GetRolesAsync(user);
 
-            return new UsuariosDTO { UserName = user.UserName, Email = user.Email, Role = userRol[0] };
+            return new UsuariosDTO { UserName = user.UserName, Email = user.Email, Role = userRol[0], SucursalId = user.SucursalId };
         }
 
         [HttpPost("crear")]
         public async Task<ActionResult<RespuestaAutenticacion>> Crear([FromBody] RegistroCreacionDTO credenciales)
         {
-            var usuarios = new IdentityUser { UserName = credenciales.Nombre, Email = credenciales.Email };
+            var usuarios = new Usuario { UserName = credenciales.Nombre, Email = credenciales.Email };
             var resultado = await userManager.CreateAsync(usuarios, credenciales.Password);
             if (resultado.Succeeded)
             {
                 await roleManager.CreateAsync(new IdentityRole(credenciales.Role));
                 var user = await userManager.FindByEmailAsync(credenciales.Email);
                 await userManager.AddToRoleAsync(user, credenciales.Role);
+
+                var idSucursal = await ObtenerIdSucursal(credenciales.SucursalId);
+                user.SucursalId = idSucursal;
+                await context.SaveChangesAsync();
+
                 return NoContent();
             }
             else
@@ -147,6 +152,19 @@ namespace SistemaApi.Controllers
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 Expiracion = expiracion
             };
+        }
+        private async Task<int> ObtenerIdSucursal(int  sucursalId)
+        {
+            var sucursal = await context.Sucursales.FirstOrDefaultAsync(s => s.Id == sucursalId);
+            if (sucursal != null)
+            {
+                return sucursal.Id;
+            }
+            else
+            {
+                // Si no se encuentra la sucursal, puedes lanzar una excepción o manejarlo de otra manera según tus necesidades
+                throw new Exception("La dirección de sucursal no es válida.");
+            }
         }
     }
 }

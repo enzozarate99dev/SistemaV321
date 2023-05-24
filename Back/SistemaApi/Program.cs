@@ -9,6 +9,7 @@ using System.Text;
 using SistemaApi.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SistemaApi.Entidades;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
 builder.Services.AddTransient<IFacturas, Facturas>();
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<Usuario, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

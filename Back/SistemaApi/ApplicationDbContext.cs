@@ -4,7 +4,7 @@ using SistemaApi.Entidades;
 
 namespace SistemaApi
 {
-    public class ApplicationDbContext: IdentityDbContext
+    public class ApplicationDbContext: IdentityDbContext<Usuario>
     {
         public ApplicationDbContext(DbContextOptions options): base(options)
         {
@@ -80,6 +80,21 @@ namespace SistemaApi
                 .HasConstraintName("Compra1");
             });
 
+            modelBuilder.Entity<Sucursal>()
+           .HasMany(s => s.Ventas)
+           .WithOne(v => v.Sucursal)
+           .HasForeignKey(v => v.SucursalId);
+
+            modelBuilder.Entity<Sucursal>()
+                .HasMany(s => s.Productos)
+                .WithOne(p => p.Sucursal)
+                .HasForeignKey(p => p.SucursalId);
+
+        /*    modelBuilder.Entity<Sucursal>()
+               .HasMany(s => s.Usuarios)
+               .WithOne(u => u.Sucursal)
+               .HasForeignKey(u => u.SucursalId);*/
+
 
             base.OnModelCreating(modelBuilder);
         }
@@ -98,6 +113,7 @@ namespace SistemaApi
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Compra> Compras { get; set; }
         public DbSet<CompraProducto> CompraProductos { get; set; }
+        public DbSet<Sucursal> Sucursales { get; set; }
        /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             *//*optionsBuilder.UseMySQL("server=185.206.160.3;user=u402506303_admin;password=Makers.MM666;database=u402506303_sistema_makers");*//*

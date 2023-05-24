@@ -6,10 +6,12 @@ namespace SistemaApi.DTOs
     {
         [Required]
         public string Nombre { get; set; }
+        public int SucursalId { get; set; }
         [EmailAddress] 
         public string Email { get; set; }
         [Required]
         public string Password { get; set; } 
         public string Role { get; set; }
+
     }
 }

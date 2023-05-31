@@ -19,7 +19,7 @@ export default function Login() {
       guardarTokenLocalStorage(respuesta.data);
       actualizar(obtenerClaims());
       history.push("/");
-      console.log(respuesta);
+      console.log(respuesta.data, "tokens");
     } catch (error) {
       setErrores(error.response.data);
     }
@@ -28,7 +28,7 @@ export default function Login() {
   return (
     <>
       <MostrarErrores errores={errores} />
-      <FormularioAuth modelo={{ nombre: "", password: "" }} onSubmit={async (valores) => await login(valores)} tipo="Login" />
+      <FormularioAuth modelo={{ nombre: "", password: "" }} onSubmit={async (valores) => await login(valores)} tipo="Iniciar Sesion" />
     </>
   );
 }

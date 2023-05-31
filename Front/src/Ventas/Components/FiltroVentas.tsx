@@ -30,6 +30,7 @@ export default function FiltroVentas() {
     nombre: "",
     stockDisponible: false,
     sinStock: false,
+    sucursalId: 1,
   };
 
   useEffect(() => {
@@ -90,6 +91,7 @@ export interface filtroVentasProps {
   nombre: string;
   stockDisponible: boolean;
   sinStock: boolean;
+  sucursalId: number;
 }
 export interface filtroProductosProps {
   nombre: string;

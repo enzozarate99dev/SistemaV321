@@ -29,6 +29,7 @@ export default function Ventas() {
     sinStock: false,
     pagina: 1,
     recordsPorPagina: 5,
+    sucursalId: 1,
   };
 
   useEffect(() => {
@@ -115,6 +116,7 @@ interface filtroProductosProps {
   sinStock: boolean;
   pagina: number;
   recordsPorPagina: number;
+  sucursalId: number;
 }
 // interface crearVentaProps {
 //   setFlagModal: () => void;

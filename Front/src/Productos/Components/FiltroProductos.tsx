@@ -1,21 +1,19 @@
-import axios, { AxiosResponse } from "axios";
-import { Field, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
+import { Form, Formik } from "formik";
+import { useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import FilterIcon from "../../assets/FilterIcon";
 import { productoModel } from "../../Models/producto.model";
-import Button from "../../utils/Button";
 import FormGroupText from "../../utils/FormGroupText";
 import Paginacion from "../../utils/Paginacion";
 import * as services from "../Services/productos.services";
 import "../styles.css";
 import ListadoProductos from "./ListadoProductos";
-import { urlProductos } from "../../Generales/endpoints";
+import AutenticacionContext from "../../auth/AutenticacionContext";
 
 export default function FiltroProductos() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
   const [productos, setProductos] = useState<productoModel[]>([]);
-  const [mostrarFiltros, setMostrarFiltros] = useState(true);
+  // const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [flag, setFlag] = useState(false);
 
   const cambiarFlag = () => {
@@ -24,6 +22,7 @@ export default function FiltroProductos() {
 
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
+  const { sucursalId } = useContext(AutenticacionContext);
 
   const valorInicial: filtroProductosProps = {
     nombre: "",
@@ -33,6 +32,7 @@ export default function FiltroProductos() {
     sinStock: false,
     pagina: 1,
     recordsPorPagina: 5,
+    sucursalId: sucursalId,
   };
 
   useEffect(() => {
@@ -81,6 +81,7 @@ export default function FiltroProductos() {
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
       setProductos(respuesta.data);
+      console.log(respuesta.data);
     });
   };
   return (
@@ -139,4 +140,5 @@ export interface filtroProductosProps {
   sinStock: boolean;
   pagina: number;
   recordsPorPagina: number;
+  sucursalId: number;
 }

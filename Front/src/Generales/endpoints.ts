@@ -7,3 +7,4 @@ export const urlConsumidoFinal = `${apiURL}/ventascf`;
 export const urlPresupuestos = `${apiURL}/presupuestos`;
 export const urlProveedores = `${apiURL}/proveedores`;
 export const urlCompras = `${apiURL}/compras`;
+export const urlSucursales = `${apiURL}/sucursales`;

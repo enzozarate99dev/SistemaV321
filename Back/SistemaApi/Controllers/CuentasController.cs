@@ -47,8 +47,19 @@ namespace SistemaApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UsuariosDTO>> User(string id)
         {
+
+            /* var user = await userManager.GetUserAsync(HttpContext.User);*/
+            /*var user = await userManager.FindByIdAsync(name);
+            if (user == null) { return NotFound(); }
+            var userRol = await userManager.GetRolesAsync(user);*/
             var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == id);
+            /* var userRol = await context.UserRoles.FirstOrDefaultAsync(x => x.UserId == user.Id);*/
             var userRol = await userManager.GetRolesAsync(user);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
 
             return new UsuariosDTO { UserName = user.UserName, Email = user.Email, Role = userRol[0], SucursalId = user.SucursalId };
         }
@@ -162,9 +173,10 @@ namespace SistemaApi.Controllers
             }
             else
             {
-                // Si no se encuentra la sucursal, puedes lanzar una excepción o manejarlo de otra manera según tus necesidades
                 throw new Exception("La dirección de sucursal no es válida.");
             }
         }
+      
+
     }
 }

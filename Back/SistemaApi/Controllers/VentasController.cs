@@ -255,7 +255,7 @@ namespace SistemaApi.Controllers
         }
 
          [HttpGet("filtrar")]
-         public async Task<ActionResult<List<VentaDTO>>> Filtrar([FromQuery] VentaFiltrarDTO ventaFiltrarDTO)
+         public async Task<ActionResult<List<VentaDTO>>> Filtrar([FromQuery] VentaFiltrarDTO ventaFiltrarDTO, int sucursalId)
          {
              if (ventaFiltrarDTO.Consumidor && !ventaFiltrarDTO.Registrado)
              {
@@ -282,7 +282,9 @@ namespace SistemaApi.Controllers
                      ventasQueryable = ventasQueryable.Where(x => x.FechaDeVenta.Date <= ventaFiltrarDTO.FechaDeVenta.Value.Date);
                  }
 
-                 await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
+                ventasQueryable = ventasQueryable.Where(x => x.SucursalId == sucursalId);
+
+                await HttpContext.InsertarParametrosPaginacionEnCabecera(ventasQueryable);
 
                  var ventas = await ventasQueryable.OrderByDescending(x => x.FechaDeVenta).Paginar(ventaFiltrarDTO.PaginacionDTO)
                     .Include(y=>y.Cliente)
@@ -319,6 +321,7 @@ namespace SistemaApi.Controllers
             {
                 FechaDeVenta = DateTime.Now,
                 Cliente = cliente,
+                SucursalId = ventaCreacion.SucursalId,
                 Adeudada = 0,
                 Pagada = true,
                 TipoComprobante = "FA",

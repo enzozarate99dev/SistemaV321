@@ -25,8 +25,9 @@ namespace SistemaApi.Utilidades
             CreateMap<VentaCreacionDTO, Venta>();
        
             CreateMap<Venta, VentaDTO>().ReverseMap();
-
             CreateMap<Venta, VentaPagosDTO>();
+
+            CreateMap<Sucursal, SucursalDTO>().ReverseMap();
 
 
             CreateMap<Venta, OperacionesClienteDTO>()

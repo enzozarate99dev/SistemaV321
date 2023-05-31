@@ -7,6 +7,7 @@ namespace SistemaApi.DTOs
     {
         [Key]
         public int Id_producto { get; set; }
+        public int SucursalId { get; set; }
         [Required]
         [StringLength(100)]
         public string Nombre { get; set; }

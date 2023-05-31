@@ -7,6 +7,8 @@ namespace SistemaApi.DTOs
         [Required]
         [StringLength(maximumLength:100)]
         public string Nombre { get; set; }
+        public int  SucursalId { get; set; }
+
         public double Precio { get; set; }
         public int Cantidad { get; set; }
         public string Codigo { get; set; }

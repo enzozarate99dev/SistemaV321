@@ -10,6 +10,7 @@ namespace SistemaApi.DTOs
         
         public int Id_venta { get; set; }
         public int ClienteId { get; set; }
+        public int SucursalId { get; set; }
         public double PrecioTotal { get; set; }
         public DateTime FechaDeVenta { get; set; }
         public int TratamientoImpositivo { get; set; }

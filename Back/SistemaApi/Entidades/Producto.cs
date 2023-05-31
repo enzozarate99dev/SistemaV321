@@ -6,6 +6,8 @@ namespace SistemaApi.Entidades
     {
         [Key]
         public int Id_producto { get; set; }
+        public int SucursalId { get; set; }
+        public virtual Sucursal Sucursal { get; set; }
          
         [Required]
         [StringLength(100)]

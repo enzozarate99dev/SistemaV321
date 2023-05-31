@@ -37,6 +37,8 @@ namespace SistemaApi.Controllers
             {
                 clientesQueryable = clientesQueryable.Where(x => x.NombreYApellido.Contains(clienteFiltrarDTO.NombreYApellido));
             }
+
+
             await HttpContext.InsertarParametrosPaginacionEnCabecera(clientesQueryable);
 
             var clientes = await clientesQueryable.Paginar(clienteFiltrarDTO.PaginacionDTO).ToListAsync();

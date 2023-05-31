@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SistemaApi.Migrations
 {
-    public partial class sistema : Migration
+    public partial class sucursal : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -118,25 +118,6 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Productos",
-                columns: table => new
-                {
-                    Id_producto = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Precio = table.Column<double>(type: "float", nullable: false),
-                    Cantidad = table.Column<int>(type: "int", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Categoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Foto = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Productos", x => x.Id_producto);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Proveedores",
                 columns: table => new
                 {
@@ -150,6 +131,19 @@ namespace SistemaApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Proveedores", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sucursal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sucursal", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,32 +271,6 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ventas",
-                columns: table => new
-                {
-                    Id_venta = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
-                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
-                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TratamientoImpositivo = table.Column<int>(type: "int", nullable: false),
-                    TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Adeudada = table.Column<double>(type: "float", nullable: false),
-                    Pagada = table.Column<bool>(type: "bit", nullable: false),
-                    Descuento = table.Column<double>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ventas", x => x.Id_venta);
-                    table.ForeignKey(
-                        name: "Venta1",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
-                        principalColumn: "Id_cliente",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MetodoDePagoPago",
                 columns: table => new
                 {
@@ -327,26 +295,127 @@ namespace SistemaApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PagosMetodosDePagos",
+                name: "Compras",
                 columns: table => new
                 {
-                    MetodoId = table.Column<int>(type: "int", nullable: false),
-                    PagoId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProveedorId = table.Column<int>(type: "int", nullable: false),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
+                    FechaDeCompra = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PagosMetodosDePagos", x => new { x.MetodoId, x.PagoId });
+                    table.PrimaryKey("PK_Compras", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PagosMetodosDePagos_MetodosDePago_MetodoId",
-                        column: x => x.MetodoId,
-                        principalTable: "MetodosDePago",
-                        principalColumn: "Id_metodo",
+                        name: "Compra1",
+                        column: x => x.ProveedorId,
+                        principalTable: "Proveedores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Productos",
+                columns: table => new
+                {
+                    Id_producto = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SucursalId = table.Column<int>(type: "int", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Precio = table.Column<double>(type: "float", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Categoria = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Foto = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Productos", x => x.Id_producto);
+                    table.ForeignKey(
+                        name: "FK_Productos_Sucursal_SucursalId",
+                        column: x => x.SucursalId,
+                        principalTable: "Sucursal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsuariosDTO",
+                columns: table => new
+                {
+                    UserName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SucursalId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsuariosDTO", x => x.UserName);
+                    table.ForeignKey(
+                        name: "FK_UsuariosDTO_Sucursal_SucursalId",
+                        column: x => x.SucursalId,
+                        principalTable: "Sucursal",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ventas",
+                columns: table => new
+                {
+                    Id_venta = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    SucursalId = table.Column<int>(type: "int", nullable: false),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
+                    FechaDeVenta = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TratamientoImpositivo = table.Column<int>(type: "int", nullable: false),
+                    TipoComprobante = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Adeudada = table.Column<double>(type: "float", nullable: false),
+                    Pagada = table.Column<bool>(type: "bit", nullable: false),
+                    Descuento = table.Column<double>(type: "float", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ventas", x => x.Id_venta);
+                    table.ForeignKey(
+                        name: "FK_Ventas_Sucursal_SucursalId",
+                        column: x => x.SucursalId,
+                        principalTable: "Sucursal",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PagosMetodosDePagos_Pagos_PagoId",
-                        column: x => x.PagoId,
-                        principalTable: "Pagos",
-                        principalColumn: "Id_pago",
+                        name: "Venta1",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "Id_cliente",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompraProductos",
+                columns: table => new
+                {
+                    CompraId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Unidades = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompraProductos", x => new { x.ProductoId, x.CompraId });
+                    table.ForeignKey(
+                        name: "FK_CompraProductos_Compras_CompraId",
+                        column: x => x.CompraId,
+                        principalTable: "Compras",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompraProductos_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id_producto",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -372,27 +441,6 @@ namespace SistemaApi.Migrations
                         column: x => x.ProductoId,
                         principalTable: "Productos",
                         principalColumn: "Id_producto",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Compras",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProveedorId = table.Column<int>(type: "int", nullable: false),
-                    PrecioTotal = table.Column<double>(type: "float", nullable: true),
-                    FechaDeCompra = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Compras", x => x.Id);
-                    table.ForeignKey(
-                        name: "Compra1",
-                        column: x => x.ProveedorId,
-                        principalTable: "Proveedores",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -441,13 +489,13 @@ namespace SistemaApi.Migrations
                         column: x => x.ProductoId,
                         principalTable: "Productos",
                         principalColumn: "Id_producto",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "Venta_line1",
                         column: x => x.VentaId,
                         principalTable: "Ventas",
                         principalColumn: "Id_venta",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -471,31 +519,6 @@ namespace SistemaApi.Migrations
                         column: x => x.VentaId,
                         principalTable: "Ventas",
                         principalColumn: "Id_venta",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CompraProductos",
-                columns: table => new
-                {
-                    CompraId = table.Column<int>(type: "int", nullable: false),
-                    ProductoId = table.Column<int>(type: "int", nullable: false),
-                    Unidades = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompraProductos", x => new { x.ProductoId, x.CompraId });
-                    table.ForeignKey(
-                        name: "FK_CompraProductos_Compras_CompraId",
-                        column: x => x.CompraId,
-                        principalTable: "Compras",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompraProductos_Productos_ProductoId",
-                        column: x => x.ProductoId,
-                        principalTable: "Productos",
-                        principalColumn: "Id_producto",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -554,14 +577,19 @@ namespace SistemaApi.Migrations
                 column: "PagosId_pago");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PagosMetodosDePagos_PagoId",
-                table: "PagosMetodosDePagos",
-                column: "PagoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PresupuestoProducto_ProductoId",
                 table: "PresupuestoProducto",
                 column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Productos_SucursalId",
+                table: "Productos",
+                column: "SucursalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsuariosDTO_SucursalId",
+                table: "UsuariosDTO",
+                column: "SucursalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Venta_Lines_ProductoId",
@@ -587,6 +615,11 @@ namespace SistemaApi.Migrations
                 name: "IX_Ventas_ClienteId",
                 table: "Ventas",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ventas_SucursalId",
+                table: "Ventas",
+                column: "SucursalId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -613,10 +646,10 @@ namespace SistemaApi.Migrations
                 name: "MetodoDePagoPago");
 
             migrationBuilder.DropTable(
-                name: "PagosMetodosDePagos");
+                name: "PresupuestoProducto");
 
             migrationBuilder.DropTable(
-                name: "PresupuestoProducto");
+                name: "UsuariosDTO");
 
             migrationBuilder.DropTable(
                 name: "Venta_Lines");
@@ -656,6 +689,9 @@ namespace SistemaApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "Proveedores");
+
+            migrationBuilder.DropTable(
+                name: "Sucursal");
 
             migrationBuilder.DropTable(
                 name: "Clientes");

@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230426190311_sistema")]
-    partial class sistema
+    [Migration("20230524180455_usuariosIdentity")]
+    partial class usuariosIdentity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,71 +89,6 @@ namespace SistemaApi.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -377,21 +312,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("Pagos");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
-                {
-                    b.Property<int>("MetodoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PagoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MetodoId", "PagoId");
-
-                    b.HasIndex("PagoId");
-
-                    b.ToTable("PagosMetodosDePagos");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.Property<int>("PresupuestoId")
@@ -470,7 +390,12 @@ namespace SistemaApi.Migrations
                     b.Property<double>("Precio")
                         .HasColumnType("float");
 
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id_producto");
+
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("Productos");
                 });
@@ -504,6 +429,91 @@ namespace SistemaApi.Migrations
                     b.ToTable("Proveedores");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Sucursal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sucursales");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Usuario", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.Property<int>("Id_venta")
@@ -530,6 +540,9 @@ namespace SistemaApi.Migrations
                     b.Property<double?>("PrecioTotal")
                         .HasColumnType("float");
 
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TipoComprobante")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -540,6 +553,8 @@ namespace SistemaApi.Migrations
                     b.HasKey("Id_venta");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("Ventas");
                 });
@@ -667,7 +682,7 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("SistemaApi.Entidades.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -676,7 +691,7 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("SistemaApi.Entidades.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -691,7 +706,7 @@ namespace SistemaApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("SistemaApi.Entidades.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -700,7 +715,7 @@ namespace SistemaApi.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("SistemaApi.Entidades.Usuario", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -738,25 +753,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.MetodoDePago", "MetodoDePago")
-                        .WithMany("PagosMetodosDePago")
-                        .HasForeignKey("MetodoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SistemaApi.Entidades.Pago", "Pago")
-                        .WithMany("PagosMetodosDePago")
-                        .HasForeignKey("PagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MetodoDePago");
-
-                    b.Navigation("Pago");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Presupuestos", "Presupuesto")
@@ -776,6 +772,17 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Producto", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Sucursal", "Sucursal")
+                        .WithMany("Productos")
+                        .HasForeignKey("SucursalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sucursal");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.ClienteEntidad", "Cliente")
@@ -785,7 +792,15 @@ namespace SistemaApi.Migrations
                         .IsRequired()
                         .HasConstraintName("Venta1");
 
+                    b.HasOne("SistemaApi.Entidades.Sucursal", "Sucursal")
+                        .WithMany("Ventas")
+                        .HasForeignKey("SucursalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Sucursal");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaCFProducto", b =>
@@ -857,16 +872,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("CompraProducto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.Navigation("PagosMetodosDePago");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
-                {
-                    b.Navigation("PagosMetodosDePago");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>
                 {
                     b.Navigation("PresupuestoProducto");
@@ -886,6 +891,13 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Proveedor", b =>
                 {
                     b.Navigation("Compras");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Sucursal", b =>
+                {
+                    b.Navigation("Productos");
+
+                    b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>

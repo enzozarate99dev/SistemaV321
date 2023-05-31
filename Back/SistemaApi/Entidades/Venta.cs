@@ -7,6 +7,8 @@ namespace SistemaApi.Entidades
         [Key]
         public int Id_venta { get; set; }
         public int ClienteId { get; set; }
+        public int SucursalId { get; set; }
+        public virtual Sucursal Sucursal { get; set; }
         public virtual ClienteEntidad Cliente { get; set; }
         public double? PrecioTotal { get; set; }
         [Required]

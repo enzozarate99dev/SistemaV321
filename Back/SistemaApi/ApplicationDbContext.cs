@@ -23,12 +23,7 @@ namespace SistemaApi
                 .HasForeignKey(x => x.ClienteId)
                 .HasConstraintName("Venta1");
 
-         /*   modelBuilder.Entity<Pago>()
-               .HasOne(x => x.Cliente)
-               .WithMany(y => y.Pagos)
-               .HasForeignKey(x => x.Cliente_Id)
-               .HasConstraintName("Pagos1");
-*/
+
 
             modelBuilder.Entity<VentaLine>()
                 .HasOne(x => x.Venta)
@@ -49,18 +44,7 @@ namespace SistemaApi
                 vp => vp.HasOne(vp => vp.Pago).WithMany(),
                 vp => vp.HasOne(vp => vp.Venta).WithMany()
             );
-       /*     modelBuilder.Entity<PagosMetodosDePago>()
-                       .HasKey(mp => new { mp.MetodoId, mp.PagoId });
-
-            modelBuilder.Entity<PagosMetodosDePago>()
-                .HasOne(mp => mp.MetodoDePago)
-                .WithMany(m => m.PagosMetodosDePago)
-                .HasForeignKey(mp => mp.MetodoId);
-
-            modelBuilder.Entity<PagosMetodosDePago>()
-                .HasOne(mp => mp.Pago)
-                .WithMany(p => p.PagosMetodosDePago)
-                .HasForeignKey(mp => mp.PagoId);*/
+     
            
 
             modelBuilder.Entity<VentaCFProducto>()
@@ -102,8 +86,7 @@ namespace SistemaApi
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaLine> Venta_Lines { get; set; }
         public DbSet<Pago> Pagos { get; set; }
-        public DbSet<MetodoDePago> MetodosDePago { get; set; }/*
-        public DbSet<PagosMetodosDePago> PagosMetodosDePagos { get; set; }*/
+        public DbSet<MetodoDePago> MetodosDePago { get; set; }
         public DbSet<VentaPago> VentaPagos { get; set; }
         public DbSet<ClienteEntidad> Clientes { get; set; }
         public DbSet<VentaCFProducto> VentaCFProducto { get; set; }

@@ -12,8 +12,8 @@ using SistemaApi;
 namespace SistemaApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230511142057_new2")]
-    partial class new2
+    [Migration("20230524133132_sucursal")]
+    partial class sucursal
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -237,6 +237,29 @@ namespace SistemaApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SistemaApi.DTOs.UsuariosDTO", b =>
+                {
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserName");
+
+                    b.HasIndex("SucursalId");
+
+                    b.ToTable("UsuariosDTO");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.ClienteEntidad", b =>
                 {
                     b.Property<int>("Id_cliente")
@@ -377,21 +400,6 @@ namespace SistemaApi.Migrations
                     b.ToTable("Pagos");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
-                {
-                    b.Property<int>("MetodoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PagoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MetodoId", "PagoId");
-
-                    b.HasIndex("PagoId");
-
-                    b.ToTable("PagosMetodosDePagos");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.Property<int>("PresupuestoId")
@@ -470,7 +478,12 @@ namespace SistemaApi.Migrations
                     b.Property<double>("Precio")
                         .HasColumnType("float");
 
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id_producto");
+
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("Productos");
                 });
@@ -504,6 +517,23 @@ namespace SistemaApi.Migrations
                     b.ToTable("Proveedores");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Sucursal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sucursal");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.Property<int>("Id_venta")
@@ -530,6 +560,9 @@ namespace SistemaApi.Migrations
                     b.Property<double?>("PrecioTotal")
                         .HasColumnType("float");
 
+                    b.Property<int>("SucursalId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TipoComprobante")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -540,6 +573,8 @@ namespace SistemaApi.Migrations
                     b.HasKey("Id_venta");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("SucursalId");
 
                     b.ToTable("Ventas");
                 });
@@ -707,6 +742,17 @@ namespace SistemaApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SistemaApi.DTOs.UsuariosDTO", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Sucursal", "Sucursal")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("SucursalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sucursal");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.Compra", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Proveedor", "Proveedor")
@@ -738,25 +784,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.PagosMetodosDePago", b =>
-                {
-                    b.HasOne("SistemaApi.Entidades.MetodoDePago", "MetodoDePago")
-                        .WithMany("PagosMetodosDePago")
-                        .HasForeignKey("MetodoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SistemaApi.Entidades.Pago", "Pago")
-                        .WithMany("PagosMetodosDePago")
-                        .HasForeignKey("PagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MetodoDePago");
-
-                    b.Navigation("Pago");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.PresupuestoProducto", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.Presupuestos", "Presupuesto")
@@ -776,6 +803,17 @@ namespace SistemaApi.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("SistemaApi.Entidades.Producto", b =>
+                {
+                    b.HasOne("SistemaApi.Entidades.Sucursal", "Sucursal")
+                        .WithMany("Productos")
+                        .HasForeignKey("SucursalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sucursal");
+                });
+
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>
                 {
                     b.HasOne("SistemaApi.Entidades.ClienteEntidad", "Cliente")
@@ -785,7 +823,15 @@ namespace SistemaApi.Migrations
                         .IsRequired()
                         .HasConstraintName("Venta1");
 
+                    b.HasOne("SistemaApi.Entidades.Sucursal", "Sucursal")
+                        .WithMany("Ventas")
+                        .HasForeignKey("SucursalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Sucursal");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.VentaCFProducto", b =>
@@ -857,16 +903,6 @@ namespace SistemaApi.Migrations
                     b.Navigation("CompraProducto");
                 });
 
-            modelBuilder.Entity("SistemaApi.Entidades.MetodoDePago", b =>
-                {
-                    b.Navigation("PagosMetodosDePago");
-                });
-
-            modelBuilder.Entity("SistemaApi.Entidades.Pago", b =>
-                {
-                    b.Navigation("PagosMetodosDePago");
-                });
-
             modelBuilder.Entity("SistemaApi.Entidades.Presupuestos", b =>
                 {
                     b.Navigation("PresupuestoProducto");
@@ -886,6 +922,15 @@ namespace SistemaApi.Migrations
             modelBuilder.Entity("SistemaApi.Entidades.Proveedor", b =>
                 {
                     b.Navigation("Compras");
+                });
+
+            modelBuilder.Entity("SistemaApi.Entidades.Sucursal", b =>
+                {
+                    b.Navigation("Productos");
+
+                    b.Navigation("Usuarios");
+
+                    b.Navigation("Ventas");
                 });
 
             modelBuilder.Entity("SistemaApi.Entidades.Venta", b =>

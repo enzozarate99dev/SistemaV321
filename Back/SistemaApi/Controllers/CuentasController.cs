@@ -143,7 +143,8 @@ namespace SistemaApi.Controllers
             var claims = new List<Claim>()
             {
                 new Claim("nombre", login.Nombre),
-                new Claim("role", roles[0])
+                new Claim("role", roles[0]),
+                new Claim("sucursalId", usuario.SucursalId.ToString())
             };
 
             

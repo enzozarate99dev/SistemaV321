@@ -18,8 +18,8 @@ export default function Login() {
       const respuesta = await axios.post<respuestaAutenticacion>(`${urlCuentas}/login`, credenciales);
       guardarTokenLocalStorage(respuesta.data);
       actualizar(obtenerClaims());
+      console.log(respuesta.data, "authent");
       history.push("/");
-      console.log(respuesta.data, "tokens");
     } catch (error) {
       setErrores(error.response.data);
     }

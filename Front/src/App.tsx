@@ -7,18 +7,23 @@ import "./fondo.css";
 import rutas from "./Generales/routesConfig";
 import { claim } from "./Models/auth.model";
 import MiLayout from "./utils/MiLayout";
+import { sucID } from "./auth/handlerJWT";
 
 function App() {
   const [claims, setClaims] = useState<claim[]>([]);
+  const [sucursalId, setSucursalId] = useState<number>(0);
 
   useEffect(() => {
     setClaims(obtenerClaims());
-    console.log(claims);
   }, []);
 
   function actualizar(claims: claim[]) {
     setClaims(claims);
   }
+  useEffect(() => {
+    const sucID = claims.find((claim) => claim.nombre === "sucursalId")?.valor;
+    setSucursalId(sucID ? parseInt(sucID) : 0);
+  }, [claims]);
 
   function esAdmin() {
     return claims.findIndex((claim) => claim.nombre === "role" && claim.valor === "admin") > -1;
@@ -31,8 +36,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <AutenticacionContext.Provider value={{ claims, actualizar }}>
-          {/* <MenuNavbar /> */}
+        <AutenticacionContext.Provider value={{ claims, actualizar, sucursalId }}>
           <MiLayout>
             <Switch>
               {rutas.map((ruta) => (
@@ -42,7 +46,6 @@ function App() {
                   ) : (
                     <>{ruta.esAdmin && !esAdmin() ? <h1>No eres administrador</h1> : <ruta.componente />}</>
                   )}
-                  {/* <ruta.componente /> */}
                 </Route>
               ))}
             </Switch>

@@ -8,6 +8,7 @@ import rutas from "./Generales/routesConfig";
 import { claim } from "./Models/auth.model";
 import MiLayout from "./utils/MiLayout";
 import { sucID } from "./auth/handlerJWT";
+import NoAccess from "./utils/NoAccess";
 
 function App() {
   const [claims, setClaims] = useState<claim[]>([]);
@@ -22,6 +23,7 @@ function App() {
   }
   useEffect(() => {
     const sucID = claims.find((claim) => claim.nombre === "sucursalId")?.valor;
+    console.log("sucID", sucID);
     setSucursalId(sucID ? parseInt(sucID) : 0);
   }, [claims]);
 
@@ -42,9 +44,15 @@ function App() {
               {rutas.map((ruta) => (
                 <Route key={ruta.path} path={ruta.path} exact={ruta.exact}>
                   {ruta.esCajero && !esCajero() && !esAdmin() ? (
-                    <h1>Debes iniciar sesión</h1>
+                    <NoAccess text="Debes iniciar sesión" />
                   ) : (
-                    <>{ruta.esAdmin && !esAdmin() ? <h1>No eres administrador</h1> : <ruta.componente />}</>
+                    <>
+                      {ruta.esAdmin && !esAdmin() ? (
+                        <NoAccess text="No tienes acceso a esta pantalla porque no eres admin" />
+                      ) : (
+                        <ruta.componente />
+                      )}
+                    </>
                   )}
                 </Route>
               ))}

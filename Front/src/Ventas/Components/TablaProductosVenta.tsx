@@ -42,7 +42,7 @@ export default function TablaProductosVenta({ quitarProducto, cambiarCantidad, p
   ];
   return (
     <>
-      <Table dataSource={productos} columns={columns} pagination={{ pageSize: 10 }} style={{ width: "90%" }} />
+      <Table dataSource={productos} columns={columns} pagination={{ pageSize: 10 }} style={{ width: "90%" }} rowKey="id_producto" />
     </>
   );
 }

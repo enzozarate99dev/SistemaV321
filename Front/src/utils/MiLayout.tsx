@@ -10,6 +10,7 @@ import UsersIcon from "../assets/UsersIcon";
 import { Header } from "antd/es/layout/layout";
 import MenuNavbar from "./MenuNavbar";
 import "../Configuration/modelColors.css";
+import Autorizado from "../auth/Autorizado";
 
 const { Content } = Layout;
 
@@ -62,21 +63,16 @@ export default function MiLayout(props: MenuProps) {
     <Layout hasSider style={{ minHeight: "100vh" }}>
       {
         <>
-          <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} />
-
           {/* <Autorizado
-            autorizado={
-              <>
-                <Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />
-              </>
-            }
-            noAutorizado={<Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} inlineCollapsed={false} />}
-          /> */}
+            autorizado={<Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} />}
+            noAutorizado={<Menu className="menu" style={{ backgroundColor: "#33384D" }} items={[]} />}
+          ></Autorizado> */}
+          <Menu className="menu " style={{ backgroundColor: "#33384D" }} items={items} />
         </>
       }
 
       <Layout className="site-layout ">
-        <Header className="header ">
+        <Header className="header">
           <MenuNavbar />
         </Header>
         <Content

@@ -5,21 +5,12 @@ export interface productoModel {
   precioF?: number;
   cantidad: number;
   codigo?: string;
+  sucursalId?: number;
   categoria?: string;
   descripcion?: string;
   foto?: string;
   label?: string;
 }
-// export interface productoDTO {
-//   id_producto: number;
-//   nombre: string;
-//   precio: number;
-//   cantidad: number;
-//   codigo: string;
-//   categoria: string;
-//   descripcion: string;
-//   foto?: string;
-// }
 
 export interface homePage {
   disponibles: productoModel[];
@@ -35,6 +26,7 @@ export interface productoCrear {
   descripcion?: string;
   foto?: File;
   fotoURL?: string;
+  sucursalId: number;
 }
 
 export interface actualizar {

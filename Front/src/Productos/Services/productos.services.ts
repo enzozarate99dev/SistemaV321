@@ -6,13 +6,13 @@ import { filtroProductosProps } from "../Components/FiltroProductos";
 
 export async function crear(producto: productoCrear) {
   const formData = convertirProductoAFormData(producto);
-  console.log(producto, "Crear Product");
   await axios({
     method: "post",
     url: urlProductos,
     data: formData,
     headers: { "Content-Type": "multipart/form-data" },
   });
+  console.log(producto, "Crear Producto");
 }
 
 export async function editar(productoEditar: productoCrear, id: number) {

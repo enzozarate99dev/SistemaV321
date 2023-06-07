@@ -1,3 +1,9 @@
-export default function Cargando(){
-    return <img style={{height:'60px', width:'60px'}} src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="loading gif"/>
+import { Spin } from "antd";
+
+export default function Cargando() {
+  return (
+    <Spin tip="Loading" size="large">
+      <div className="content" />
+    </Spin>
+  );
 }

@@ -155,7 +155,7 @@ namespace SistemaApi.Controllers
             var llave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["llavejwt"]));
             var creds = new SigningCredentials(llave, SecurityAlgorithms.HmacSha256);
 
-            var expiracion = DateTime.UtcNow.AddYears(1);
+            var expiracion = DateTime.UtcNow.AddDays(3);
 
             var token = new JwtSecurityToken(issuer: null, audience: null, claims: claims, expires: expiracion, signingCredentials: creds);
 

@@ -22,30 +22,6 @@ export default function MenuNavbar() {
         <DashboardIcon />
       </Navbar.Brand> */}
       <Container className="d-flex  justify-content-end" style={{ maxHeight: 10 }}>
-        {/* <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto my-2 my-lg-0" style={{ maxHeight: "100px" }} navbarScroll> */}
-        {/* <Autorizado
-              autorizado={
-                <>
-                  <Nav.Link href="/listadoProductos">Productos</Nav.Link>
-                  <Nav.Link href="/listadoClientes">Clientes</Nav.Link>
-                  <Nav.Link href="/listadoProveedores">Proveedores</Nav.Link>
-                  <Nav.Link href="/listadoVentas">Ventas</Nav.Link>
-                  <Nav.Link href="/listadoCompras">Compras</Nav.Link>
-                  <Nav.Link href="/listadoPresupuestos">Presupuestos</Nav.Link>
-                </>
-              }
-            />
-            <Autorizado
-              role="admin"
-              autorizado={
-                <>
-                  <Nav.Link href="/listadoUsuarios">Usuarios</Nav.Link>
-                </>
-              }
-            /> */}
-        {/* </Nav> */}
         <Autorizado
           autorizado={
             <>
@@ -53,6 +29,7 @@ export default function MenuNavbar() {
                 <NavDropdown title={<LogOut />}>
                   <NavDropdown.Item>
                     <a
+                      href=" "
                       onClick={() => {
                         logout();
                         actualizar([]);
@@ -76,7 +53,6 @@ export default function MenuNavbar() {
             </>
           }
         />
-        {/* </Navbar.Collapse> */}
       </Container>
     </Navbar>
   );

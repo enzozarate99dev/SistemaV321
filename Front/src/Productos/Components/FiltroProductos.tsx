@@ -81,7 +81,6 @@ export default function FiltroProductos() {
       const totalDeRegistros = parseInt(respuesta.headers["cantidadtotalregistros"], 10);
       setTotalDePaginas(Math.ceil(totalDeRegistros / valorInicial.recordsPorPagina));
       setProductos(respuesta.data);
-      console.log(respuesta.data);
     });
   };
   return (

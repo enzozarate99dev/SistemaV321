@@ -199,6 +199,7 @@ export default function ListadoClientes(props: propsListadoClientes) {
               size="small"
               scroll={{ x: 500 }}
               dataSource={props.clientes}
+              rowKey="id_cliente"
               columns={columns}
               pagination={false}
               style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, marginInline: "2%", padding: 0 }}

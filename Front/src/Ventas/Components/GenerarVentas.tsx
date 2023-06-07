@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
 import PdfIcon from "../../assets/PdfIcon";
 import CargarCliente from "../../Clientes/Components/CargarCliente";
-import { urlClientes } from "../../Generales/endpoints";
+import { urlClientes, urlSucursales } from "../../Generales/endpoints";
 import { clienteModel } from "../../Models/clientes.model";
 import { productoModel } from "../../Models/producto.model";
 import { ventasModel } from "../../Models/ventas.model";
@@ -19,6 +19,7 @@ import FinalizarVenta from "./FinalizarVenta";
 import ButtonDescuento from "../../utils/ButtonDescuento";
 import ListaProductosVenta from "./ListaProductosVenta";
 import TablaProductosVenta from "./TablaProductosVenta";
+import { sucursalModel } from "../../Models/sucursal.model";
 
 export default function GenerarVentas(props: propsListadoVentas) {
   const [openCliente, setOpenCliente] = useState(false);
@@ -34,6 +35,8 @@ export default function GenerarVentas(props: propsListadoVentas) {
 
   const [clientes, setCliente] = useState<clienteModel[]>([]);
   const [clienteSeleccionado, setClienteSeleccioando] = useState<clienteModel | null>();
+
+  const [sucursal, setSucursal] = useState([]);
 
   const [flag, setFlag] = useState(false);
 
@@ -68,6 +71,18 @@ export default function GenerarVentas(props: propsListadoVentas) {
       );
     }
     traerClientes();
+  }, []);
+  useEffect(() => {
+    async function getSuc() {
+      const result = await axios(`${urlSucursales}`);
+      setSucursal(
+        result.data.map((suc: sucursalModel) => ({
+          value: suc.id,
+          label: suc.direccion,
+        }))
+      );
+    }
+    getSuc();
   }, []);
 
   async function selectCliente(id: number) {
@@ -154,7 +169,7 @@ export default function GenerarVentas(props: propsListadoVentas) {
               </Button>
               <Modal title="Cargar Producto" width={1150} open={openProducto} footer={null} centered onCancel={showCargarProducto}>
                 <p>
-                  <CargarProducto setFlagModal={showCargarProducto} setFlagListado={props.setFlag} />
+                  <CargarProducto setFlagModal={showCargarProducto} setFlagListado={props.setFlag} sucursal={sucursal} />
                 </p>
               </Modal>
             </div>

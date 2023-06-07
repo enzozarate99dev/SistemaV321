@@ -1,17 +1,20 @@
 import { AxiosResponse } from "axios";
 import { Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { productoModel } from "../../Models/producto.model";
 import GenerarVentas from "./GenerarVentas";
 import FormGroupText from "../../utils/FormGroupText";
 import Paginacion from "../../utils/Paginacion";
 import * as servicesProd from "../../Productos/Services/productos.services";
+import AutenticacionContext from "../../auth/AutenticacionContext";
 
 export default function Ventas() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
   const [productos, setProductos] = useState<productoModel[]>([]);
   const [flag, setFlag] = useState(false);
+
+  const { sucursalId } = useContext(AutenticacionContext);
 
   const handleFlag = () => {
     setFlag(!flag);
@@ -29,7 +32,7 @@ export default function Ventas() {
     sinStock: false,
     pagina: 1,
     recordsPorPagina: 5,
-    sucursalId: 1,
+    sucursalId: sucursalId,
   };
 
   useEffect(() => {

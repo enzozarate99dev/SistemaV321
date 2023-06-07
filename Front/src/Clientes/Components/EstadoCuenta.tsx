@@ -140,7 +140,7 @@ export default function EstadoCuenta(props: estadoCuentaProps) {
       <Modal width={1150} open={info} footer={null} centered onCancel={showInfo}>
         <DetalleVentas setFlagModal={showInfo} setFlagListado={props.setFlagListado} detalle={detalle} ocultarInfo={true} />
       </Modal>
-      <Table columns={columns} dataSource={estadoCuentaCliente} />
+      <Table columns={columns} dataSource={estadoCuentaCliente} rowKey="id_venta" />
     </>
   );
 }

@@ -17,12 +17,9 @@ export default function ListadoVentas(props: listadoVentasProps) {
   const [id, setId] = useState<number>();
   const [ventas, setVentas] = useState<any[]>([]);
   const [detalle, setDetalle] = useState<any>();
-  // console.log(props.ventas);
 
   useEffect(() => {
     const result = props.ventas;
-    console.log(result, "result");
-
     let a: any[] = [];
     result.forEach((venta: any) => {
       venta.pagos.forEach((pago: any) => {
@@ -32,6 +29,7 @@ export default function ListadoVentas(props: listadoVentasProps) {
             id_venta: venta.id_venta,
             precioTotal: venta.precioTotal,
             clienteId: venta.clienteId,
+            sucursalId: venta.sucursalId,
             fechaDeVenta: pago?.fecha.slice(0, 10),
             tipoComprobante: "Recibo",
             metodoDePago: metodosDePago?.join(" - "),
@@ -112,6 +110,12 @@ export default function ListadoVentas(props: listadoVentasProps) {
       dataIndex: "metodoDePago",
     },
     {
+      title: "Sucursal",
+      key: "sucursalId",
+      align: "center" as const,
+      dataIndex: "sucursalId",
+    },
+    {
       title: "",
       align: "center" as const,
       render: (venta: ventasModel) => <div className="container">{acciones(venta)}</div>,
@@ -128,6 +132,7 @@ export default function ListadoVentas(props: listadoVentasProps) {
           size="small"
           scroll={{ x: 500 }}
           dataSource={ventas}
+          rowKey="id_venta"
           columns={columns}
           pagination={false}
           style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, marginInline: "2%", marginBlock: "2%", padding: 0 }}

@@ -1,5 +1,5 @@
 import { Modal, Steps } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { productoModel } from "../../Models/producto.model";
 import { ventaLineCreacion, ventaCreacionDTO, pagoCreacion } from "../../Models/ventas.model";
 import Button from "../../utils/Button";
@@ -8,6 +8,7 @@ import * as services from "../Services/ventas.services";
 import Swal from "sweetalert2";
 import Montos from "./Montos";
 import PagoCredito from "./PagoCredito";
+import AutenticacionContext from "../../auth/AutenticacionContext";
 
 export default function FinalizarVenta(props: realizarVentaProps) {
   const [openFormaDePago, setOpenFormaDePago] = useState(false);
@@ -17,6 +18,8 @@ export default function FinalizarVenta(props: realizarVentaProps) {
 
   const [ventaLineCreacion, setVentaLineCreacion] = useState<ventaLineCreacion[]>([]);
   const [pagoCreacion, setPagoCreacion] = useState<pagoCreacion[]>([]);
+
+  const { sucursalId } = useContext(AutenticacionContext);
 
   const showCargarVenta = () => {
     setOpenFormaDePago(!openFormaDePago);
@@ -87,6 +90,7 @@ export default function FinalizarVenta(props: realizarVentaProps) {
       }))
     );
   }, [props.productos]);
+  console.log(ventaLineCreacion, "productos");
 
   useEffect(() => {
     setPagoCreacion([
@@ -103,6 +107,7 @@ export default function FinalizarVenta(props: realizarVentaProps) {
       ventaLines: ventaLineCreacion,
       pagos: pagoCreacion,
       descuento: props.descuento,
+      sucursalId: sucursalId,
     };
     crearVenta(venta);
   }

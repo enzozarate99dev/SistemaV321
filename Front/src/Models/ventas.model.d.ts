@@ -10,6 +10,7 @@ export interface ventaCreacionDTO {
   ventaLines: ventaLineCreacion[];
   pagos: pagoCreacion[];
   descuento?: number;
+  sucursalId: number;
 }
 
 export interface ventaLine {
@@ -45,6 +46,7 @@ export interface metodosDePago {
 export interface ventasModel {
   id_venta: number;
   clienteId: number;
+  sucursalId: number;
   productos: productoModel[];
   precioTotal?: number;
   fechaDeVenta: Date;

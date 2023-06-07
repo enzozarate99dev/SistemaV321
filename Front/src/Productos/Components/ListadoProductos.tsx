@@ -1,6 +1,6 @@
 import { Modal, Table } from "antd";
 import { Form, Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddIcon from "../../assets/AddIcon";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
@@ -13,13 +13,30 @@ import "../styles.css";
 import CargarProducto from "./CargarProducto";
 import EditarProducto from "./EditarProducto";
 import "../styles.css";
+import axios from "axios";
+import { urlSucursales } from "../../Generales/endpoints";
+import { sucursalModel } from "../../Models/sucursal.model";
 
 export default function ListadoProductos(props: propsListadoProductos) {
   // const [actualizarPrecios, setActualizarPrecios] = useState(false);
   // const [eliminarMultiple, setEliminarMultiple] = useState(false);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [sucursal, setSucursal] = useState([]);
   const [id, setId] = useState<number>();
+
+  useEffect(() => {
+    async function getSuc() {
+      const result = await axios(`${urlSucursales}`);
+      setSucursal(
+        result.data.map((suc: sucursalModel) => ({
+          value: suc.id,
+          label: suc.direccion,
+        }))
+      );
+    }
+    getSuc();
+  }, []);
 
   const showModal = () => {
     setOpen(!open);
@@ -94,16 +111,17 @@ export default function ListadoProductos(props: propsListadoProductos) {
       key: "precio",
     },
     {
-      title: "Unidades",
+      title: "Unidades Disponibles",
       dataIndex: "cantidad",
       key: "cantidad",
       align: "center" as const,
+      render: (text: number) => <span style={{ color: text === 0 ? "red" : "inherit" }}>{text === 0 ? "Sin Stock" : text}</span>,
     },
-    {
-      title: "Imagen",
-      key: "imagen",
-      render: (producto: productoModel) => <img width="50" height="50" src={producto.foto} alt="Poster" />,
-    },
+    // {
+    //   title: "Imagen",
+    //   key: "imagen",
+    //   render: (producto: productoModel) => <img width="50" height="50" src={producto.foto} alt="Poster" />,
+    // },
     {
       title: "Acciones",
       key: "id_producto",
@@ -117,10 +135,10 @@ export default function ListadoProductos(props: propsListadoProductos) {
   return (
     <>
       <Modal title="Cargar Producto" width={1150} open={open} footer={null} centered onCancel={showModal}>
-        <CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag} />
+        <CargarProducto setFlagModal={showModal} setFlagListado={props.setFlag} sucursal={sucursal} />
       </Modal>
       <Modal width={1150} open={edit} footer={null} centered onCancel={showEdit}>
-        <EditarProducto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} />
+        <EditarProducto id={id!} setFlagModal={showEdit} setFlagListado={props.setFlag} sucursal={sucursal} />
       </Modal>
       <div className="d-flex justify-content-center align-items-start">
         <Button className="btn btn-transparent " onClick={showModal}>
@@ -132,7 +150,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
           {(formikProps) => (
             <Form>
               <div className="container">
-                <Table columns={columns} dataSource={props.productos} pagination={false} key={id} />
+                <Table columns={columns} dataSource={props.productos} pagination={false} rowKey="id_producto" />
               </div>
             </Form>
           )}

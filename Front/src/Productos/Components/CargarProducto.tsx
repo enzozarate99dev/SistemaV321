@@ -5,6 +5,7 @@ import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/productos.services";
 import FormularioProductos from "./FormularioProductos";
 import Swal from "sweetalert2";
+import { sucursalModel } from "../../Models/sucursal.model";
 
 export default function CargarProducto(props: cargarProductoProps) {
   const [errores, setErrores] = useState<string[]>([]);
@@ -34,7 +35,9 @@ export default function CargarProducto(props: cargarProductoProps) {
           cantidad: 0,
           codigo: "",
           descripcion: "",
+          sucursalId: 0,
         }}
+        sucursal={props.sucursal}
         setBandera={props.setFlagModal}
         onSubmit={async (valores) => {
           await crear(valores);
@@ -49,4 +52,5 @@ export default function CargarProducto(props: cargarProductoProps) {
 interface cargarProductoProps {
   setFlagModal: () => void;
   setFlagListado: () => void;
+  sucursal: sucursalModel[];
 }

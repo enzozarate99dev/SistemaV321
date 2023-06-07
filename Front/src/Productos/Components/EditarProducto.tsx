@@ -6,6 +6,7 @@ import Cargando from "../../utils/Cargando";
 import MostrarErrores from "../../utils/MostrarErrores";
 import * as services from "../Services/productos.services";
 import FormularioProductos from "./FormularioProductos";
+import { sucursalModel } from "../../Models/sucursal.model";
 
 export default function EditarProducto(props: editarProductoProps) {
   const [errores, setErrores] = useState<string[]>([]);
@@ -35,6 +36,7 @@ export default function EditarProducto(props: editarProductoProps) {
         cantidad: respuesta.data.cantidad,
         fotoURL: respuesta.data.fotoURL,
         foto: respuesta.data.foto,
+        sucursalId: respuesta.data.sucursalId,
       };
       setProducto(modelo);
       console.log(`en editarcomponent ${modelo}`);
@@ -51,6 +53,7 @@ export default function EditarProducto(props: editarProductoProps) {
           buttonText="Editar"
           modelo={producto}
           onSubmit={async (valores) => await editar(valores)}
+          sucursal={props.sucursal}
         />
       ) : (
         <Cargando />
@@ -61,6 +64,7 @@ export default function EditarProducto(props: editarProductoProps) {
 
 interface editarProductoProps {
   id: number;
+  sucursal: sucursalModel[];
   setFlagModal: () => void;
   setFlagListado: () => void;
 }

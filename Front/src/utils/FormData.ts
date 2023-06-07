@@ -9,6 +9,7 @@ export function convertirProductoAFormData(producto: productoCrear): FormData {
   formData.append("descripcion", producto.descripcion!.toString());
   formData.append("codigo", producto.codigo!.toString());
   formData.append("categoria", producto.categoria!.toString());
+  formData.append("sucursalId", producto.sucursalId!.toString());
   if (producto.foto) {
     formData.append("foto", producto.foto);
   }

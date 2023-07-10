@@ -50,7 +50,6 @@ export default function EditarCliente(props: editarClienteProps) {
           popup: "cliente-alert",
         },
       });
-      console.log(clienteEditar);
     } catch (error) {
       setErrores(error.response.data);
     }

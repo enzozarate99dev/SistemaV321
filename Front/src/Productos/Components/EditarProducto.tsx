@@ -14,7 +14,6 @@ export default function EditarProducto(props: editarProductoProps) {
   const [producto, setProducto] = useState<productoCrear>();
 
   async function editar(productoEditar: productoCrear) {
-    console.log(productoEditar);
     try {
       services.editar(productoEditar, props.id);
       props.setFlagModal();
@@ -39,7 +38,6 @@ export default function EditarProducto(props: editarProductoProps) {
         sucursalId: respuesta.data.sucursalId,
       };
       setProducto(modelo);
-      console.log(`en editarcomponent ${modelo}`);
     });
   }, [props.id]);
 

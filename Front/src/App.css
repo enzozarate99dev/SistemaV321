@@ -57,3 +57,12 @@ body {
   line-height: 64px;
   background: #33384D;
 }
+
+ .ant-input-disabled {
+  color: black !important;
+}
+
+ 
+ :where(.css-dev-only-do-not-override-sk7ap8).ant-checkbox-disabled+span{
+  color : black !important;
+ }

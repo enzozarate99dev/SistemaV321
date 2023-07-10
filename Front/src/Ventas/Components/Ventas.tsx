@@ -67,7 +67,6 @@ export default function Ventas() {
       });
 
       setProductos(valores.nombre === "" ? [] : productosFiltrados);
-      // setProductos(respuesta.data);
     });
   };
 
@@ -83,14 +82,17 @@ export default function Ventas() {
         {(formikProps) => (
           <>
             <GenerarVentas
-              // ventas={ventas}
-              // ventasConsFinal={ventasCF}
               setFlag={handleFlag}
               productos={productos}
               buscador={
                 <Form>
                   <div className="form-inline">
-                    <FormGroupText onChange={() => formikProps.submitForm()} campo="nombre" placeholder="Cargar articulo" />
+                    <FormGroupText
+                      style={{ background: "#F8FAFC", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", marginInline: "1rem" }}
+                      onChange={() => formikProps.submitForm()}
+                      campo="nombre"
+                      placeholder="Cargar articulo"
+                    />
                   </div>
                 </Form>
               }
@@ -121,7 +123,3 @@ interface filtroProductosProps {
   recordsPorPagina: number;
   sucursalId: number;
 }
-// interface crearVentaProps {
-//   setFlagModal: () => void;
-//   setFlagListado: () => void;
-// }

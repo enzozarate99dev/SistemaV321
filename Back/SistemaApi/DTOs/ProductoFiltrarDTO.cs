@@ -8,7 +8,6 @@
         {
             get { return new PaginacionDTO() { Pagina = Pagina, RecordsPorPagina = RecordsPorPagina }; }
         }
-     /*   public int SucursalId { get; set; }*/
 
         public string? Nombre { get; set; }
         public string? Codigo { get; set; }

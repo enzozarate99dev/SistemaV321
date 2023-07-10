@@ -49,10 +49,7 @@ namespace SistemaApi.Controllers
         [HttpGet("filtrar")]
         public async Task<ActionResult<List<ProductoDTO>>> Filtrar([FromQuery] ProductoFiltrarDTO productoFiltrarDTO, int sucursalId)
         {
-            /*var sucursalIdActual = await context.Sucursales.FindAsync(productoFiltrarDTO.SucursalId);
-           var productosQueryable = context.Productos.Where(p => p.SucursalId == sucursalIdActual).AsQueryable();
-*/
-            var productosQueryable = context.Productos.AsQueryable();
+                    var productosQueryable = context.Productos.AsQueryable();
 
             if (!string.IsNullOrEmpty(productoFiltrarDTO.Nombre))   
             {
@@ -75,11 +72,12 @@ namespace SistemaApi.Controllers
                 productosQueryable = productosQueryable.Where(x => x.Cantidad == 0);
             }
 
-           
-            
-              productosQueryable = productosQueryable.Where(x => x.SucursalId == sucursalId);
-          
 
+            if (sucursalId > 0)
+            {
+                productosQueryable = productosQueryable.Where(x => x.SucursalId == sucursalId).AsQueryable();
+            }
+          
             await HttpContext.InsertarParametrosPaginacionEnCabecera(productosQueryable);
 
             var productos = await productosQueryable.Paginar(productoFiltrarDTO.PaginacionDTO).OrderBy(x=> x.Id_producto).ToListAsync();

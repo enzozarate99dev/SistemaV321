@@ -90,7 +90,6 @@ export default function FinalizarVenta(props: realizarVentaProps) {
       }))
     );
   }, [props.productos]);
-  console.log(ventaLineCreacion, "productos");
 
   useEffect(() => {
     setPagoCreacion([
@@ -140,7 +139,11 @@ export default function FinalizarVenta(props: realizarVentaProps) {
           </Steps>
           <div style={contentStyle}>{steps[current].content}</div>
           <div style={{ marginTop: 24, display: "flex", justifyContent: "end" }}>
-            {current < steps.length - 1 && <Button onClick={() => next()}>Siguiente</Button>}
+            {current < steps.length - 1 && (
+              <Button style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }} onClick={() => next()}>
+                Siguiente
+              </Button>
+            )}
             {current === steps.length - 1}
           </div>
           {/* <Button onClick={() => finalizarVenta()}>REALIZAR VENTA</Button> */}

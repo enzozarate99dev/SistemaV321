@@ -6,6 +6,9 @@ import { clienteModel, operacionesCliente } from "../../Models/clientes.model";
 import Button from "../../utils/Button";
 import VerIcon from "../../assets/VerIcon";
 import DetalleVentas from "../../Ventas/Components/DetalleVentas";
+import ImprimirIcon from "../../assets/ImprimirIcon";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function EstadoCuenta(props: estadoCuentaProps) {
   const [estadoCuentaCliente, setEstadoCuentaCliente] = useState<any[]>([]);
@@ -82,11 +85,15 @@ export default function EstadoCuenta(props: estadoCuentaProps) {
       </Button>
     </>
   );
+
   const verDetallesRecibo = () => (
     <>
       <Button style={{ marginRight: "1rem" }} className="btn btn-transparent" onClick={() => console.log(estadoCuentaCliente[0].id_recibo)}>
         <VerIcon />
       </Button>
+      {/* <Button style={{ marginRight: "1rem" }} className="btn btn-transparent">
+        <ImprimirIcon />
+      </Button> */}
     </>
   );
 

@@ -13,7 +13,6 @@ import AutenticacionContext from "../../auth/AutenticacionContext";
 export default function FiltroProductos() {
   const [totalDePaginas, setTotalDePaginas] = useState(0);
   const [productos, setProductos] = useState<productoModel[]>([]);
-  // const [mostrarFiltros, setMostrarFiltros] = useState(true);
   const [flag, setFlag] = useState(false);
 
   const cambiarFlag = () => {
@@ -22,7 +21,7 @@ export default function FiltroProductos() {
 
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
-  const { sucursalId } = useContext(AutenticacionContext);
+  // const { sucursalId } = useContext(AutenticacionContext);
 
   const valorInicial: filtroProductosProps = {
     nombre: "",
@@ -31,8 +30,8 @@ export default function FiltroProductos() {
     stockDisponible: false,
     sinStock: false,
     pagina: 1,
-    recordsPorPagina: 5,
-    sucursalId: sucursalId,
+    recordsPorPagina: 10,
+    sucursalId: 0,
   };
 
   useEffect(() => {

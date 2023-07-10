@@ -93,7 +93,7 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago, handle
             }}
             onClick={() => elegirMetodo(4)}
           >
-            <p>Mercado Pago</p>
+            <p>MERCADO PAGO</p>
           </Button>
         </div>
         <div className="container">
@@ -110,7 +110,7 @@ export default function FormaDePago({ onSuccess, importe, setFormaDePago, handle
             onClick={() => elegirMetodo(5)}
           >
             <Banco />
-            <p>TRANSFERENCIA</p>
+            <p style={{ fontSize: "0.9em" }}>TRANSFERENCIA</p>
           </Button>
         </div>
       </div>

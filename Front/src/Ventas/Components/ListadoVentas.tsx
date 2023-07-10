@@ -11,11 +11,12 @@ import { useHistory } from "react-router-dom";
 import { clienteModel } from "../../Models/clientes.model";
 import axios, { AxiosResponse } from "axios";
 import { urlClientes, urlVentas } from "../../Generales/endpoints";
+import VerIcon from "../../assets/VerIcon";
 
 export default function ListadoVentas(props: listadoVentasProps) {
   const [info, setInfo] = useState(false);
   const [id, setId] = useState<number>();
-  const [ventas, setVentas] = useState<any[]>([]);
+  const [ventas, setVentas] = useState<ventasModel[]>([]);
   const [detalle, setDetalle] = useState<any>();
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export default function ListadoVentas(props: listadoVentasProps) {
     <>
       <Button
         style={{ marginRight: "1rem" }}
-        className="btn btn-info"
+        className="btn btn-transparent"
         onClick={async () => {
           const cliente = (await axios.get(`${urlClientes}/${venta.clienteId}`)).data;
           const array = {
@@ -76,7 +77,7 @@ export default function ListadoVentas(props: listadoVentasProps) {
           showInfo();
         }}
       >
-        Detalle
+        <VerIcon />
       </Button>
       <Button onClick={() => confirmar(() => borrar(venta.id_venta))} className="btn btn-transparent">
         <TrashIcon />
@@ -102,6 +103,7 @@ export default function ListadoVentas(props: listadoVentasProps) {
       dataIndex: "precioTotal",
       align: "center" as const,
       key: "precioTotal",
+      render: (precioTotal: number) => `$ ${precioTotal}`,
     },
     {
       title: "Forma De Pago",
@@ -127,7 +129,8 @@ export default function ListadoVentas(props: listadoVentasProps) {
         <DetalleVentas setFlagModal={showInfo} setFlagListado={props.setFlag} detalle={detalle} />
       </Modal>
       <h1>Ventas</h1>
-      <Col lg={24}>
+      {/* <Col lg={24}> */}
+      <div className="container">
         <Table
           size="small"
           scroll={{ x: 500 }}
@@ -135,9 +138,17 @@ export default function ListadoVentas(props: listadoVentasProps) {
           rowKey="id_venta"
           columns={columns}
           pagination={false}
-          style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, marginInline: "2%", marginBlock: "2%", padding: 0 }}
+          style={{
+            boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+            borderRadius: 10,
+            marginInline: "2%",
+            marginBlock: "2%",
+            padding: 0,
+            zIndex: -1,
+          }}
         />
-      </Col>
+      </div>
+      {/* </Col> */}
     </>
   );
 }

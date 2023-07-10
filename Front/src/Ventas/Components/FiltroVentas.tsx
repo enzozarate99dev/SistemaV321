@@ -16,7 +16,6 @@ export default function FiltroVentas() {
 
   const handleFlag = () => {
     setFlag(!flag);
-    console.log(flag);
   };
 
   const query = new URLSearchParams(useLocation().search);
@@ -28,7 +27,7 @@ export default function FiltroVentas() {
     consumidor: false,
     registrado: false,
     pagina: 1,
-    recordsPorPagina: 5,
+    recordsPorPagina: 10,
     nombre: "",
     stockDisponible: false,
     sinStock: false,

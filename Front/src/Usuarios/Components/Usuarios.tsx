@@ -28,11 +28,9 @@ export default function Usuarios(props: cargarUsuarioProps) {
       sucursalId: credenciales.sucursalId,
     };
     registrar(rol);
-    console.log(rol, "role");
   }
 
   async function registrar(credenciales: usuariosEnviar) {
-    console.log(credenciales, "credenciales");
     try {
       services.registrar(credenciales);
       props.setFlagListado();

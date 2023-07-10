@@ -21,7 +21,6 @@ export default function Montos(props: montosProps) {
   const calcularMontos = (e: any, id_input: number) => {
     const arrCopia = [...inputMonto];
     arrCopia[id_input - 1] = e;
-    console.log(e, "e");
     setInputMonto(arrCopia);
     const sum = arrCopia.reduce((a, b) => a + b, 0);
     setImporteEnPantalla(props.montoAPagar - sum);
@@ -73,6 +72,7 @@ export default function Montos(props: montosProps) {
       </div>
       <div>
         <Button
+          style={{ backgroundColor: "#D9D9D9", borderColor: "#36D643", color: "#424242" }}
           onClick={() => {
             const suma = inputMonto.reduce((a, b) => a + b);
             if (suma === props.montoAPagar) {

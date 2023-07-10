@@ -1,5 +1,5 @@
-import { AutoComplete, Modal, Row, Select, Table } from "antd";
-import { ChangeEvent, useEffect, useState } from "react";
+import { Modal, Row, Select, Table } from "antd";
+import { useEffect, useState } from "react";
 import EditIcon from "../../assets/EditIcon";
 import TrashIcon from "../../assets/TrashIcon";
 import { clienteModel } from "../../Models/clientes.model";
@@ -8,18 +8,13 @@ import confirmar from "../../utils/Confirmar";
 import * as services from "../Services/clientes.services";
 import EditarCliente from "./EditarCliente";
 import InfoCliente from "./InfoCliente";
-import axios, { AxiosResponse } from "axios";
-import { urlClientes } from "../../Generales/endpoints";
 import VerIcon from "../../assets/VerIcon";
 import EstadoDeudaIcon from "../../assets/EstadoDeudaIcon";
 import "../clientesStyles.css";
 import "../../utils/modal.css";
 import EstadoCuenta from "./EstadoCuenta";
-import { Input } from "antd";
 import { Col } from "react-bootstrap";
-import { noAuto } from "@fortawesome/fontawesome-svg-core";
-import { couldStartTrivia } from "typescript";
-import Paginacion from "../../utils/Paginacion";
+import { useToggle } from "../../customHooks/useToggle";
 
 export default function ListadoClientes(props: propsListadoClientes) {
   const [cuenta, setCuenta] = useState(false);
@@ -60,7 +55,6 @@ export default function ListadoClientes(props: propsListadoClientes) {
   };
 
   const onChangeSelect = (value: string, id: number) => {
-    console.log(value, id, "value, id");
     if (value === "info") {
       showInfo();
       setId(id);
@@ -193,19 +187,17 @@ export default function ListadoClientes(props: propsListadoClientes) {
             <div>{props.buscador}</div>
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <Table
-              size="small"
-              scroll={{ x: 500 }}
-              dataSource={props.clientes}
-              rowKey="id_cliente"
-              columns={columns}
-              pagination={false}
-              style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, marginInline: "2%", padding: 0 }}
-            />
-          </Col>
-        </Row>
+        <div className="container">
+          <Table
+            size="small"
+            scroll={{ x: 500 }}
+            dataSource={props.clientes}
+            rowKey="id_cliente"
+            columns={columns}
+            pagination={false}
+            style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 10, marginInline: "2%", padding: 0 }}
+          />
+        </div>
       </div>
     </>
   );

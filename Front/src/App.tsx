@@ -23,7 +23,6 @@ function App() {
   }
   useEffect(() => {
     const sucID = claims.find((claim) => claim.nombre === "sucursalId")?.valor;
-    console.log("sucID", sucID);
     setSucursalId(sucID ? parseInt(sucID) : 0);
   }, [claims]);
 

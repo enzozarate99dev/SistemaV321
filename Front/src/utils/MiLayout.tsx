@@ -11,75 +11,75 @@ import { Header } from "antd/es/layout/layout";
 import MenuNavbar from "./MenuNavbar";
 import "../Configuration/modelColors.css";
 import Autorizado from "../auth/Autorizado";
+import Sider from "antd/es/layout/Sider";
 
 const { Content } = Layout;
+type MenuItem = Required<MenuProps>["items"][number];
 
-const items: MenuProps["items"] = [
-  {
-    key: "1",
-    icon: (
-      <Link to="/ventas/generar" className="menu-icon">
-        <ShopIcon />
-      </Link>
-    ),
-  },
+function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode): MenuItem {
+  return {
+    key,
+    icon,
+    label,
+  } as MenuItem;
+}
 
-  {
-    key: "2",
-    icon: (
-      <Link to="/listadoClientes" className="menu-icon">
-        <UserIconSidebar />
-      </Link>
-    ),
-  },
-  {
-    key: "3",
-    icon: (
-      <Link to="/listadoProductos" className="menu-icon">
-        <BoxIcon />
-      </Link>
-    ),
-  },
-  {
-    key: "4",
-    icon: (
-      <Link to="/listadoVentas" className="menu-icon">
-        <DocsIcon />
-      </Link>
-    ),
-  },
-  {
-    key: "5",
-    icon: (
-      <Link to="/listadoUsuarios" className="menu-icon">
-        <UsersIcon />
-      </Link>
-    ),
-  },
+const items: MenuItem[] = [
+  getItem(
+    "Caja",
+    "1",
+    <Link to="/ventas/generar" className="menu-icon">
+      <ShopIcon />
+    </Link>
+  ),
+  getItem(
+    "Clientes",
+    "2",
+    <Link to="/listadoClientes" className="menu-icon">
+      <UserIconSidebar />
+    </Link>
+  ),
+  getItem(
+    "Artículos",
+    "3",
+    <Link to="/listadoProductos" className="menu-icon">
+      <BoxIcon />
+    </Link>
+  ),
+  getItem(
+    "Facturas",
+    "4",
+    <Link to="/listadoVentas" className="menu-icon">
+      <DocsIcon />
+    </Link>
+  ),
+  getItem(
+    "Usuarios",
+    "5",
+    <Link to="/listadoUsuarios" className="menu-icon">
+      <UsersIcon />
+    </Link>
+  ),
 ];
 
 export default function MiLayout(props: MenuProps) {
   return (
-    <Layout hasSider style={{ minHeight: "100vh" }}>
-      {
-        <>
-          {/* <Autorizado
-            autorizado={<Menu className="menu" style={{ backgroundColor: "#33384D" }} items={items} />}
-            noAutorizado={<Menu className="menu" style={{ backgroundColor: "#33384D" }} items={[]} />}
-          ></Autorizado> */}
-          <Menu className="menu " style={{ backgroundColor: "#33384D" }} items={items} />
-        </>
-      }
+    <Layout hasSider style={{}}>
+      <Sider collapsed={true} style={{ height: "100vh", backgroundColor: "#33384D", position: "fixed", zIndex: 20 }}>
+        <Menu className="menu " style={{ backgroundColor: "#33384D", marginTop: "50%" }} items={items} />
+      </Sider>
 
       <Layout className="site-layout ">
-        <Header className="header">
+        <Header className="header" style={{ position: "fixed", width: "100vw", zIndex: 100 }}>
           <MenuNavbar />
         </Header>
         <Content
           style={{
             textAlign: "center",
             backgroundColor: "#fff",
+            paddingLeft: "80px",
             minHeight: "100vh",
+            paddingTop: 64,
           }}
         >
           <div>{props.children}</div>

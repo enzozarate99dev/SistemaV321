@@ -133,7 +133,6 @@ export default function GenerarVentas(props: propsListadoVentas) {
   //Ventas
   function calcularSubtotal(productos: productoModel[]) {
     const subtotal = productos.reduce((suma, producto) => suma + producto.precioF!, 0);
-    console.log(productos.map((p) => p.precioF));
     return subtotal;
   }
 
@@ -153,7 +152,7 @@ export default function GenerarVentas(props: propsListadoVentas) {
 
   return (
     <div style={{ position: "relative" }}>
-      <Row>
+      <Row style={{ height: "100vh" }}>
         <Col xl={7} lg={19} xs={19} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div className="container">
             <div className="d-flex justify-content-center align-items-center">
@@ -203,7 +202,6 @@ export default function GenerarVentas(props: propsListadoVentas) {
             <p style={{ fontSize: 10, margin: 0, textAlign: "center" }}>Presupuesto</p>
           </Button>
         </Col>
-        {/* </Row> */}
 
         <Col
           xl={{ push: 0, pull: 0 }}
@@ -216,8 +214,8 @@ export default function GenerarVentas(props: propsListadoVentas) {
             top: 0,
             right: 0,
             bottom: 0,
-            minHeight: "100vh",
             overflow: "scroll",
+            height: "100vh",
           }}
           className=" d-flex flex-column justify-content-around align-items-center pb-5 "
         >
@@ -315,7 +313,6 @@ export default function GenerarVentas(props: propsListadoVentas) {
               descuento={porcentajeBotonSeleccionado}
             />
           </div>
-          {/* </div> */}
         </Col>
       </Row>
     </div>

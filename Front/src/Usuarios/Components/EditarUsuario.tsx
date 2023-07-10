@@ -66,7 +66,6 @@ export default function EditarUsuarios(props: editarUsuarioProps) {
       console.log(error.response.data);
     }
   }
-  console.log(modelo, "modelouser");
 
   return (
     // <Form form={form} initialValues={modelo} labelCol={{ span: 8 }} onFinish={(values) => convertir(values)} autoComplete="off">

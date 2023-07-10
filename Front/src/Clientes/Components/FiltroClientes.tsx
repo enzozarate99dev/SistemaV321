@@ -27,7 +27,7 @@ export default function FiltroClientes() {
   const valorInicial: filtroClientesProps = {
     nombreYApellido: "",
     pagina: 1,
-    recordsPorPagina: 5,
+    recordsPorPagina: 10,
   };
 
   useEffect(() => {

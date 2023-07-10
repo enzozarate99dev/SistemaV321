@@ -54,7 +54,6 @@ export default function EditarPresupuesto(props: editarPresupuestoProps) {
   async function agregar(valores: valoresPrevProps) {
     const prod = getProducto(valores);
     setProductosArreglo([...productosArreglo, prod]);
-    console.log(productosArreglo);
   }
 
   async function quitar(id: number) {
@@ -96,7 +95,6 @@ export default function EditarPresupuesto(props: editarPresupuestoProps) {
   }
 
   async function editar(presupuesto: presupuestoCrear) {
-    console.log(presupuesto);
     try {
       services.editar(props.id, presupuesto);
       props.setFlagListado();

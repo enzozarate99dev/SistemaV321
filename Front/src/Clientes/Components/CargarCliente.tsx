@@ -28,7 +28,6 @@ export default function CargarCliente(props: cargarClienteProps) {
   // console.log("modelo crear", modelo);
 
   async function crear(cliente: clienteCrear) {
-    console.log("cargar cliente", cliente);
     try {
       services.crear(cliente);
       props.setFlagListado();
@@ -37,10 +36,6 @@ export default function CargarCliente(props: cargarClienteProps) {
         title: "CLIENTE CARGADO !",
         icon: "success",
         showConfirmButton: false,
-        // customClass: {
-        //   popup: "cliente-alert",
-        // },
-        // willClose: () => props.setFlagModal(),
       });
     } catch (error) {
       setErrores(error.response.data);

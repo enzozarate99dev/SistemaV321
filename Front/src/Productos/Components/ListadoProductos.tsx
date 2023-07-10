@@ -22,22 +22,21 @@ export default function ListadoProductos(props: propsListadoProductos) {
   // const [eliminarMultiple, setEliminarMultiple] = useState(false);
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [sucursal, setSucursal] = useState([]);
   const [id, setId] = useState<number>();
+  const [sucursal, setSucursal] = useState<sucursalModel[]>([]);
 
   useEffect(() => {
     async function getSuc() {
       const result = await axios(`${urlSucursales}`);
       setSucursal(
         result.data.map((suc: sucursalModel) => ({
-          value: suc.id,
-          label: suc.direccion,
+          id: suc.id,
+          direccion: suc.direccion,
         }))
       );
     }
     getSuc();
   }, []);
-
   const showModal = () => {
     setOpen(!open);
     props.setFlag();
@@ -81,7 +80,6 @@ export default function ListadoProductos(props: propsListadoProductos) {
         onClick={() => {
           showEdit();
           setId(id);
-          console.log(id);
         }}
       >
         <EditIcon />
@@ -109,6 +107,7 @@ export default function ListadoProductos(props: propsListadoProductos) {
       dataIndex: "precio",
       align: "center" as const,
       key: "precio",
+      render: (precio: number) => `$ ${precio}`,
     },
     {
       title: "Unidades Disponibles",
@@ -117,11 +116,17 @@ export default function ListadoProductos(props: propsListadoProductos) {
       align: "center" as const,
       render: (text: number) => <span style={{ color: text === 0 ? "red" : "inherit" }}>{text === 0 ? "Sin Stock" : text}</span>,
     },
-    // {
-    //   title: "Imagen",
-    //   key: "imagen",
-    //   render: (producto: productoModel) => <img width="50" height="50" src={producto.foto} alt="Poster" />,
-    // },
+
+    {
+      title: "Sucursal",
+      dataIndex: "sucursalId",
+      key: "sucursalId",
+      align: "center" as const,
+      render: (sucursalId: number) => {
+        const suc = sucursal.find((s) => s.id === sucursalId);
+        return suc ? suc.direccion : "sad";
+      },
+    },
     {
       title: "Acciones",
       key: "id_producto",
@@ -150,7 +155,20 @@ export default function ListadoProductos(props: propsListadoProductos) {
           {(formikProps) => (
             <Form>
               <div className="container">
-                <Table columns={columns} dataSource={props.productos} pagination={false} rowKey="id_producto" />
+                <Table
+                  columns={columns}
+                  dataSource={props.productos}
+                  pagination={false}
+                  rowKey="id_producto"
+                  style={{
+                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: 10,
+                    marginInline: "2%",
+                    marginBlock: "2%",
+                    padding: 0,
+                    zIndex: -1,
+                  }}
+                />
               </div>
             </Form>
           )}

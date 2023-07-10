@@ -33,7 +33,6 @@ export default function InfoCliente(props: infoClienteProps) {
         nroIngresos: respuesta.data.nroIngresos,
       };
       setCliente(modelo);
-      console.log("modelo info", modelo);
     });
   }, [props.id]);
 

@@ -58,24 +58,23 @@ export default function FormularioClientes(props: formularioClientesProps) {
         </Form.Item>
       </div>
       <div className="col-md-4">
-        <Form.Item name="provincia" rules={[{ required: true, message: "" }]}>
+        <Form.Item name="provincia" rules={[{ required: true, message: "" }]} style={{ width: "100%" }}>
           <Input placeholder="PROVINCIA" disabled={props.disabled} />
         </Form.Item>
       </div>
-      <div className="col-md-4" hidden={true}>
+      <div hidden={true}>
         <Form.Item name="codigoPostal" rules={[{ required: true, message: "" }]}>
           <Input />
         </Form.Item>
       </div>
       <div
-        className="container"
         style={{
           display: "flex",
           justifyContent: "center",
           marginInline: "20vw",
         }}
       >
-        <div className="col-md-7">
+        <div className="col-lg-7">
           <Form.Item name="percibeIIBB" valuePropName="checked">
             <Checkbox disabled={props.disabled}>Percibe IIBB</Checkbox>
           </Form.Item>
@@ -85,7 +84,7 @@ export default function FormularioClientes(props: formularioClientesProps) {
           </Form.Item>
         </div>
 
-        <div className="col-md-8">
+        <div className="col-lg-8">
           <Form.Item name="nroIngresos">
             <Input placeholder="NUMERO" disabled={props.disabled} />
           </Form.Item>
